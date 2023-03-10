@@ -1,4 +1,4 @@
-# grants-round/contracts
+# Allo Procotol Contracts
 
 This project is built using [hardhat](https://hardhat.org).
 All the contracts required to run / manage a round can be found here.
@@ -40,6 +40,22 @@ If you come across any vulnerabilties, do create an issue / raise a PR to help i
 - **Round Operators**: wallets that have the permission to create & manage the round
 - **Round**: created by a Program and deal with everything relating to running a round
 - **Voter** : wallet who cast a vote to a grant during the round
+
+
+##### Deploy Steps
+
+To know how the contracts should be setup, refer [DEPLOY_STEPS.md](https://github.com/Allo-Protocol/contracts/blob/main/docs/DEPLOY_STEPS.md)
+
+
+##### Chain Deployment List
+
+To know the addresses are deployed on which network. refer [CHAINS.md](https://github.com/Allo-Protocol/contracts/blob/main/docs/CHAINS.md)
+
+##### Development
+s
+To contribute to this project, fork the project and follow the instructions at [DEV.md](https://github.com/Allo-Protocol/contracts/blob/main/docs/DEV.md)
+
+This is built and maintained using [hardhat](https://hardhat.org)
 
 ## General Setup
 
