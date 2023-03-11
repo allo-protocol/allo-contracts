@@ -245,7 +245,7 @@ function initialize(bytes encodedParameters, address _roundFactory) external non
 
 Instantiates a new round
 
-*encodedParameters  - _initAddress Related contract / wallet addresses  - _initRoundTime Round timestamps  - _feePercentage Fee percentage  - _matchAmount Amount of tokens in the matching pool  - _token Address of the ERC20/native token for accepting matching pool contributions  - _initMetaPtr Round metaPtrs  - _initRoles Round roles*
+*encodedParameters  - _initAddress Related contract / wallet addresses  - _initRoundTime Round timestamps  - _initConfig Round config  - _initMetaPtr Round metaPtrs  - _initRoles Round roles*
 
 #### Parameters
 

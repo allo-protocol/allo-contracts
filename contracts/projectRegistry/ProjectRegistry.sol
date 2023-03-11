@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "../utils/MetaPtr.sol";
+import "../round/RoundImplementation.sol";
 
 /**
  * @title ProjectRegistry
@@ -189,6 +190,31 @@ contract ProjectRegistry is Initializable {
         owners.count = 1;
     }
 
-    // Private functions
-    // ...
+    /**
+     * @notice submit an application of your project to a round
+     * @param projectID Id of project
+     * @param round address of round
+     * @param applicationMetaPtr meta pointer to the application
+     */
+    function applyToRound(
+        uint256 projectID,
+        address round,
+        MetaPtr calldata applicationMetaPtr
+    ) public onlyProjectOwner(projectID) {
+
+        bytes32 _projectID = bytes32(
+            abi.encodePacked(
+                block.chainid,
+                projectID,
+                address(this)
+            )
+        ); // TODO: figure out how to generate projectId 
+
+        RoundImplementation(
+            payable(round)
+        ).applyToRound(
+            _projectID,
+            applicationMetaPtr
+        );
+    }
 }

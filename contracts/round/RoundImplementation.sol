@@ -131,6 +131,9 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice MetaPtr to the projects
   MetaPtr public projectsMetaPtr;
 
+  /// @notice Approved Registry
+  mapping (address => bool) whitelistedRegistries;
+
   // --- Struct ---
 
   struct InitAddress {
@@ -155,6 +158,14 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     address[] roundOperators; // Addresses to be granted ROUND_OPERATOR_ROLE
   }
 
+  struct InitConfig {
+    uint8 roundFeePercentage; // round fee percentage
+    uint256 matchAmount; // round matching pool amount
+    address token; // matching pool token
+    address payable roundFeeAddress; // address to which round fee is sent to
+    address[] whitelistedRegistries; // whitelisted registries
+  }
+
   // --- Core methods ---
 
   /**
@@ -163,9 +174,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
    * @dev encodedParameters
    *  - _initAddress Related contract / wallet addresses
    *  - _initRoundTime Round timestamps
-   *  - _feePercentage Fee percentage
-   *  - _matchAmount Amount of tokens in the matching pool
-   *  - _token Address of the ERC20/native token for accepting matching pool contributions
+   *  - _initConfig Round config
    *  - _initMetaPtr Round metaPtrs
    *  - _initRoles Round roles
    */
@@ -177,20 +186,14 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     (
       InitAddress memory _initAddress,
       InitRoundTime memory _initRoundTime,
-      uint256 _matchAmount,
-      address _token,
-      uint8 _roundFeePercentage,
-      address payable _roundFeeAddress,
+      InitConfig memory _initConfig,
       InitMetaPtr memory _initMetaPtr,
       InitRoles memory _initRoles
     ) = abi.decode(
       encodedParameters, (
       (InitAddress),
       (InitRoundTime),
-      uint256,
-      address,
-      uint8,
-      address,
+      (InitConfig),
       (InitMetaPtr),
       (InitRoles)
     ));
@@ -225,7 +228,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     applicationsEndTime = _initRoundTime.applicationsEndTime;
     roundStartTime = _initRoundTime.roundStartTime;
     roundEndTime = _initRoundTime.roundEndTime;
-    token = _token;
 
     // Invoke init on voting contract
     votingStrategy.init();
@@ -233,9 +235,11 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     // Invoke init on payout contract
     payoutStrategy.init();
 
-    matchAmount = _matchAmount;
-    roundFeePercentage = _roundFeePercentage;
-    roundFeeAddress = _roundFeeAddress;
+    token = _initConfig.token;
+    matchAmount = _initConfig.matchAmount;
+    roundFeePercentage = _initConfig.roundFeePercentage;
+    roundFeeAddress = _initConfig.roundFeeAddress;
+
     roundMetaPtr = _initMetaPtr.roundMetaPtr;
     applicationMetaPtr = _initMetaPtr.applicationMetaPtr;
 
@@ -247,6 +251,11 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     // Assigning round operators
     for (uint256 i = 0; i < _initRoles.roundOperators.length; ++i) {
       _grantRole(ROUND_OPERATOR_ROLE, _initRoles.roundOperators[i]);
+    }
+
+    // Whitelisting registries
+    for (uint256 i = 0; i < _initConfig.whitelistedRegistries.length; ++i) {
+      whitelistedRegistries[_initConfig.whitelistedRegistries[i]] = true;
     }
   }
 
@@ -364,6 +373,9 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @param projectID unique hash of the project
   /// @param newApplicationMetaPtr appliction metaPtr
   function applyToRound(bytes32 projectID, MetaPtr calldata newApplicationMetaPtr) external {
+
+    require(whitelistedRegistries[msg.sender], "Round: not whitelisted");
+
     // slither-disable-next-line timestamp
     require(
       applicationsStartTime <= block.timestamp  &&

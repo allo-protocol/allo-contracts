@@ -27,6 +27,24 @@ Associate a new owner with a project
 | projectID | uint256 | ID of previously created project |
 | newOwner | address | address of new project owner |
 
+### applyToRound
+
+```solidity
+function applyToRound(uint256 projectID, address round, MetaPtr applicationMetaPtr) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | uint256 | undefined |
+| round | address | undefined |
+| applicationMetaPtr | MetaPtr | undefined |
+
 ### createProject
 
 ```solidity
