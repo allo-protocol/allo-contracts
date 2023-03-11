@@ -8,6 +8,8 @@ import { artifacts, upgrades, ethers } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
 import {
+  AlloSettings,
+  AlloSettings__factory,
   MerklePayoutStrategyImplementation,
   MockERC20,
   MockRoundImplementation,
@@ -31,6 +33,10 @@ const RANDOM_BYTES32 = randomBytes(32);
 
 describe("MerklePayoutStrategyImplementation", function () {
   let user: SignerWithAddress;
+
+  // AlloSettings
+  let alloSettingsContractFactory: AlloSettings__factory;
+  let alloSettingsContract: AlloSettings;
 
   // Round Factory
   // eslint-disable-next-line camelcase
@@ -57,6 +63,12 @@ describe("MerklePayoutStrategyImplementation", function () {
 
   before(async () => {
     [user] = await ethers.getSigners();
+
+    // Deploy AlloSettings contract
+    alloSettingsContractFactory = await ethers.getContractFactory("AlloSettings");
+    alloSettingsContract = <AlloSettings>(
+      await upgrades.deployProxy(alloSettingsContractFactory)
+    );
 
     // Deploy RoundFactory contract
     roundContractFactory = await ethers.getContractFactory("RoundFactory");
@@ -180,15 +192,16 @@ describe("MerklePayoutStrategyImplementation", function () {
 
       await roundImplementation.initialize(
         encodeRoundParameters(params),
-        roundFactoryContract.address // Wallet.createRandom().address
+        alloSettingsContract.address
       );
     };
 
     describe("test: init", () => {
       beforeEach(async () => {
         const protocolTreasury = Wallet.createRandom().address;
-        await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
-        await roundFactoryContract.updateProtocolFeePercentage(0);
+
+        await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
+        await alloSettingsContract.updateProtocolFeePercentage(0);
 
         [user] = await ethers.getSigners();
 
@@ -256,8 +269,8 @@ describe("MerklePayoutStrategyImplementation", function () {
     describe("test: hasBeenDistributed", () => {
       beforeEach(async () => {
         const protocolTreasury = Wallet.createRandom().address;
-        await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
-        await roundFactoryContract.updateProtocolFeePercentage(0);
+        await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
+        await alloSettingsContract.updateProtocolFeePercentage(0);
 
         [user] = await ethers.getSigners();
 

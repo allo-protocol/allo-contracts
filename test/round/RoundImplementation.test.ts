@@ -13,6 +13,8 @@ import {
   RoundFactory,
   RoundFactory__factory,
   RoundImplementation,
+  AlloSettings__factory,
+  AlloSettings,
 } from "../../typechain";
 
 type MetaPtr = {
@@ -23,6 +25,10 @@ type MetaPtr = {
 describe("RoundImplementation", function () {
 
   let user: SignerWithAddress;
+
+  // Allotment Settings
+  let alloSettingsContractFactory: AlloSettings__factory;
+  let alloSettingsContract: AlloSettings;
 
   // Round Factory
   let roundContractFactory: RoundFactory__factory;
@@ -61,6 +67,10 @@ describe("RoundImplementation", function () {
 
   before(async () => {
     [user] = await ethers.getSigners();
+
+    // Deploy AlloSettings contract
+    alloSettingsContractFactory = await ethers.getContractFactory('AlloSettings');
+    alloSettingsContract = <AlloSettings>await upgrades.deployProxy(alloSettingsContractFactory);
 
     // Deploy RoundFactory contract
     roundContractFactory = await ethers.getContractFactory('RoundFactory');
@@ -141,7 +151,7 @@ describe("RoundImplementation", function () {
 
       await roundImplementation.initialize(
         encodeRoundParameters(params),
-        roundFactoryContract.address
+        alloSettingsContract.address
       );
 
       return params;
@@ -1243,8 +1253,10 @@ describe("RoundImplementation", function () {
       before(async() => {
         protocolTreasury = Wallet.createRandom().address;
 
-        roundFactoryContract.updateProtocolTreasury(protocolTreasury);
-        roundFactoryContract.updateProtocolFeePercentage(feePercentage);
+        await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
+        await alloSettingsContract.updateProtocolFeePercentage(feePercentage);
+
+        await roundFactoryContract.updateAlloSettings(alloSettingsContract.address);
       })
 
 
@@ -1259,10 +1271,10 @@ describe("RoundImplementation", function () {
         beforeEach(async () => {
           // update protocol treasury
           protocolTreasury = Wallet.createRandom().address;
-          await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
+          await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
 
           // get protocol fee percentage
-          protocolFeePercentage = await roundFactoryContract.protocolFeePercentage();
+          protocolFeePercentage = await alloSettingsContract.protocolFeePercentage();
 
           // Deploy RoundImplementation contract
           roundImplementationArtifact = await artifacts.readArtifact('RoundImplementation');
@@ -1366,7 +1378,7 @@ describe("RoundImplementation", function () {
 
           // update protocol treasury
           protocolTreasury = Wallet.createRandom().address;
-          await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
+          await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
 
           // Deploy RoundImplementation contract
           roundImplementationArtifact = await artifacts.readArtifact('RoundImplementation');
@@ -1435,8 +1447,8 @@ describe("RoundImplementation", function () {
 
           // update protocol treasury
           protocolTreasury = Wallet.createRandom().address;
-          await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
-          await roundFactoryContract.updateProtocolFeePercentage(0);
+          await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
+          await alloSettingsContract.updateProtocolFeePercentage(0);
 
           // Deploy RoundImplementation contract
           roundImplementationArtifact = await artifacts.readArtifact('RoundImplementation');
@@ -1514,8 +1526,8 @@ describe("RoundImplementation", function () {
 
           // update protocol treasury
           protocolTreasury = Wallet.createRandom().address;
-          await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
-          await roundFactoryContract.updateProtocolFeePercentage(0);
+          await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
+          await alloSettingsContract.updateProtocolFeePercentage(0);
 
           // Deploy RoundImplementation contract
           roundImplementationArtifact = await artifacts.readArtifact('RoundImplementation');

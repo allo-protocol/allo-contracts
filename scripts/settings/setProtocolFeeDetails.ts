@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 import hre from "hardhat";
 import { confirmContinue } from "../../utils/script-utils";
-import { roundParams } from '../config/round.config';
+import { AlloSettingsParams } from '../config/allo.config';
 import * as utils from "../utils";
 
 utils.assertEnvironment();
@@ -10,25 +10,25 @@ export async function main() {
 
   const network = hre.network;
 
-  const networkParams = roundParams[network.name];
+  const networkParams = AlloSettingsParams[network.name];
 
   if (!networkParams) {
     throw new Error(`Invalid network ${network.name}`);
   }
 
-  const roundFactoryContract = networkParams.roundFactoryContract;
+  const alloSettingsContract = networkParams.alloSettingsContract;
 
-  const roundFactory = await ethers.getContractAt('RoundFactory', roundFactoryContract);
+  const alloSettings = await ethers.getContractAt('AlloSettings', alloSettingsContract);
 
-  const currentProtocolFeePercentage = await roundFactory.protocolFeePercentage();
-  const currentProtocolTreasury = await roundFactory.protocolTreasury();
+  const currentProtocolFeePercentage = await alloSettings.protocolFeePercentage();
+  const currentProtocolTreasury = await alloSettings.protocolTreasury();
 
   const newProtocolTreasury = networkParams.newProtocolTreasury;
   const newProtocolFeePercentage = networkParams.newProtocolFeePercentage;
   
   await confirmContinue({
     "info"                         : "set protocol percentage and treasury address",
-    "roundFactoryContract"         : roundFactoryContract,
+    "alloSettingsContract"         : alloSettingsContract,
     "currentProtocolTreasury"      : currentProtocolTreasury,
     "newProtocolTreasury"          : newProtocolTreasury,
     "currentProtocolFeePercentage" : currentProtocolFeePercentage,
@@ -40,7 +40,7 @@ export async function main() {
 
   if (newProtocolTreasury && newProtocolTreasury != currentProtocolTreasury) {
     console.log("setting protocol fee treasury to: " + newProtocolTreasury);
-    const tx = await roundFactory.updateProtocolTreasury(
+    const tx = await alloSettings.updateProtocolTreasury(
       newProtocolTreasury
     );
 
@@ -49,7 +49,7 @@ export async function main() {
 
   if (newProtocolFeePercentage && newProtocolFeePercentage != currentProtocolFeePercentage) {
     console.log("setting protocol fee percentage to: " + newProtocolFeePercentage);
-    const tx = await roundFactory.updateProtocolFeePercentage(
+    const tx = await alloSettings.updateProtocolFeePercentage(
       newProtocolFeePercentage
     );
 

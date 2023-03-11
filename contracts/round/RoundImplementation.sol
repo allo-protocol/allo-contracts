@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-import "./RoundFactory.sol";
+import "../settings/AlloSettings.sol";
 import "../votingStrategy/IVotingStrategy.sol";
 import "../payoutStrategy/IPayoutStrategy.sol";
 
@@ -89,8 +89,8 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   // --- Data ---
 
-  /// @notice Round Factory Contract Address
-  RoundFactory public roundFactory;
+  /// @notice Allo Config Contract Address
+  AlloSettings public alloSettings;
 
   /// @notice Voting Strategy Contract Address
   IVotingStrategy public votingStrategy;
@@ -171,7 +171,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
    */
   function initialize(
     bytes calldata encodedParameters,
-    address _roundFactory
+    address _alloSettings
   ) external initializer {
     // Decode _encodedParameters
     (
@@ -217,7 +217,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       "Round: Round start is before app start"
     );
 
-    roundFactory = RoundFactory(_roundFactory);
+    alloSettings = AlloSettings(_alloSettings);
 
     votingStrategy = _initAddress.votingStrategy;
     payoutStrategy = _initAddress.payoutStrategy;
@@ -391,7 +391,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
     uint256 fundsInContract = _getTokenBalance(token);
 
-    uint256 protocolFeeAmount = (matchAmount * roundFactory.protocolFeePercentage() / 100);
+    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage() / 100);
     uint256 roundFeeAmount = (matchAmount * roundFeePercentage / 100);
 
     // total funds needed for payout
@@ -401,7 +401,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
     // deduct protocol fee
     if (protocolFeeAmount > 0) {
-      address payable protocolTreasury = roundFactory.protocolTreasury();
+      address payable protocolTreasury = alloSettings.protocolTreasury();
       _transferAmount(protocolTreasury, protocolFeeAmount, token);
     }
 

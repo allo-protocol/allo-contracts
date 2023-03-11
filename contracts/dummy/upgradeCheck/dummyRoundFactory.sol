@@ -17,7 +17,7 @@ import "../../utils/MetaPtr.sol";
  * @dev RoundFactory is deployed once per chain and stores
  * a reference to the deployed RoundImplementation.
  * @dev RoundFactory uses openzeppelin Clones to reduce deploy
- * costs and also allows uprgrading RoundContract
+ * costs and also allows upgrading RoundContract
  * @dev This contract is Ownable thus supports ownership transfership
  *
  */

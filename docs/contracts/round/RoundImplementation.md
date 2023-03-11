@@ -61,6 +61,23 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### alloSettings
+
+```solidity
+function alloSettings() external view returns (contract AlloSettings)
+```
+
+Allo Config Contract Address
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract AlloSettings | undefined |
+
 ### applicationMetaPtr
 
 ```solidity
@@ -240,7 +257,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(bytes encodedParameters, address _roundFactory) external nonpayable
+function initialize(bytes encodedParameters, address _alloSettings) external nonpayable
 ```
 
 Instantiates a new round
@@ -252,7 +269,7 @@ Instantiates a new round
 | Name | Type | Description |
 |---|---|---|
 | encodedParameters | bytes | Encoded parameters for program creation |
-| _roundFactory | address | undefined |
+| _alloSettings | address | undefined |
 
 ### matchAmount
 
@@ -356,23 +373,6 @@ Unix timestamp of the end of the round
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
-
-### roundFactory
-
-```solidity
-function roundFactory() external view returns (contract RoundFactory)
-```
-
-Round Factory Contract Address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | contract RoundFactory | undefined |
 
 ### roundFeeAddress
 
