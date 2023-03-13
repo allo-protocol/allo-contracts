@@ -111,6 +111,7 @@ const config: HardhatUserConfig = {
   // @ts-ignore
   optimizer: {
     enabled: true,
+    runs: 1000,
   },
   networks: {
     // Main Networks

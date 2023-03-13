@@ -61,6 +61,28 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### applicationIds
+
+```solidity
+function applicationIds(bytes32) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### applicationMetaPtr
 
 ```solidity
@@ -78,6 +100,28 @@ MetaPtr to the application form schema
 |---|---|---|
 | protocol | uint256 | undefined |
 | pointer | string | undefined |
+
+### applicationStates
+
+```solidity
+function applicationStates(uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### applicationsEndTime
 
@@ -116,7 +160,7 @@ Unix timestamp from when round can accept applications
 ### applyToRound
 
 ```solidity
-function applyToRound(bytes32 projectID, MetaPtr newApplicationMetaPtr) external nonpayable
+function applyToRound(bytes32 _projectId, MetaPtr _newApplicationMetaPtr) external nonpayable
 ```
 
 
@@ -127,8 +171,30 @@ function applyToRound(bytes32 projectID, MetaPtr newApplicationMetaPtr) external
 
 | Name | Type | Description |
 |---|---|---|
-| projectID | bytes32 | undefined |
-| newApplicationMetaPtr | MetaPtr | undefined |
+| _projectId | bytes32 | undefined |
+| _newApplicationMetaPtr | MetaPtr | undefined |
+
+### getApplicationState
+
+```solidity
+function getApplicationState(bytes32 _projectApplication) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _projectApplication | bytes32 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### getRoleAdmin
 
@@ -288,6 +354,28 @@ Payout Strategy Contract Address
 |---|---|---|
 | _0 | contract IPayoutStrategy | undefined |
 
+### projectApplications
+
+```solidity
+function projectApplications(uint256) external view returns (bytes32)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+
 ### projectsMetaPtr
 
 ```solidity
@@ -443,6 +531,40 @@ Unix timestamp of the start of the round
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### setProjectState
+
+```solidity
+function setProjectState(uint256 _index, uint256 _newState) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _index | uint256 | undefined |
+| _newState | uint256 | undefined |
+
+### setProjectStates
+
+```solidity
+function setProjectStates(uint256[] _index, uint256[] _newStates) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _index | uint256[] | undefined |
+| _newStates | uint256[] | undefined |
+
 ### setReadyForPayout
 
 ```solidity
@@ -524,22 +646,6 @@ function updateMatchAmount(uint256 newAmount) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | newAmount | uint256 | new Amount |
-
-### updateProjectsMetaPtr
-
-```solidity
-function updateProjectsMetaPtr(MetaPtr newProjectsMetaPtr) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newProjectsMetaPtr | MetaPtr | undefined |
 
 ### updateRoundFeeAddress
 
