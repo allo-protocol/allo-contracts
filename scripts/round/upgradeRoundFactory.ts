@@ -56,7 +56,13 @@ export async function main() {
 
   const newRoundFactory = await ethers.getContractFactory(config.newContract);
 
-  const newContract = await upgrades.upgradeProxy(proxyAddress, newRoundFactory);
+  const newContract = await upgrades.upgradeProxy(
+    proxyAddress,
+    newRoundFactory,
+    {
+      unsafeAllowRenames: true,
+    }
+  );
   console.log("RoundFactory upgraded");
 
   console.log("Version: "+ await newContract.VERSION());

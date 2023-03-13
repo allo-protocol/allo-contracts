@@ -25,6 +25,11 @@
       "address": "0xE4c87BBA7Efd605c431CaF17389d3A913687623F",
       "txHash": "0x3851c440d42dc3e79cfe69265c47234e60fe0ed0d79fb5583035a95347aba4b2",
       "kind": "transparent"
+    },
+    {
+      "address": "0x18194300BE1773DdB40Cb96c273C1A3B420b0a3D",
+      "txHash": "0x4384e711da74badf66e96e43261a895b78f7813ebc64b6bad4b1f37c780f32f0",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -439,6 +444,98 @@
             "type": "t_address",
             "contract": "QuadraticFundingVotingStrategyFactory",
             "src": "contracts/votingStrategy/QuadraticFundingStrategy/QuadraticFundingVotingStrategyFactory.sol:12"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "d95e0970b2e14b7d868d56b991161470120ef45975062a2a6b1e42b1c40cbb1a": {
+      "address": "0xf953a205018eFb1203C016b39587FFc86A84fDe1",
+      "txHash": "0x96bc893fe96d60e6feecb75d78112a8d513c0cfa7b1726a7f6d00f5e06173521",
+      "layout": {
+        "solcVersion": "0.8.17",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_owner",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_address",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "OwnableUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:94"
+          },
+          {
+            "label": "roundImplementation",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_address",
+            "contract": "RoundFactory",
+            "src": "contracts/round/RoundFactory.sol:30"
+          },
+          {
+            "label": "alloSettings",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "RoundFactory",
+            "src": "contracts/round/RoundFactory.sol:33"
           }
         ],
         "types": {
