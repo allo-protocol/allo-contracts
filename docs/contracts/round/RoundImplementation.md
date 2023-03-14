@@ -96,6 +96,51 @@ MetaPtr to the application form schema
 | protocol | uint256 | undefined |
 | pointer | string | undefined |
 
+### applicationStatusesBitMap
+
+```solidity
+function applicationStatusesBitMap(uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### applications
+
+```solidity
+function applications(uint256) external view returns (bytes32 projectID, struct MetaPtr metaPtr)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | bytes32 | undefined |
+| metaPtr | MetaPtr | undefined |
+
 ### applicationsEndTime
 
 ```solidity
@@ -106,6 +151,29 @@ Unix timestamp from when round stops accepting applications
 
 
 
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### applicationsIndexesByProjectID
+
+```solidity
+function applicationsIndexesByProjectID(bytes32, uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+| _1 | uint256 | undefined |
 
 #### Returns
 
@@ -146,6 +214,50 @@ function applyToRound(bytes32 projectID, MetaPtr newApplicationMetaPtr) external
 |---|---|---|
 | projectID | bytes32 | undefined |
 | newApplicationMetaPtr | MetaPtr | undefined |
+
+### getApplicationIndexesByProjectID
+
+```solidity
+function getApplicationIndexesByProjectID(bytes32 projectID) external view returns (uint256[])
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | bytes32 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256[] | undefined |
+
+### getApplicationStatus
+
+```solidity
+function getApplicationStatus(uint256 applicationIndex) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| applicationIndex | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### getRoleAdmin
 
@@ -278,6 +390,23 @@ function matchAmount() external view returns (uint256)
 ```
 
 Match Amount (excluding protocol fee &amp; round fee)
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### nextApplicationIndex
+
+```solidity
+function nextApplicationIndex() external view returns (uint256)
+```
+
+
 
 
 
@@ -453,6 +582,23 @@ Pay Protocol &amp; Round Fees and transfer funds to payout contract (only by ROU
 
 
 
+
+### setStatuses
+
+```solidity
+function setStatuses(uint256[] rowIndexes, uint256[] fullRows) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| rowIndexes | uint256[] | undefined |
+| fullRows | uint256[] | undefined |
 
 ### supportsInterface
 

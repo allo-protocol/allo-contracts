@@ -32,6 +32,31 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice round operator role
   bytes32 public constant ROUND_OPERATOR_ROLE = keccak256("ROUND_OPERATOR");
 
+  struct Application {
+    bytes32 projectID;
+    MetaPtr metaPtr;
+  }
+
+  uint256 public nextApplicationIndex;
+    
+  // An array of applications, each new application is appended to the array
+  Application[] public applications;
+  mapping(bytes32 => uint256[]) public applicationsIndexesByProjectID;
+
+  // This is a packed array of booleans.
+  // statuses[0] is the first row of the bitmap and allows to store 256 bits to describe
+  // the status of 256 projects.
+  // statuses[1] is the second row, and so on.
+  // Instead of using 1 bit for each application status, we use 2 bits to allow 4 statuses:
+  // 0: the project applied, the status is pending
+  // 1: approved
+  // 2: rejected 
+  // 3: canceled
+  // Since it's a mapping the storage it's pre-allocated with zero values,
+  // so if we check the status of an existing application, the value is by default 0 (pending).
+  // If we want to check the status of an application, we take its index from the `applications` array
+  // and convert it to the 2-bits position in the bitmap.
+  mapping(uint256 => uint256) public applicationStatusesBitMap;
 
   // --- Events ---
 
@@ -370,7 +395,10 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       block.timestamp <= applicationsEndTime,
       "Round: Applications period over"
     );
+    applications.push(Application(projectID, newApplicationMetaPtr));
+    applicationsIndexesByProjectID[projectID].push(nextApplicationIndex);
     emit NewProjectApplication(projectID, newApplicationMetaPtr);
+    nextApplicationIndex++;
   }
 
   /// @notice Invoked by voter to cast votes
@@ -384,6 +412,34 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     );
 
     votingStrategy.vote{value: msg.value}(encodedVotes, msg.sender);
+  }
+
+  function getApplicationIndexesByProjectID(bytes32 projectID) public view returns(uint256[] memory) {
+    return applicationsIndexesByProjectID[projectID];
+  }
+
+  function setStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external {
+    require(rowIndexes.length == fullRows.length);
+
+    for (uint256 i = 0; i < rowIndexes.length; i++) {
+      uint256 rowIndex = rowIndexes[i];
+      uint256 fullRow = fullRows[i];
+            
+      applicationStatusesBitMap[rowIndex] = fullRow;
+    }
+  }
+
+
+  function getApplicationStatus(uint256 applicationIndex) public view returns(uint256) {
+    require(applicationIndex < applications.length);
+
+    uint256 rowIndex = applicationIndex / 128;
+    uint256 colIndex = (applicationIndex % 128) * 2;
+
+    uint256 currentRow = applicationStatusesBitMap[rowIndex];        
+    uint256 status = (currentRow >> colIndex) & 3;                         
+
+    return status;
   }
 
   /// @notice Pay Protocol & Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
