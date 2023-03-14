@@ -14,6 +14,7 @@
     "export-abi": "pnpm hardhat export-abi",
     "clear-abi": "pnpm hardhat clear-abi",
     "lint:sol": "pnpm hardhat check",
+    "size": "npx hardhat size-contracts",
     "force-import": "pnpm hardhat run scripts/forceImport.ts --network",
     "//allo-settings-deploy-scripts": "echo '//-- Allo Settings deploy Script --//'",
     "deploy-allo-settings": "pnpm hardhat run scripts/settings/deployAlloSettings.ts --network",

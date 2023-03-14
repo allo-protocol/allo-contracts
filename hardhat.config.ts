@@ -107,10 +107,15 @@ const dodoc = {
 };
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.17",
-  // @ts-ignore
-  optimizer: {
-    enabled: true,
+  solidity: {
+    version: "0.8.17",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 400,
+      },
+    },
+    // @ts-ignore
   },
   networks: {
     // Main Networks
