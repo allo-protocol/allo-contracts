@@ -99,7 +99,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   // --- Modifier ---
 
   /// @notice modifier to check if round has not ended.
-  modifier roundHasNotEnded() {
+  modifier roundHasNotEnded() {only
     // slither-disable-next-line timestamp
     require(block.timestamp <= roundEndTime, "Round: Round has ended");
    _;
@@ -418,7 +418,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     return applicationsIndexesByProjectID[projectID];
   }
 
-  function setStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external {
+  function setStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
     require(rowIndexes.length == fullRows.length);
 
     for (uint256 i = 0; i < rowIndexes.length; i++) {
