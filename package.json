@@ -31,6 +31,7 @@
     "deploy-round-implementation": "pnpm hardhat run scripts/round/deployRoundImplementation.ts --network",
     "deploy-round-factory": "pnpm hardhat run scripts/round/deployRoundFactory.ts --network",
     "link-round-implementation": "pnpm hardhat run scripts/round/linkRoundImplementation.ts --network",
+    "link-allo-settings": "pnpm hardhat run scripts/round/linkAlloSettings.ts --network",
     "create-round": "pnpm hardhat run scripts/round/createRound.ts --network",
     "apply-to-round": "pnpm hardhat run scripts/round/applyToRound.ts --network",
     "update-project-metaptr": "pnpm hardhat run scripts/round/updateProjectMetaPtr.ts --network",

@@ -215,10 +215,15 @@ pnpm run deploy-merkle-contract goerli
 pnpm run deploy-merkle-implementation goerli
 pnpm run link-merkle-implementation goerli
 
+# AlloSettings
+pnpm run deploy-allo-settings goerli
+pnpm run set-protocol-fee goerli
+
 # Round
 pnpm run deploy-round-factory goerli
 pnpm run deploy-round-implementation goerli
 pnpm run link-round-implementation goerli
+pnpm run link-allo-settings goerli
 pnpm run create-round goerli
 
 # Project Registry

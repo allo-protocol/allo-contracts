@@ -27,40 +27,6 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### _unusedSlot1
-
-```solidity
-function _unusedSlot1() external view returns (address payable)
-```
-
-Unused storage slot to allow for upgrade to new variables
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
-
-### _unusedSlot2
-
-```solidity
-function _unusedSlot2() external view returns (uint8)
-```
-
-Unused storage slot to allow for upgrade to new variables
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint8 | undefined |
-
 ### alloSettings
 
 ```solidity
