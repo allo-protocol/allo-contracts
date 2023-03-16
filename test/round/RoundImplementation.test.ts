@@ -116,6 +116,8 @@ describe("RoundImplementation", function () {
       let matchAmount = overrides && overrides.hasOwnProperty('matchAmount') ? overrides.matchAmount : 100;
       let roundFeePercentage = overrides && overrides.hasOwnProperty('roundFeePercentage') ? overrides.roundFeePercentage : 0;
 
+      roundFeePercentage = roundFeePercentage * await alloSettingsContract.PERCENTAGE_PRECISION();      
+
       const initAddress = [
         votingStrategyContract.address, // votingStrategy
         payoutStrategyContract.address, // payoutStrategy
@@ -585,20 +587,22 @@ describe("RoundImplementation", function () {
       });
     });
 
-    describe ('test: updateRoundFeePercentage', () => {
+    describe('test: updateRoundFeePercentage', () => {
 
       let _currentBlockTimestamp: number;
+      let percentage_precision: number;
 
       beforeEach(async () => {
         _currentBlockTimestamp = (await ethers.provider.getBlock(
           await ethers.provider.getBlockNumber())
         ).timestamp;
+        percentage_precision = await alloSettingsContract.PERCENTAGE_PRECISION();
 
         await initRound(_currentBlockTimestamp);
       });
 
       it ('SHOULD revert if invoked by wallet who is not round operator', async () => {
-        const newRoundFeePercentage = 10;
+        const newRoundFeePercentage = 10 * percentage_precision;
         const [_, notRoundOperator] = await ethers.getSigners();
         await expect(roundImplementation.connect(notRoundOperator).updateRoundFeePercentage(newRoundFeePercentage)).to.revertedWith(
           `AccessControl: account ${notRoundOperator.address.toLowerCase()} is missing role 0xec61da14b5abbac5c5fda6f1d57642a264ebd5d0674f35852829746dfb8174a5`
@@ -608,7 +612,7 @@ describe("RoundImplementation", function () {
 
       it ('SHOULD update roundFeePercentage value IF called is round operator', async () => {
 
-        const newRoundFeePercentage = 10;
+        const newRoundFeePercentage = 10 * percentage_precision;
 
         const txn = await roundImplementation.updateRoundFeePercentage(newRoundFeePercentage);
         await txn.wait();
@@ -619,7 +623,7 @@ describe("RoundImplementation", function () {
 
       it ('SHOULD emit RoundFeePercentageUpdated event', async () => {
 
-        const newRoundFeePercentage = 10;
+        const newRoundFeePercentage = 10 * percentage_precision;
 
         const txn = await roundImplementation.updateRoundFeePercentage(newRoundFeePercentage);
 
@@ -630,7 +634,7 @@ describe("RoundImplementation", function () {
 
       it('SHOULD revert if invoked after roundEndTime', async () => {
 
-        const newRoundFeePercentage = 10;
+        const newRoundFeePercentage = 10 * percentage_precision;
 
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1500])
 
@@ -1244,17 +1248,21 @@ describe("RoundImplementation", function () {
       });
     });
 
-    describe('test: setReadyForPayout', () => {
+    describe('test: setReadyForPayout - core', async() => {
 
       let protocolTreasuryBalance: BigNumber;
       let protocolTreasury: string;
-      let feePercentage = 10;
 
+      let feePercentage = 10;
+      let percentage_precision: number;
+      
       before(async() => {
+        percentage_precision = await alloSettingsContract.PERCENTAGE_PRECISION();
+
         protocolTreasury = Wallet.createRandom().address;
 
         await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
-        await alloSettingsContract.updateProtocolFeePercentage(feePercentage);
+        await alloSettingsContract.updateProtocolFeePercentage(feePercentage * percentage_precision);
 
         await roundFactoryContract.updateAlloSettings(alloSettingsContract.address);
       })
@@ -1264,7 +1272,7 @@ describe("RoundImplementation", function () {
 
         let _currentBlockTimestamp: number;
         let roundMatchAmount = ethers.utils.parseEther("10");
-        let protocolFeePercentage: any;
+        let protocolFeePercentage: number;
         let roundParams: any;
         let tx: any;
 
@@ -1485,8 +1493,6 @@ describe("RoundImplementation", function () {
         });
 
         it("SHOULD emit PayFeeAndEscrowFundsToPayoutContract", async () => {
-          let roundFeeAddress = await roundImplementation.roundFeeAddress();
-
           expect(tx).to.emit(
             roundImplementation,
             'PayFeeAndEscrowFundsToPayoutContract'

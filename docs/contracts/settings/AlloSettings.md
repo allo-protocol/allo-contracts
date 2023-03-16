@@ -10,6 +10,23 @@
 
 ## Methods
 
+### PERCENTAGE_PRECISION
+
+```solidity
+function PERCENTAGE_PRECISION() external view returns (uint16)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint16 | undefined |
+
 ### VERSION
 
 ```solidity
@@ -58,10 +75,10 @@ function owner() external view returns (address)
 ### protocolFeePercentage
 
 ```solidity
-function protocolFeePercentage() external view returns (uint8)
+function protocolFeePercentage() external view returns (uint16)
 ```
 
-Protocol fee percentage
+Protocol fee percentage 100% = 100_000 | 10% = 10_000 | 1% = 1_000 | 0.1% = 100 | 0.01% = 10
 
 
 
@@ -70,7 +87,7 @@ Protocol fee percentage
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint8 | undefined |
+| _0 | uint16 | undefined |
 
 ### protocolTreasury
 
@@ -119,7 +136,7 @@ function transferOwnership(address newOwner) external nonpayable
 ### updateProtocolFeePercentage
 
 ```solidity
-function updateProtocolFeePercentage(uint8 _protocolFeePercentage) external nonpayable
+function updateProtocolFeePercentage(uint16 _protocolFeePercentage) external nonpayable
 ```
 
 Set the protocol fee percentage
@@ -130,7 +147,7 @@ Set the protocol fee percentage
 
 | Name | Type | Description |
 |---|---|---|
-| _protocolFeePercentage | uint8 | The new protocol fee percentage |
+| _protocolFeePercentage | uint16 | The new protocol fee percentage |
 
 ### updateProtocolTreasury
 
@@ -188,7 +205,7 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 ### ProtocolFeePercentageUpdated
 
 ```solidity
-event ProtocolFeePercentageUpdated(uint8 protocolFeePercentage)
+event ProtocolFeePercentageUpdated(uint16 protocolFeePercentage)
 ```
 
 Emitted when protocol fee percentage is updated
@@ -199,7 +216,7 @@ Emitted when protocol fee percentage is updated
 
 | Name | Type | Description |
 |---|---|---|
-| protocolFeePercentage  | uint8 | undefined |
+| protocolFeePercentage  | uint16 | undefined |
 
 ### ProtocolTreasuryUpdated
 

@@ -102,7 +102,8 @@ describe("IPayoutInterface", function () {
       votingStrategyArtifact = await artifacts.readArtifact('QuadraticFundingVotingStrategyImplementation');
       votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>await deployContract(user, votingStrategyArtifact, []);
       const matchAmount = 100;
-      const roundFeePercentage = 10;
+      const roundFeePercentage = 10 * await alloSettingsContract.PERCENTAGE_PRECISION();
+
       const roundFeeAddress = Wallet.createRandom().address;
 
       const initAddress = [

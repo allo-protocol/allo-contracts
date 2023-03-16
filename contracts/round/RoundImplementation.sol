@@ -39,7 +39,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   event MatchAmountUpdated(uint256 newAmount);
 
    /// @notice Emitted when a Round fee percentage is updated
-  event RoundFeePercentageUpdated(uint8 roundFeePercentage);
+  event RoundFeePercentageUpdated(uint32 roundFeePercentage);
 
   /// @notice Emitted when a Round wallet address is updated
   event RoundFeeAddressUpdated(address roundFeeAddress);
@@ -117,7 +117,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   address public token;
 
   /// @notice Round fee percentage
-  uint8 public roundFeePercentage;
+  uint32 public roundFeePercentage;
 
   /// @notice Round fee address
   address payable public roundFeeAddress;
@@ -179,7 +179,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       InitRoundTime memory _initRoundTime,
       uint256 _matchAmount,
       address _token,
-      uint8 _roundFeePercentage,
+      uint32 _roundFeePercentage,
       address payable _roundFeeAddress,
       InitMetaPtr memory _initMetaPtr,
       InitRoles memory _initRoles
@@ -189,7 +189,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       (InitRoundTime),
       uint256,
       address,
-      uint8,
+      uint32,
       address,
       (InitMetaPtr),
       (InitRoles)
@@ -263,7 +263,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   // @notice Update round fee percentage (only by ROUND_OPERATOR_ROLE)
   /// @param newFeePercentage new fee percentage
-  function updateRoundFeePercentage(uint8 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
+  function updateRoundFeePercentage(uint32 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     roundFeePercentage = newFeePercentage;
 
@@ -390,9 +390,10 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     uint256 fundsInContract = _getTokenBalance(token);
+    uint32 percision = alloSettings.PERCENTAGE_PRECISION();
 
-    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage() / 100);
-    uint256 roundFeeAmount = (matchAmount * roundFeePercentage / 100);
+    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage()) / (percision * 100);
+    uint256 roundFeeAmount = (matchAmount * roundFeePercentage) / (percision * 100);
 
     // total funds needed for payout
     uint256 neededFunds = matchAmount + protocolFeeAmount + roundFeeAmount;

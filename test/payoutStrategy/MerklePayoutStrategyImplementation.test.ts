@@ -163,6 +163,8 @@ describe("MerklePayoutStrategyImplementation", function () {
       let matchAmount = overrides && overrides.hasOwnProperty('matchAmount') ? overrides.matchAmount : 100;
       let roundFeePercentage = overrides && overrides.hasOwnProperty('roundFeePercentage') ? overrides.roundFeePercentage : 0;
 
+      roundFeePercentage = roundFeePercentage * await alloSettingsContract.PERCENTAGE_PRECISION();
+
       const initAddress = [
         votingStrategyContract.address, // votingStrategy
         payoutStrategyContract.address, // payoutStrategy
