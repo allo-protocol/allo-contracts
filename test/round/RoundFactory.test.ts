@@ -7,6 +7,7 @@ import { AddressZero } from "@ethersproject/constants";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import {
+  AlloSettings,
   MerklePayoutStrategyImplementation,
   QuadraticFundingVotingStrategyImplementation,
   RoundFactory,
@@ -18,6 +19,10 @@ describe("RoundFactory", function () {
 
   let user: SignerWithAddress;
   let notOwnerWallet: SignerWithAddress;
+
+  // Allo Settings
+  let alloSettings: AlloSettings;
+  let alloSettingsContractFactory: ContractFactory;
 
   // Round Factory
   let roundFactory: RoundFactory;
@@ -58,6 +63,10 @@ describe("RoundFactory", function () {
     beforeEach(async () => {
       [user, notOwnerWallet] = await ethers.getSigners();
 
+      // Deploy AlloSettings contract
+      alloSettingsContractFactory = await ethers.getContractFactory('AlloSettings');
+      alloSettings = <AlloSettings>await upgrades.deployProxy(alloSettingsContractFactory);
+
       // Deploy RoundFactory contract
       roundContractFactory = await ethers.getContractFactory('RoundFactory');
       roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
@@ -68,96 +77,38 @@ describe("RoundFactory", function () {
 
     });
 
-    describe ('test: updateProtocolFeePercentage', async () => {
+    describe('test: updateRoundImplementation', async () => {
 
       it("SHOULD REVERT if not called by owner", async () => {
-        const tx = roundFactory.connect(notOwnerWallet).updateProtocolFeePercentage(1);
+        const tx = roundFactory.connect(notOwnerWallet).updateRoundImplementation(roundImplementation.address);
         await expect(tx).to.revertedWith('Ownable: caller is not the owner');
       });
 
-      it("RoundContract SHOULD have protocolFeePercentage as 0 after deploy ", async () => {
-        expect(await roundFactory.protocolFeePercentage()).to.be.equal(0);
+      it("SHOULD REVERT if roundImplementation is 0x", async () => {
+        const tx = roundFactory.updateRoundImplementation(AddressZero);
+        await expect(tx).to.revertedWith('roundImplementation is 0x');
       });
 
-      it("RoundContract SHOULD emit ProtocolFeePercentageUpdated event after invoking updateProtocolFeePercentage", async () => {
-        await expect(roundFactory.updateProtocolFeePercentage(10))
-          .to.emit(roundFactory, 'ProtocolFeePercentageUpdated')
-          .withArgs(10);
+      it("RoundContract SHOULD have default roundImplementation after deploy ", async () => {
+        expect(await roundFactory.roundImplementation()).to.be.equal(AddressZero);
       });
 
-      it("RoundContract SHOULD persist the new protocolFeePercentage after invoking updateProtocolTreasury", async () => {
-        await roundFactory.updateProtocolFeePercentage(20).then(async () => {
-          const protocolFeePercentage = await roundFactory.protocolFeePercentage();
-          expect(protocolFeePercentage).to.be.equal(20);
-        });
-
-      });
-    });
-
-    describe ('test: updateProtocolTreasury', async () => {
-
-      it("SHOULD REVERT if not called by owner", async () => {
-        const tx = roundFactory.connect(notOwnerWallet).updateProtocolTreasury(protocolTreasury.address);
-        await expect(tx).to.revertedWith('Ownable: caller is not the owner');
-      });
-
-      it("SHOULD REVERT if protocolTreasure is 0x", async () => {
-        const tx = roundFactory.updateProtocolTreasury(AddressZero);
-        await expect(tx).to.revertedWith('protocolTreasury is 0x');
-      });
-
-      it("RoundContract SHOULD have default protocolTreasury address after deploy ", async () => {
-        expect(await roundFactory.protocolTreasury()).to.be.equal(AddressZero);
-      });
-
-      it("RoundContract SHOULD emit ProtocolTreasuryUpdated event after invoking updateProtocolTreasury", async () => {
-        await expect(roundFactory.updateProtocolTreasury(protocolTreasury.address))
-          .to.emit(roundFactory, 'ProtocolTreasuryUpdated')
-          .withArgs(protocolTreasury.address);
-      });
-
-      it("RoundContract SHOULD have protocolTreasury address after invoking updateProtocolTreasury", async () => {
-        await roundFactory.updateProtocolTreasury(protocolTreasury.address).then(async () => {
-          const protocolTreasuryAddress = await roundFactory.protocolTreasury();
-          expect(protocolTreasuryAddress).to.be.equal(protocolTreasury.address);
-        });
-
-      });
-    });
-
-    describe ('test: updateRoundContract', async () => {
-
-      it("SHOULD REVERT if not called by owner", async () => {
-        const tx = roundFactory.connect(notOwnerWallet).updateRoundContract(roundImplementation.address);
-        await expect(tx).to.revertedWith('Ownable: caller is not the owner');
-      });
-
-      it("SHOULD REVERT if roundContract is 0x", async () => {
-        const tx = roundFactory.updateRoundContract(AddressZero);
-        await expect(tx).to.revertedWith('roundContract is 0x');
-      });
-
-      it("RoundContract SHOULD have default roundContract after deploy ", async () => {
-        expect(await roundFactory.roundContract()).to.be.equal(AddressZero);
-      });
-
-      it("RoundContract SHOULD emit RoundContractUpdated event after invoking updateRoundContract", async () => {
-        await expect(roundFactory.updateRoundContract(roundImplementation.address))
-          .to.emit(roundFactory, 'RoundContractUpdated')
+      it("RoundContract SHOULD emit RoundImplementationUpdated event after invoking updateRoundImplementation", async () => {
+        await expect(roundFactory.updateRoundImplementation(roundImplementation.address))
+          .to.emit(roundFactory, 'RoundImplementationUpdated')
           .withArgs(roundImplementation.address);
       });
 
-      it("RoundContract SHOULD have round address after invoking updateRoundContract", async () => {
-        await roundFactory.updateRoundContract(roundImplementation.address).then(async () => {
-          const roundContract = await roundFactory.roundContract();
-          expect(roundContract).to.be.equal(roundImplementation.address);
+      it("RoundContract SHOULD have round address after invoking updateRoundImplementation", async () => {
+        await roundFactory.updateRoundImplementation(roundImplementation.address).then(async () => {
+          const _roundImplementation = await roundFactory.roundImplementation();
+          expect(_roundImplementation).to.be.equal(roundImplementation.address);
         });
       });
     });
 
     describe ('test: create', async () => {
 
-      const feePercentage = 10;
       const matchAmount = 1000;
       const token = Wallet.createRandom().address;
       const programAddress = Wallet.createRandom().address;
@@ -186,10 +137,6 @@ describe("RoundFactory", function () {
         // Deploy RoundFactory contract
         roundContractFactory = await ethers.getContractFactory('RoundFactory');
         roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
-
-        // Set the init values
-        await roundFactory.updateProtocolTreasury(protocolTreasury.address);
-        await roundFactory.updateRoundContract(roundImplementation.address);
 
         // Creating a Round
         const initAddress = [
@@ -227,7 +174,7 @@ describe("RoundFactory", function () {
 
       });
 
-      it("SHOULD REVERT if roundContract is not set", async () => {
+      it("SHOULD REVERT if roundImplementation is not set", async () => {
         // Deploy RoundFactory contract
         roundContractFactory = await ethers.getContractFactory('RoundFactory');
         roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
@@ -237,26 +184,30 @@ describe("RoundFactory", function () {
           Wallet.createRandom().address, // _ownedBy (Program)
         );
 
-        await expect(txn).to.revertedWith("roundContract is 0x");
+        await expect(txn).to.revertedWith("roundImplementation is 0x");
       });
 
-      it("SHOULD REVERT if protocolTreasury is not set", async () => {
+      it("SHOULD REVERT if alloSettings is not set", async () => {
         // Deploy RoundFactory contract
         let roundContractFactory = await ethers.getContractFactory('RoundFactory');
         let roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
 
         // Set the init values
-        await roundFactory.updateRoundContract(roundImplementation.address);
+        await roundFactory.updateRoundImplementation(roundImplementation.address);
 
         const txn = roundFactory.create(
           encodeRoundParameters(params),
           programAddress
         );
 
-        await expect(txn).to.revertedWith("protocolTreasury is 0x");
+        await expect(txn).to.revertedWith("alloSettings is 0x");
       });
 
-      it("invoking create SHOULD have a successful transaction", async() => {
+      it("invoking create SHOULD have a successfull transaction", async() => {
+
+        // Set the init values
+        await roundFactory.updateAlloSettings(alloSettings.address);
+        await roundFactory.updateRoundImplementation(roundImplementation.address);
 
         const txn = await roundFactory.create(
           encodeRoundParameters(params),
@@ -271,29 +222,33 @@ describe("RoundFactory", function () {
 
       it("SHOULD emit RoundCreated event after invoking create", async () => {
 
+        // Set the init values
+        await roundFactory.updateAlloSettings(alloSettings.address);
+        await roundFactory.updateRoundImplementation(roundImplementation.address);
+
         const txn = await roundFactory.create(
           encodeRoundParameters(params),
           programAddress
         );
 
         let roundAddress;
-        let roundImplementation;
+        let _roundImplementation;
 
         const receipt = await txn.wait();
         if (receipt.events) {
           const event = receipt.events.find(e => e.event === 'RoundCreated');
           if (event && event.args) {
             roundAddress = event.args.roundAddress;
-            roundImplementation = event.args.roundImplementation;
+            _roundImplementation = event.args.roundImplementation;
           }
         }
 
         expect(txn)
           .to.emit(roundFactory, 'RoundCreated')
-          .withArgs(roundAddress, programAddress, roundImplementation);
+          .withArgs(roundAddress, programAddress, _roundImplementation);
 
         expect(isAddress(roundAddress)).to.be.true;
-        expect(isAddress(roundImplementation)).to.be.true;
+        expect(isAddress(_roundImplementation)).to.be.true;
 
       });
 

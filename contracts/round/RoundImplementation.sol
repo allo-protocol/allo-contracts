@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-import "./RoundFactory.sol";
+import "../settings/AlloSettings.sol";
 import "../votingStrategy/IVotingStrategy.sol";
 import "../payoutStrategy/IPayoutStrategy.sol";
 
@@ -39,7 +39,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   event MatchAmountUpdated(uint256 newAmount);
 
    /// @notice Emitted when a Round fee percentage is updated
-  event RoundFeePercentageUpdated(uint8 roundFeePercentage);
+  event RoundFeePercentageUpdated(uint32 roundFeePercentage);
 
   /// @notice Emitted when a Round wallet address is updated
   event RoundFeeAddressUpdated(address roundFeeAddress);
@@ -89,8 +89,8 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   // --- Data ---
 
-  /// @notice Round Factory Contract Address
-  RoundFactory public roundFactory;
+  /// @notice Allo Config Contract Address
+  AlloSettings public alloSettings;
 
   /// @notice Voting Strategy Contract Address
   IVotingStrategy public votingStrategy;
@@ -117,7 +117,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   address public token;
 
   /// @notice Round fee percentage
-  uint8 public roundFeePercentage;
+  uint32 public roundFeePercentage;
 
   /// @notice Round fee address
   address payable public roundFeeAddress;
@@ -171,7 +171,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
    */
   function initialize(
     bytes calldata encodedParameters,
-    address _roundFactory
+    address _alloSettings
   ) external initializer {
     // Decode _encodedParameters
     (
@@ -179,7 +179,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       InitRoundTime memory _initRoundTime,
       uint256 _matchAmount,
       address _token,
-      uint8 _roundFeePercentage,
+      uint32 _roundFeePercentage,
       address payable _roundFeeAddress,
       InitMetaPtr memory _initMetaPtr,
       InitRoles memory _initRoles
@@ -189,7 +189,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       (InitRoundTime),
       uint256,
       address,
-      uint8,
+      uint32,
       address,
       (InitMetaPtr),
       (InitRoles)
@@ -217,7 +217,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       "Round: Round start is before app start"
     );
 
-    roundFactory = RoundFactory(_roundFactory);
+    alloSettings = AlloSettings(_alloSettings);
 
     votingStrategy = _initAddress.votingStrategy;
     payoutStrategy = _initAddress.payoutStrategy;
@@ -263,7 +263,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   // @notice Update round fee percentage (only by ROUND_OPERATOR_ROLE)
   /// @param newFeePercentage new fee percentage
-  function updateRoundFeePercentage(uint8 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
+  function updateRoundFeePercentage(uint32 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     roundFeePercentage = newFeePercentage;
 
@@ -390,9 +390,10 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     uint256 fundsInContract = _getTokenBalance(token);
+    uint32 denominator = alloSettings.DENOMINATOR();
 
-    uint256 protocolFeeAmount = (matchAmount * roundFactory.protocolFeePercentage() / 100);
-    uint256 roundFeeAmount = (matchAmount * roundFeePercentage / 100);
+    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage()) / denominator;
+    uint256 roundFeeAmount = (matchAmount * roundFeePercentage) / denominator;
 
     // total funds needed for payout
     uint256 neededFunds = matchAmount + protocolFeeAmount + roundFeeAmount;
@@ -401,7 +402,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
     // deduct protocol fee
     if (protocolFeeAmount > 0) {
-      address payable protocolTreasury = roundFactory.protocolTreasury();
+      address payable protocolTreasury = alloSettings.protocolTreasury();
       _transferAmount(protocolTreasury, protocolFeeAmount, token);
     }
 

@@ -8,6 +8,8 @@ import { artifacts, upgrades, ethers } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
 import {
+  AlloSettings,
+  AlloSettings__factory,
   MerklePayoutStrategyImplementation,
   MockERC20,
   MockRoundImplementation,
@@ -31,6 +33,10 @@ const RANDOM_BYTES32 = randomBytes(32);
 
 describe("MerklePayoutStrategyImplementation", function () {
   let user: SignerWithAddress;
+
+  // AlloSettings
+  let alloSettingsContractFactory: AlloSettings__factory;
+  let alloSettingsContract: AlloSettings;
 
   // Round Factory
   // eslint-disable-next-line camelcase
@@ -57,6 +63,12 @@ describe("MerklePayoutStrategyImplementation", function () {
 
   before(async () => {
     [user] = await ethers.getSigners();
+
+    // Deploy AlloSettings contract
+    alloSettingsContractFactory = await ethers.getContractFactory("AlloSettings");
+    alloSettingsContract = <AlloSettings>(
+      await upgrades.deployProxy(alloSettingsContractFactory)
+    );
 
     // Deploy RoundFactory contract
     roundContractFactory = await ethers.getContractFactory("RoundFactory");
@@ -146,10 +158,14 @@ describe("MerklePayoutStrategyImplementation", function () {
       votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
         await deployContract(user, votingStrategyArtifact, [])
       );
-  
+
       let roundFeeAddress = overrides && overrides.hasOwnProperty('roundFeeAddress') ? overrides.roundFeeAddress : Wallet.createRandom().address;
       let matchAmount = overrides && overrides.hasOwnProperty('matchAmount') ? overrides.matchAmount : 100;
       let roundFeePercentage = overrides && overrides.hasOwnProperty('roundFeePercentage') ? overrides.roundFeePercentage : 0;
+
+
+      const denominator = await alloSettingsContract.DENOMINATOR();
+      roundFeePercentage = roundFeePercentage * (denominator / 100);
 
       const initAddress = [
         votingStrategyContract.address, // votingStrategy
@@ -175,20 +191,21 @@ describe("MerklePayoutStrategyImplementation", function () {
         roundFeePercentage,
         roundFeeAddress,
         initMetaPtr,
-        initRoles,        
+        initRoles,
       ];
 
       await roundImplementation.initialize(
         encodeRoundParameters(params),
-        roundFactoryContract.address // Wallet.createRandom().address
+        alloSettingsContract.address
       );
     };
 
     describe("test: init", () => {
       beforeEach(async () => {
         const protocolTreasury = Wallet.createRandom().address;
-        await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
-        await roundFactoryContract.updateProtocolFeePercentage(0);
+
+        await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
+        await alloSettingsContract.updateProtocolFeePercentage(0);
 
         [user] = await ethers.getSigners();
 
@@ -256,8 +273,8 @@ describe("MerklePayoutStrategyImplementation", function () {
     describe("test: hasBeenDistributed", () => {
       beforeEach(async () => {
         const protocolTreasury = Wallet.createRandom().address;
-        await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
-        await roundFactoryContract.updateProtocolFeePercentage(0);
+        await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
+        await alloSettingsContract.updateProtocolFeePercentage(0);
 
         [user] = await ethers.getSigners();
 
@@ -287,7 +304,7 @@ describe("MerklePayoutStrategyImplementation", function () {
           roundImplementation,
           mockERC20
         );
-        
+
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[0]);
 
@@ -316,7 +333,7 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[0]);
-        
+
         const payouts = [
           [0, distributions[0][1], distributions[0][2], validMerkleProof, distributions[0][3]],
         ];

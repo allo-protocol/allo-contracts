@@ -61,6 +61,23 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### alloSettings
+
+```solidity
+function alloSettings() external view returns (contract AlloSettings)
+```
+
+Allo Config Contract Address
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract AlloSettings | undefined |
+
 ### applicationMetaPtr
 
 ```solidity
@@ -240,7 +257,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(bytes encodedParameters, address _roundFactory) external nonpayable
+function initialize(bytes encodedParameters, address _alloSettings) external nonpayable
 ```
 
 Instantiates a new round
@@ -252,7 +269,7 @@ Instantiates a new round
 | Name | Type | Description |
 |---|---|---|
 | encodedParameters | bytes | Encoded parameters for program creation |
-| _roundFactory | address | undefined |
+| _alloSettings | address | undefined |
 
 ### matchAmount
 
@@ -357,23 +374,6 @@ Unix timestamp of the end of the round
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### roundFactory
-
-```solidity
-function roundFactory() external view returns (contract RoundFactory)
-```
-
-Round Factory Contract Address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | contract RoundFactory | undefined |
-
 ### roundFeeAddress
 
 ```solidity
@@ -394,7 +394,7 @@ Round fee address
 ### roundFeePercentage
 
 ```solidity
-function roundFeePercentage() external view returns (uint8)
+function roundFeePercentage() external view returns (uint32)
 ```
 
 Round fee percentage
@@ -406,7 +406,7 @@ Round fee percentage
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint8 | undefined |
+| _0 | uint32 | undefined |
 
 ### roundMetaPtr
 
@@ -560,7 +560,7 @@ function updateRoundFeeAddress(address payable newFeeAddress) external nonpayabl
 ### updateRoundFeePercentage
 
 ```solidity
-function updateRoundFeePercentage(uint8 newFeePercentage) external nonpayable
+function updateRoundFeePercentage(uint32 newFeePercentage) external nonpayable
 ```
 
 
@@ -571,7 +571,7 @@ function updateRoundFeePercentage(uint8 newFeePercentage) external nonpayable
 
 | Name | Type | Description |
 |---|---|---|
-| newFeePercentage | uint8 | new fee percentage |
+| newFeePercentage | uint32 | new fee percentage |
 
 ### updateRoundMetaPtr
 
@@ -887,7 +887,7 @@ Emitted when a Round wallet address is updated
 ### RoundFeePercentageUpdated
 
 ```solidity
-event RoundFeePercentageUpdated(uint8 roundFeePercentage)
+event RoundFeePercentageUpdated(uint32 roundFeePercentage)
 ```
 
 Emitted when a Round fee percentage is updated
@@ -898,7 +898,7 @@ Emitted when a Round fee percentage is updated
 
 | Name | Type | Description |
 |---|---|---|
-| roundFeePercentage  | uint8 | undefined |
+| roundFeePercentage  | uint32 | undefined |
 
 ### RoundMetaPtrUpdated
 

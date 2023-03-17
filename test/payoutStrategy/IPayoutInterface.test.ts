@@ -7,11 +7,15 @@ import { isAddress } from "ethers/lib/utils";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
-import { MerklePayoutStrategyImplementation, MockERC20, QuadraticFundingVotingStrategyImplementation, RoundFactory, RoundFactory__factory, RoundImplementation } from "../../typechain";
+import { AlloSettings, AlloSettings__factory, MerklePayoutStrategyImplementation, MockERC20, QuadraticFundingVotingStrategyImplementation, RoundFactory, RoundFactory__factory, RoundImplementation } from "../../typechain";
 
 describe("IPayoutInterface", function () {
 
   let user: SignerWithAddress;
+
+  // Allo Settings contract
+  let alloSettingsContractFactory: AlloSettings__factory;
+  let alloSettingsContract: AlloSettings;
 
   // Round Factory
   let roundContractFactory: RoundFactory__factory;
@@ -39,6 +43,10 @@ describe("IPayoutInterface", function () {
 
   before(async () => {
     [user] = await ethers.getSigners();
+
+    // Deploy AlloSettings contract
+    alloSettingsContractFactory = await ethers.getContractFactory('AlloSettings');
+    alloSettingsContract = <AlloSettings>await upgrades.deployProxy(alloSettingsContractFactory);
 
     // Deploy RoundFactory contract
     roundContractFactory = await ethers.getContractFactory('RoundFactory');
@@ -94,7 +102,9 @@ describe("IPayoutInterface", function () {
       votingStrategyArtifact = await artifacts.readArtifact('QuadraticFundingVotingStrategyImplementation');
       votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>await deployContract(user, votingStrategyArtifact, []);
       const matchAmount = 100;
-      const roundFeePercentage = 10;
+      const denominator = await alloSettingsContract.DENOMINATOR();
+      const roundFeePercentage = 10 * (denominator / 100);
+
       const roundFeeAddress = Wallet.createRandom().address;
 
       const initAddress = [
@@ -132,7 +142,7 @@ describe("IPayoutInterface", function () {
 
       await roundImplementation.initialize(
         encodeRoundParameters(params),
-        roundFactoryContract.address
+        alloSettingsContract.address
       );
       
       return params;
@@ -174,7 +184,7 @@ describe("IPayoutInterface", function () {
 
         // update protocol treasury
         let protocolTreasury = Wallet.createRandom().address;
-        await roundFactoryContract.updateProtocolTreasury(protocolTreasury);
+        await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
                   
         [user] = await ethers.getSigners();
 

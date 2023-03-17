@@ -6,7 +6,7 @@
 
 Invoked by a RoundOperator to enable creation of a round by cloning the RoundImplementation contract. The factory contract emits an event anytime a round is created which can be used to derive the round registry.
 
-*RoundFactory is deployed once per chain and stores a reference to the deployed RoundImplementation.RoundFactory uses openzeppelin Clones to reduce deploy costs and also allows uprgrading RoundContractThis contract is Ownable thus supports ownership transfership*
+*RoundFactory is deployed once per chain and stores a reference to the deployed RoundImplementation.RoundFactory uses openzeppelin Clones to reduce deploy costs and also allows upgrading RoundImplementationUpdated.This contract is Ownable thus supports ownership transfership*
 
 ## Methods
 
@@ -27,13 +27,30 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### alloSettings
+
+```solidity
+function alloSettings() external view returns (address)
+```
+
+Address of the Allo settings contract
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### create
 
 ```solidity
 function create(bytes encodedParameters, address ownedBy) external nonpayable returns (address)
 ```
 
-Clones RoundImp a new round and emits event
+Clones RoundImplementation a new round and emits event
 
 
 
@@ -78,40 +95,6 @@ function owner() external view returns (address)
 |---|---|---|
 | _0 | address | undefined |
 
-### protocolFeePercentage
-
-```solidity
-function protocolFeePercentage() external view returns (uint8)
-```
-
-Protocol fee percentage
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint8 | undefined |
-
-### protocolTreasury
-
-```solidity
-function protocolTreasury() external view returns (address payable)
-```
-
-Address of the protocol treasury
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
-
 ### renounceOwnership
 
 ```solidity
@@ -123,10 +106,10 @@ function renounceOwnership() external nonpayable
 *Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.*
 
 
-### roundContract
+### roundImplementation
 
 ```solidity
-function roundContract() external view returns (address)
+function roundImplementation() external view returns (address)
 ```
 
 Address of the RoundImplementation contract
@@ -156,13 +139,13 @@ function transferOwnership(address newOwner) external nonpayable
 |---|---|---|
 | newOwner | address | undefined |
 
-### updateProtocolFeePercentage
+### updateAlloSettings
 
 ```solidity
-function updateProtocolFeePercentage(uint8 newProtocolFeePercentage) external nonpayable
+function updateAlloSettings(address newAlloSettings) external nonpayable
 ```
 
-Allows the owner to update the overall protocol fee percentage
+Allows the owner to update the allo settings contract.
 
 
 
@@ -170,28 +153,12 @@ Allows the owner to update the overall protocol fee percentage
 
 | Name | Type | Description |
 |---|---|---|
-| newProtocolFeePercentage | uint8 | New protocol fee percentage |
+| newAlloSettings | address | New allo settings contract address |
 
-### updateProtocolTreasury
-
-```solidity
-function updateProtocolTreasury(address payable newProtocolTreasury) external nonpayable
-```
-
-Allows the owner to update the protocol treasury. This provides us the flexibility to update protocol treasury.
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newProtocolTreasury | address payable | New protocol treasury address |
-
-### updateRoundContract
+### updateRoundImplementation
 
 ```solidity
-function updateRoundContract(address payable newRoundContract) external nonpayable
+function updateRoundImplementation(address payable newRoundImplementation) external nonpayable
 ```
 
 Allows the owner to update the RoundImplementation. This provides us the flexibility to upgrade RoundImplementation contract while relying on the same RoundFactory to get the list of rounds.
@@ -202,11 +169,27 @@ Allows the owner to update the RoundImplementation. This provides us the flexibi
 
 | Name | Type | Description |
 |---|---|---|
-| newRoundContract | address payable | New RoundImplementation contract address |
+| newRoundImplementation | address payable | New RoundImplementation contract address |
 
 
 
 ## Events
+
+### AlloSettingsUpdated
+
+```solidity
+event AlloSettingsUpdated(address alloSettings)
+```
+
+Emitted when allo settings contract is updated
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| alloSettings  | address | undefined |
 
 ### Initialized
 
@@ -241,54 +224,6 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 | previousOwner `indexed` | address | undefined |
 | newOwner `indexed` | address | undefined |
 
-### ProtocolFeePercentageUpdated
-
-```solidity
-event ProtocolFeePercentageUpdated(uint8 protocolFeePercentage)
-```
-
-Emitted when protocol fee percentage is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| protocolFeePercentage  | uint8 | undefined |
-
-### ProtocolTreasuryUpdated
-
-```solidity
-event ProtocolTreasuryUpdated(address protocolTreasuryAddress)
-```
-
-Emitted when a protocol wallet address is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| protocolTreasuryAddress  | address | undefined |
-
-### RoundContractUpdated
-
-```solidity
-event RoundContractUpdated(address roundAddress)
-```
-
-Emitted when a Round contract is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| roundAddress  | address | undefined |
-
 ### RoundCreated
 
 ```solidity
@@ -306,6 +241,22 @@ Emitted when a new Round is created
 | roundAddress `indexed` | address | undefined |
 | ownedBy `indexed` | address | undefined |
 | roundImplementation `indexed` | address | undefined |
+
+### RoundImplementationUpdated
+
+```solidity
+event RoundImplementationUpdated(address roundImplementation)
+```
+
+Emitted when a Round implementation contract is updated
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| roundImplementation  | address | undefined |
 
 
 

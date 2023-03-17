@@ -16,7 +16,7 @@ import "../utils/MetaPtr.sol";
  * @dev RoundFactory is deployed once per chain and stores
  * a reference to the deployed RoundImplementation.
  * @dev RoundFactory uses openzeppelin Clones to reduce deploy
- * costs and also allows uprgrading RoundContract
+ * costs and also allows upgrading RoundImplementationUpdated.
  * @dev This contract is Ownable thus supports ownership transfership
  *
  */
@@ -27,24 +27,18 @@ contract RoundFactory is OwnableUpgradeable {
   // --- Data ---
 
   /// @notice Address of the RoundImplementation contract
-  address public roundContract;
+  address public roundImplementation;
 
-  /// @notice Address of the protocol treasury
-  address payable public protocolTreasury;
-
-  /// @notice Protocol fee percentage
-  uint8 public protocolFeePercentage;
+  /// @notice Address of the Allo settings contract
+  address public alloSettings;
 
   // --- Event ---
 
-  /// @notice Emitted when protocol fee percentage is updated
-  event ProtocolFeePercentageUpdated(uint8 protocolFeePercentage);
+  /// @notice Emitted when allo settings contract is updated
+  event AlloSettingsUpdated(address alloSettings);
 
-  /// @notice Emitted when a protocol wallet address is updated
-  event ProtocolTreasuryUpdated(address protocolTreasuryAddress);
-
-    /// @notice Emitted when a Round contract is updated
-  event RoundContractUpdated(address roundAddress);
+  /// @notice Emitted when a Round implementation contract is updated
+  event RoundImplementationUpdated(address roundImplementation);
 
   /// @notice Emitted when a new Round is created
   event RoundCreated(address indexed roundAddress, address indexed ownedBy, address indexed roundImplementation);
@@ -59,30 +53,15 @@ contract RoundFactory is OwnableUpgradeable {
   // --- Core methods ---
 
   /**
-   * @notice Allows the owner to update the overall protocol fee percentage
+   * @notice Allows the owner to update the allo settings contract.
    *
-   * @param newProtocolFeePercentage New protocol fee percentage
+   * @param newAlloSettings New allo settings contract address
    */
-  function updateProtocolFeePercentage(uint8 newProtocolFeePercentage) public onlyOwner {
+  function updateAlloSettings(address newAlloSettings) public onlyOwner {
 
-    protocolFeePercentage = newProtocolFeePercentage;
+    alloSettings = newAlloSettings;
 
-    emit ProtocolFeePercentageUpdated(protocolFeePercentage);
-  }
-
-  /**
-   * @notice Allows the owner to update the protocol treasury.
-   * This provides us the flexibility to update protocol treasury.
-   *
-   * @param newProtocolTreasury New protocol treasury address
-   */
-  function updateProtocolTreasury(address payable newProtocolTreasury) external onlyOwner {
-
-    require(newProtocolTreasury != address(0), "protocolTreasury is 0x");   
-
-    protocolTreasury = newProtocolTreasury;
-
-    emit ProtocolTreasuryUpdated(protocolTreasury);
+    emit AlloSettingsUpdated(alloSettings);
   }
 
   /**
@@ -91,19 +70,19 @@ contract RoundFactory is OwnableUpgradeable {
    * contract while relying on the same RoundFactory to get the list of
    * rounds.
    *
-   * @param newRoundContract New RoundImplementation contract address
+   * @param newRoundImplementation New RoundImplementation contract address
    */
-  function updateRoundContract(address payable newRoundContract) external onlyOwner {
+  function updateRoundImplementation(address payable newRoundImplementation) external onlyOwner {
 
-    require(newRoundContract != address(0), "roundContract is 0x");   
+    require(newRoundImplementation != address(0), "roundImplementation is 0x");
 
-    roundContract = newRoundContract;
+    roundImplementation = newRoundImplementation;
 
-    emit RoundContractUpdated(newRoundContract);
+    emit RoundImplementationUpdated(roundImplementation);
   }
 
   /**
-   * @notice Clones RoundImp a new round and emits event
+   * @notice Clones RoundImplementation a new round and emits event
    *
    * @param encodedParameters Encoded parameters for creating a round
    * @param ownedBy Program which created the contract
@@ -113,16 +92,16 @@ contract RoundFactory is OwnableUpgradeable {
     address ownedBy
   ) external returns (address) {
 
-    require(roundContract != address(0), "roundContract is 0x");
-    require(protocolTreasury != address(0), "protocolTreasury is 0x");
+    require(roundImplementation != address(0), "roundImplementation is 0x");
+    require(alloSettings != address(0), "alloSettings is 0x");
 
-    address clone = ClonesUpgradeable.clone(roundContract);
+    address clone = ClonesUpgradeable.clone(roundImplementation);
 
-    emit RoundCreated(clone, ownedBy, payable(roundContract));
+    emit RoundCreated(clone, ownedBy, payable(roundImplementation));
 
     RoundImplementation(payable(clone)).initialize(
       encodedParameters,
-      address(this)
+      alloSettings
     );
 
     return clone;
