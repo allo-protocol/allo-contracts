@@ -555,21 +555,10 @@ Unix timestamp of the start of the round
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### setReadyForPayout
+### setApplicationStatuses
 
 ```solidity
-function setReadyForPayout() external payable
-```
-
-Pay Protocol &amp; Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
-
-
-
-
-### setStatuses
-
-```solidity
-function setStatuses(uint256[] rowIndexes, uint256[] fullRows) external nonpayable
+function setApplicationStatuses(uint256[] rowIndexes, uint256[] fullRows) external nonpayable
 ```
 
 Set application statuses
@@ -582,6 +571,17 @@ Set application statuses
 |---|---|---|
 | rowIndexes | uint256[] | indexes of the rows |
 | fullRows | uint256[] | full rows |
+
+### setReadyForPayout
+
+```solidity
+function setReadyForPayout() external payable
+```
+
+Pay Protocol &amp; Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
+
+
+
 
 ### supportsInterface
 
@@ -791,6 +791,23 @@ Emitted when the application form metaPtr is updated
 |---|---|---|
 | oldMetaPtr  | MetaPtr | undefined |
 | newMetaPtr  | MetaPtr | undefined |
+
+### ApplicationStatusesUpdated
+
+```solidity
+event ApplicationStatusesUpdated(uint256[] indexes, uint256[] statuses)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| indexes  | uint256[] | undefined |
+| statuses  | uint256[] | undefined |
 
 ### ApplicationsEndTimeUpdated
 

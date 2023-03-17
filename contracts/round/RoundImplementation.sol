@@ -32,21 +32,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice round operator role
   bytes32 public constant ROUND_OPERATOR_ROLE = keccak256("ROUND_OPERATOR");
 
-  // This is a packed array of booleans.
-  // statuses[0] is the first row of the bitmap and allows to store 256 bits to describe
-  // the status of 256 projects.
-  // statuses[1] is the second row, and so on.
-  // Instead of using 1 bit for each application status, we use 2 bits to allow 4 statuses:
-  // 0: the project applied, the status is pending
-  // 1: approved
-  // 2: rejected 
-  // 3: canceled
-  // Since it's a mapping the storage it's pre-allocated with zero values,
-  // so if we check the status of an existing application, the value is by default 0 (pending).
-  // If we want to check the status of an application, we take its index from the `applications` array
-  // and convert it to the 2-bits position in the bitmap.
-  mapping(uint256 => uint256) public applicationStatusesBitMap;
-
   // --- Events ---
 
   /// @notice Emitted when match amount is updated
@@ -85,6 +70,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice Emitted when protocol & round fees are paid
   event PayFeeAndEscrowFundsToPayoutContract(uint256 matchAmountAfterFees, uint protocolFeeAmount, uint roundFeeAmount);
 
+  event ApplicationStatusesUpdated(uint256[] indexes, uint256[] statuses);
   // --- Modifier ---
 
   /// @notice modifier to check if round has not ended.
@@ -177,6 +163,21 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   // An array of applications, each new application is appended to the array
   Application[] public applications;
   mapping(bytes32 => uint256[]) public applicationsIndexesByProjectID;
+
+  // This is a packed array of booleans.
+  // statuses[0] is the first row of the bitmap and allows to store 256 bits to describe
+  // the status of 256 projects.
+  // statuses[1] is the second row, and so on.
+  // Instead of using 1 bit for each application status, we use 2 bits to allow 4 statuses:
+  // 0: pending
+  // 1: approved
+  // 2: rejected 
+  // 3: canceled
+  // Since it's a mapping the storage it's pre-allocated with zero values,
+  // so if we check the status of an existing application, the value is by default 0 (pending).
+  // If we want to check the status of an application, we take its index from the `applications` array
+  // and convert it to the 2-bits position in the bitmap.
+  mapping(uint256 => uint256) public applicationStatusesBitMap;
 
   // --- Core methods ---
 
@@ -382,7 +383,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     require(
       applicationsStartTime <= block.timestamp  &&
       block.timestamp <= applicationsEndTime,
-      "Round: Applications period over"
+      "Round: Applications period not started or over"
     );
     applications.push(Application(projectID, nextApplicationIndex, newApplicationMetaPtr));
     applicationsIndexesByProjectID[projectID].push(nextApplicationIndex);
@@ -393,7 +394,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice Get all applications of a projectID
   /// @param projectID unique hash of the project
   /// @return applicationIndexes indexes of the applications
-  function getApplicationIndexesByProjectID(bytes32 projectID) public view returns(uint256[] memory) {
+  function getApplicationIndexesByProjectID(bytes32 projectID) external view returns(uint256[] memory) {
     return applicationsIndexesByProjectID[projectID];
   }
   // Statuses:
@@ -404,8 +405,8 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// Set application statuses
   /// @param rowIndexes indexes of the rows
   /// @param fullRows full rows
-  function setStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-    require(rowIndexes.length == fullRows.length);
+  function setApplicationStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
+    require(rowIndexes.length == fullRows.length, "Round: Different array lengths");
 
     for (uint256 i = 0; i < rowIndexes.length; i++) {
       uint256 rowIndex = rowIndexes[i];
@@ -413,13 +414,15 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
             
       applicationStatusesBitMap[rowIndex] = fullRow;
     }
+
+    emit ApplicationStatusesUpdated(rowIndexes, fullRows);
   }
 
   /// @notice Get application status
   /// @param applicationIndex index of the application
   /// @return status status of the application
-  function getApplicationStatus(uint256 applicationIndex) public view returns(uint256) {
-    require(applicationIndex < applications.length);
+  function getApplicationStatus(uint256 applicationIndex) external view returns(uint256) {
+    require(applicationIndex < applications.length, "Round: Application does not exist");
 
     uint256 rowIndex = applicationIndex / 128;
     uint256 colIndex = (applicationIndex % 128) * 2;
