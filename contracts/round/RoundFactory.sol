@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
-import "./RoundImplementation.sol";
+import "./IRoundImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
@@ -21,10 +21,9 @@ import "../utils/MetaPtr.sol";
  *
  */
 contract RoundFactory is OwnableUpgradeable {
+    string public constant VERSION = "0.2.0";
 
-  string public constant VERSION = "0.2.0";
-
-  // --- Data ---
+    // --- Data ---
 
   /// @notice Address of the RoundImplementation contract
   address public roundImplementation;
@@ -32,7 +31,7 @@ contract RoundFactory is OwnableUpgradeable {
   /// @notice Address of the Allo settings contract
   address public alloSettings;
 
-  // --- Event ---
+    // --- Event ---
 
   /// @notice Emitted when allo settings contract is updated
   event AlloSettingsUpdated(address alloSettings);
@@ -40,17 +39,20 @@ contract RoundFactory is OwnableUpgradeable {
   /// @notice Emitted when a Round implementation contract is updated
   event RoundImplementationUpdated(address roundImplementation);
 
-  /// @notice Emitted when a new Round is created
-  event RoundCreated(address indexed roundAddress, address indexed ownedBy, address indexed roundImplementation);
+    /// @notice Emitted when a new Round is created
+    event RoundCreated(
+        address indexed roundAddress,
+        address indexed ownedBy,
+        address indexed roundImplementation
+    );
 
+    /// @notice constructor function which ensure deployer is set as owner
+    function initialize() external initializer {
+        __Context_init_unchained();
+        __Ownable_init_unchained();
+    }
 
-  /// @notice constructor function which ensure deployer is set as owner
-  function initialize() external initializer {
-    __Context_init_unchained();
-    __Ownable_init_unchained();
-  }
-
-  // --- Core methods ---
+    // --- Core methods ---
 
   /**
    * @notice Allows the owner to update the allo settings contract.
@@ -104,7 +106,21 @@ contract RoundFactory is OwnableUpgradeable {
       alloSettings
     );
 
-    return clone;
-  }
+        return clone;
+    }
 
+        /// @notice Get the address of the RoundImplementation contract
+    function getRoundContract() external view returns (address) {
+        return roundContract;
+    }
+
+    /// @notice Get the address of the protocol treasury
+    function getProtocolTreasury() external view returns (address payable) {
+        return protocolTreasury;
+    }
+
+    /// @notice Get the protocol fee percentage
+    function getProtocolFeePercentage() external view returns (uint8) {
+        return protocolFeePercentage;
+    }
 }

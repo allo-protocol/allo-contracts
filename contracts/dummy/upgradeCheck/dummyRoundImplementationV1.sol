@@ -2,26 +2,25 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
-import "./IRoundFactory.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-import "../settings/AlloSettings.sol";
-import "../votingStrategy/IVotingStrategy.sol";
-import "../payoutStrategy/IPayoutStrategy.sol";
+import "./dummyRoundFactoryV1.sol";
+import "../../votingStrategy/IVotingStrategy.sol";
+import "../../payoutStrategy/IPayoutStrategy.sol";
 
-import "../utils/MetaPtr.sol";
+import "../../utils/MetaPtr.sol";
 
 /**
  * @notice Contract deployed per Round which would managed by
  * a group of ROUND_OPERATOR via the RoundFactory
  *
  */
-contract RoundImplementation is AccessControlEnumerable, Initializable {
+contract DummyRoundImplementationV1 is AccessControlEnumerable, Initializable {
 
-  string public constant VERSION = "2.0.0";
+  string public constant VERSION = "1.0.0";
 
   // --- Libraries ---
   using Address for address;
@@ -32,13 +31,14 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice round operator role
   bytes32 public constant ROUND_OPERATOR_ROLE = keccak256("ROUND_OPERATOR");
 
+
   // --- Events ---
 
   /// @notice Emitted when match amount is updated
   event MatchAmountUpdated(uint256 newAmount);
 
    /// @notice Emitted when a Round fee percentage is updated
-  event RoundFeePercentageUpdated(uint32 roundFeePercentage);
+  event RoundFeePercentageUpdated(uint8 roundFeePercentage);
 
   /// @notice Emitted when a Round wallet address is updated
   event RoundFeeAddressUpdated(address roundFeeAddress);
@@ -65,12 +65,11 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   event ProjectsMetaPtrUpdated(MetaPtr oldMetaPtr, MetaPtr newMetaPtr);
 
   /// @notice Emitted when a project has applied to the round
-  event NewProjectApplication(bytes32 indexed projectID, uint256 applicationIndex, MetaPtr applicationMetaPtr);
+  event NewProjectApplication(bytes32 indexed project, MetaPtr applicationMetaPtr);
 
   /// @notice Emitted when protocol & round fees are paid
   event PayFeeAndEscrowFundsToPayoutContract(uint256 matchAmountAfterFees, uint protocolFeeAmount, uint roundFeeAmount);
 
-  event ApplicationStatusesUpdated(uint256[] indexes, uint256[] statuses);
   // --- Modifier ---
 
   /// @notice modifier to check if round has not ended.
@@ -89,10 +88,8 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   // --- Data ---
 
-  /// @notice Allo Config Contract Address
-  AlloSettings public alloSettings;
   /// @notice Round Factory Contract Address
-  IRoundFactory public roundFactory;
+  DummyRoundFactoryV1 public roundFactory;
 
   /// @notice Voting Strategy Contract Address
   IVotingStrategy public votingStrategy;
@@ -119,7 +116,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   address public token;
 
   /// @notice Round fee percentage
-  uint32 public roundFeePercentage;
+  uint8 public roundFeePercentage;
 
   /// @notice Round fee address
   address payable public roundFeeAddress;
@@ -129,6 +126,9 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   /// @notice MetaPtr to the application form schema
   MetaPtr public applicationMetaPtr;
+
+  /// @notice MetaPtr to the projects
+  MetaPtr public projectsMetaPtr;
 
   // --- Struct ---
 
@@ -154,33 +154,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     address[] roundOperators; // Addresses to be granted ROUND_OPERATOR_ROLE
   }
 
-  struct Application {
-    bytes32 projectID;
-    uint256 applicationIndex;
-    MetaPtr metaPtr;
-  }
-
-  uint256 public nextApplicationIndex;
-    
-  // An array of applications, each new application is appended to the array
-  Application[] public applications;
-  mapping(bytes32 => uint256[]) public applicationsIndexesByProjectID;
-
-  // This is a packed array of booleans.
-  // statuses[0] is the first row of the bitmap and allows to store 256 bits to describe
-  // the status of 256 projects.
-  // statuses[1] is the second row, and so on.
-  // Instead of using 1 bit for each application status, we use 2 bits to allow 4 statuses:
-  // 0: pending
-  // 1: approved
-  // 2: rejected 
-  // 3: canceled
-  // Since it's a mapping the storage it's pre-allocated with zero values,
-  // so if we check the status of an existing application, the value is by default 0 (pending).
-  // If we want to check the status of an application, we take its index from the `applications` array
-  // and convert it to the 2-bits position in the bitmap.
-  mapping(uint256 => uint256) public applicationStatusesBitMap;
-
   // --- Core methods ---
 
   /**
@@ -197,7 +170,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
    */
   function initialize(
     bytes calldata encodedParameters,
-    address _alloSettings
+    address _roundFactory
   ) external initializer {
     // Decode _encodedParameters
     (
@@ -205,7 +178,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       InitRoundTime memory _initRoundTime,
       uint256 _matchAmount,
       address _token,
-      uint32 _roundFeePercentage,
+      uint8 _roundFeePercentage,
       address payable _roundFeeAddress,
       InitMetaPtr memory _initMetaPtr,
       InitRoles memory _initRoles
@@ -215,7 +188,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       (InitRoundTime),
       uint256,
       address,
-      uint32,
+      uint8,
       address,
       (InitMetaPtr),
       (InitRoles)
@@ -243,8 +216,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       "Round: Round start is before app start"
     );
 
-    alloSettings = AlloSettings(_alloSettings);
-    roundFactory = IRoundFactory(_roundFactory);
+    roundFactory = DummyRoundFactoryV1(_roundFactory);
 
     votingStrategy = _initAddress.votingStrategy;
     payoutStrategy = _initAddress.payoutStrategy;
@@ -290,7 +262,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   // @notice Update round fee percentage (only by ROUND_OPERATOR_ROLE)
   /// @param newFeePercentage new fee percentage
-  function updateRoundFeePercentage(uint32 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
+  function updateRoundFeePercentage(uint8 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     roundFeePercentage = newFeePercentage;
 
@@ -378,6 +350,15 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   }
 
+  /// @notice Update projectsMetaPtr (only by ROUND_OPERATOR_ROLE)
+  /// @param newProjectsMetaPtr new ProjectsMetaPtr
+  function updateProjectsMetaPtr(MetaPtr calldata newProjectsMetaPtr) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
+
+    emit ProjectsMetaPtrUpdated(projectsMetaPtr, newProjectsMetaPtr);
+
+    projectsMetaPtr = newProjectsMetaPtr;
+  }
+
   /// @notice Submit a project application
   /// @param projectID unique hash of the project
   /// @param newApplicationMetaPtr appliction metaPtr
@@ -386,55 +367,9 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     require(
       applicationsStartTime <= block.timestamp  &&
       block.timestamp <= applicationsEndTime,
-      "Round: Applications period not started or over"
+      "Round: Applications period over"
     );
-    applications.push(Application(projectID, nextApplicationIndex, newApplicationMetaPtr));
-    applicationsIndexesByProjectID[projectID].push(nextApplicationIndex);
-    emit NewProjectApplication(projectID, nextApplicationIndex, newApplicationMetaPtr);
-    nextApplicationIndex++;
-  }
-
-  /// @notice Get all applications of a projectID
-  /// @param projectID unique hash of the project
-  /// @return applicationIndexes indexes of the applications
-  function getApplicationIndexesByProjectID(bytes32 projectID) external view returns(uint256[] memory) {
-    return applicationsIndexesByProjectID[projectID];
-  }
-  
-  // Statuses:
-  // * 0 - pending
-  // * 1 - approved
-  // * 2 - rejected
-  // * 3 - canceled
-  /// Set application statuses
-  /// @param rowIndexes indexes of the rows
-  /// @param fullRows full rows
-  function setApplicationStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-    require(rowIndexes.length == fullRows.length, "Round: Different array lengths");
-
-    for (uint256 i = 0; i < rowIndexes.length; i++) {
-      uint256 rowIndex = rowIndexes[i];
-      uint256 fullRow = fullRows[i];
-            
-      applicationStatusesBitMap[rowIndex] = fullRow;
-    }
-
-    emit ApplicationStatusesUpdated(rowIndexes, fullRows);
-  }
-
-  /// @notice Get application status
-  /// @param applicationIndex index of the application
-  /// @return status status of the application
-  function getApplicationStatus(uint256 applicationIndex) external view returns(uint256) {
-    require(applicationIndex < applications.length, "Round: Application does not exist");
-
-    uint256 rowIndex = applicationIndex / 128;
-    uint256 colIndex = (applicationIndex % 128) * 2;
-
-    uint256 currentRow = applicationStatusesBitMap[rowIndex];        
-    uint256 status = (currentRow >> colIndex) & 3;                         
-
-    return status;
+    emit NewProjectApplication(projectID, newApplicationMetaPtr);
   }
 
   /// @notice Invoked by voter to cast votes
@@ -450,15 +385,13 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     votingStrategy.vote{value: msg.value}(encodedVotes, msg.sender);
   }
 
-
   /// @notice Pay Protocol & Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     uint256 fundsInContract = _getTokenBalance(token);
-    uint32 denominator = alloSettings.DENOMINATOR();
 
-    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage()) / denominator;
-    uint256 roundFeeAmount = (matchAmount * roundFeePercentage) / denominator;
+    uint256 protocolFeeAmount = (matchAmount * roundFactory.protocolFeePercentage() / 100);
+    uint256 roundFeeAmount = (matchAmount * roundFeePercentage / 100);
 
     // total funds needed for payout
     uint256 neededFunds = matchAmount + protocolFeeAmount + roundFeeAmount;
@@ -467,7 +400,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
     // deduct protocol fee
     if (protocolFeeAmount > 0) {
-      address payable protocolTreasury = alloSettings.protocolTreasury();
+      address payable protocolTreasury = roundFactory.protocolTreasury();
       _transferAmount(protocolTreasury, protocolFeeAmount, token);
     }
 
@@ -492,7 +425,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   /// @notice Withdraw funds from the contract (only by ROUND_OPERATOR_ROLE)
   /// @param tokenAddress token address
-  /// @param recipent recipient address
+  // @param recipent recipient address
   function withdraw(address tokenAddress, address payable recipent) external onlyRole(ROUND_OPERATOR_ROLE) {
     require(tokenAddress != token, "Round: Cannot withdraw round token");
     _transferAmount(recipent, _getTokenBalance(tokenAddress), tokenAddress);
