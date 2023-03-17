@@ -103,7 +103,7 @@ const abiExporter = [
 
 const dodoc = {
   outputDir: "./docs/contracts",
-  exclude: ["contracts/dummy", "contracts/mocks"],
+  exclude: ["contracts/mocks"],
 };
 
 const config: HardhatUserConfig = {
