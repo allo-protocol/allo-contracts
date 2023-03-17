@@ -50,17 +50,24 @@ describe("AlloSettings", function () {
         await expect(tx).to.revertedWith('Ownable: caller is not the owner');
       });
 
-      it("AlloSettings contract SHOULD have protocolFeePercentage as 0 after deploy ", async () => {
+      it("SHOULD have protocolFeePercentage as 0 after deploy ", async () => {
         expect(await alloSettings.protocolFeePercentage()).to.be.equal(0);
       });
 
-      it("AlloSettings contract SHOULD emit ProtocolFeePercentageUpdated event after invoking updateProtocolFeePercentage", async () => {
+      it("SHOULD REVERT when protocolFeePercentage > 100 % ", async () => {
+        const denominator = await alloSettings.DENOMINATOR();
+        await expect(alloSettings.updateProtocolFeePercentage(denominator + 1)).to.revertedWith(
+          'exceeds 100%'
+        );
+      });
+
+      it("SHOULD emit ProtocolFeePercentageUpdated event after invoking updateProtocolFeePercentage", async () => {
         await expect(alloSettings.updateProtocolFeePercentage(10))
           .to.emit(alloSettings, 'ProtocolFeePercentageUpdated')
           .withArgs(10);
       });
 
-      it("AlloSettings contract SHOULD persist the new protocolFeePercentage after invoking updateProtocolTreasury", async () => {
+      it("SHOULD persist the new protocolFeePercentage after invoking updateProtocolTreasury", async () => {
         await alloSettings.updateProtocolFeePercentage(20).then(async () => {
           const protocolFeePercentage = await alloSettings.protocolFeePercentage();
           expect(protocolFeePercentage).to.be.equal(20);
@@ -76,17 +83,17 @@ describe("AlloSettings", function () {
         await expect(tx).to.revertedWith('Ownable: caller is not the owner');
       });
 
-      it("AlloSettings contract SHOULD have default protocolTreasury address after deploy ", async () => {
+      it("SHOULD have default protocolTreasury address after deploy ", async () => {
         expect(await alloSettings.protocolTreasury()).to.be.equal(AddressZero);
       });
 
-      it("AlloSettings contract SHOULD emit ProtocolTreasuryUpdated event after invoking updateProtocolTreasury", async () => {
+      it("SHOULD emit ProtocolTreasuryUpdated event after invoking updateProtocolTreasury", async () => {
         await expect(alloSettings.updateProtocolTreasury(protocolTreasury.address))
           .to.emit(alloSettings, 'ProtocolTreasuryUpdated')
           .withArgs(protocolTreasury.address);
       });
 
-      it("AlloSettings contract SHOULD have protocolTreasury address after invoking updateProtocolTreasury", async () => {
+      it("SHOULD have protocolTreasury address after invoking updateProtocolTreasury", async () => {
         await alloSettings.updateProtocolTreasury(protocolTreasury.address).then(async () => {
           const protocolTreasuryAddress = await alloSettings.protocolTreasury();
           expect(protocolTreasuryAddress).to.be.equal(protocolTreasury.address);

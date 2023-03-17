@@ -390,10 +390,10 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     uint256 fundsInContract = _getTokenBalance(token);
-    uint32 percision = alloSettings.PERCENTAGE_PRECISION();
+    uint32 denominator = alloSettings.DENOMINATOR();
 
-    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage()) / (percision * 100);
-    uint256 roundFeeAmount = (matchAmount * roundFeePercentage) / (percision * 100);
+    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage()) / denominator;
+    uint256 roundFeeAmount = (matchAmount * roundFeePercentage) / denominator;
 
     // total funds needed for payout
     uint256 neededFunds = matchAmount + protocolFeeAmount + roundFeeAmount;

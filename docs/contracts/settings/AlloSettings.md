@@ -10,10 +10,10 @@
 
 ## Methods
 
-### PERCENTAGE_PRECISION
+### DENOMINATOR
 
 ```solidity
-function PERCENTAGE_PRECISION() external view returns (uint16)
+function DENOMINATOR() external view returns (uint24)
 ```
 
 
@@ -25,7 +25,7 @@ function PERCENTAGE_PRECISION() external view returns (uint16)
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint16 | undefined |
+| _0 | uint24 | undefined |
 
 ### VERSION
 
@@ -75,7 +75,7 @@ function owner() external view returns (address)
 ### protocolFeePercentage
 
 ```solidity
-function protocolFeePercentage() external view returns (uint16)
+function protocolFeePercentage() external view returns (uint24)
 ```
 
 Protocol fee percentage 100% = 100_000 | 10% = 10_000 | 1% = 1_000 | 0.1% = 100 | 0.01% = 10
@@ -87,7 +87,7 @@ Protocol fee percentage 100% = 100_000 | 10% = 10_000 | 1% = 1_000 | 0.1% = 100 
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint16 | undefined |
+| _0 | uint24 | undefined |
 
 ### protocolTreasury
 
@@ -136,7 +136,7 @@ function transferOwnership(address newOwner) external nonpayable
 ### updateProtocolFeePercentage
 
 ```solidity
-function updateProtocolFeePercentage(uint16 _protocolFeePercentage) external nonpayable
+function updateProtocolFeePercentage(uint24 _protocolFeePercentage) external nonpayable
 ```
 
 Set the protocol fee percentage
@@ -147,7 +147,7 @@ Set the protocol fee percentage
 
 | Name | Type | Description |
 |---|---|---|
-| _protocolFeePercentage | uint16 | The new protocol fee percentage |
+| _protocolFeePercentage | uint24 | The new protocol fee percentage |
 
 ### updateProtocolTreasury
 
@@ -205,7 +205,7 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 ### ProtocolFeePercentageUpdated
 
 ```solidity
-event ProtocolFeePercentageUpdated(uint16 protocolFeePercentage)
+event ProtocolFeePercentageUpdated(uint24 protocolFeePercentage)
 ```
 
 Emitted when protocol fee percentage is updated
@@ -216,7 +216,7 @@ Emitted when protocol fee percentage is updated
 
 | Name | Type | Description |
 |---|---|---|
-| protocolFeePercentage  | uint16 | undefined |
+| protocolFeePercentage  | uint24 | undefined |
 
 ### ProtocolTreasuryUpdated
 

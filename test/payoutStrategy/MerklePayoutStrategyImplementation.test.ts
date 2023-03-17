@@ -158,12 +158,14 @@ describe("MerklePayoutStrategyImplementation", function () {
       votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
         await deployContract(user, votingStrategyArtifact, [])
       );
-  
+
       let roundFeeAddress = overrides && overrides.hasOwnProperty('roundFeeAddress') ? overrides.roundFeeAddress : Wallet.createRandom().address;
       let matchAmount = overrides && overrides.hasOwnProperty('matchAmount') ? overrides.matchAmount : 100;
       let roundFeePercentage = overrides && overrides.hasOwnProperty('roundFeePercentage') ? overrides.roundFeePercentage : 0;
 
-      roundFeePercentage = roundFeePercentage * await alloSettingsContract.PERCENTAGE_PRECISION();
+
+      const denominator = await alloSettingsContract.DENOMINATOR();
+      roundFeePercentage = roundFeePercentage * (denominator / 100);
 
       const initAddress = [
         votingStrategyContract.address, // votingStrategy
@@ -189,7 +191,7 @@ describe("MerklePayoutStrategyImplementation", function () {
         roundFeePercentage,
         roundFeeAddress,
         initMetaPtr,
-        initRoles,        
+        initRoles,
       ];
 
       await roundImplementation.initialize(
@@ -302,7 +304,7 @@ describe("MerklePayoutStrategyImplementation", function () {
           roundImplementation,
           mockERC20
         );
-        
+
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[0]);
 
@@ -331,7 +333,7 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[0]);
-        
+
         const payouts = [
           [0, distributions[0][1], distributions[0][2], validMerkleProof, distributions[0][3]],
         ];

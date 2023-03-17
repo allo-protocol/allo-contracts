@@ -7,7 +7,8 @@ contract AlloSettings is OwnableUpgradeable {
 
   string public constant VERSION = "1.0.0";
 
-  uint16 public constant PERCENTAGE_PRECISION = 1000;
+  // 1000 * 100
+  uint24 public constant DENOMINATOR = 100000;
 
   // --- Data ---
 
@@ -16,12 +17,12 @@ contract AlloSettings is OwnableUpgradeable {
 
   /// @notice Protocol fee percentage
   /// 100% = 100_000 | 10% = 10_000 | 1% = 1_000 | 0.1% = 100 | 0.01% = 10
-  uint16 public protocolFeePercentage;
+  uint24 public protocolFeePercentage;
 
   // --- Event ---
 
   /// @notice Emitted when protocol fee percentage is updated
-  event ProtocolFeePercentageUpdated(uint16 protocolFeePercentage);
+  event ProtocolFeePercentageUpdated(uint24 protocolFeePercentage);
 
   /// @notice Emitted when a protocol wallet address is updated
   event ProtocolTreasuryUpdated(address protocolTreasuryAddress);
@@ -36,7 +37,10 @@ contract AlloSettings is OwnableUpgradeable {
 
   /// @notice Set the protocol fee percentage
   /// @param _protocolFeePercentage The new protocol fee percentage
-  function updateProtocolFeePercentage(uint16 _protocolFeePercentage) external onlyOwner {
+  function updateProtocolFeePercentage(uint24 _protocolFeePercentage) external onlyOwner {
+
+    require(_protocolFeePercentage <= DENOMINATOR , "value exceeds 100%");
+
     protocolFeePercentage = _protocolFeePercentage;
     emit ProtocolFeePercentageUpdated(protocolFeePercentage);
   }
