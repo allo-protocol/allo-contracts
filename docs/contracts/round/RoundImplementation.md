@@ -121,7 +121,7 @@ function applicationStatusesBitMap(uint256) external view returns (uint256)
 ### applications
 
 ```solidity
-function applications(uint256) external view returns (bytes32 projectID, struct MetaPtr metaPtr)
+function applications(uint256) external view returns (bytes32 projectID, uint256 applicationIndex, struct MetaPtr metaPtr)
 ```
 
 
@@ -139,6 +139,7 @@ function applications(uint256) external view returns (bytes32 projectID, struct 
 | Name | Type | Description |
 |---|---|---|
 | projectID | bytes32 | undefined |
+| applicationIndex | uint256 | undefined |
 | metaPtr | MetaPtr | undefined |
 
 ### applicationsEndTime
@@ -221,7 +222,7 @@ function applyToRound(bytes32 projectID, MetaPtr newApplicationMetaPtr) external
 function getApplicationIndexesByProjectID(bytes32 projectID) external view returns (uint256[])
 ```
 
-
+Get all applications of a projectID
 
 
 
@@ -229,13 +230,13 @@ function getApplicationIndexesByProjectID(bytes32 projectID) external view retur
 
 | Name | Type | Description |
 |---|---|---|
-| projectID | bytes32 | undefined |
+| projectID | bytes32 | unique hash of the project |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256[] | undefined |
+| _0 | uint256[] | applicationIndexes indexes of the applications |
 
 ### getApplicationStatus
 
@@ -243,7 +244,7 @@ function getApplicationIndexesByProjectID(bytes32 projectID) external view retur
 function getApplicationStatus(uint256 applicationIndex) external view returns (uint256)
 ```
 
-
+Get application status
 
 
 
@@ -251,13 +252,13 @@ function getApplicationStatus(uint256 applicationIndex) external view returns (u
 
 | Name | Type | Description |
 |---|---|---|
-| applicationIndex | uint256 | undefined |
+| applicationIndex | uint256 | index of the application |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | status status of the application |
 
 ### getRoleAdmin
 
@@ -434,24 +435,6 @@ Payout Strategy Contract Address
 |---|---|---|
 | _0 | contract IPayoutStrategy | undefined |
 
-### projectsMetaPtr
-
-```solidity
-function projectsMetaPtr() external view returns (uint256 protocol, string pointer)
-```
-
-MetaPtr to the projects
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| protocol | uint256 | undefined |
-| pointer | string | undefined |
-
 ### renounceRole
 
 ```solidity
@@ -589,7 +572,7 @@ Pay Protocol &amp; Round Fees and transfer funds to payout contract (only by ROU
 function setStatuses(uint256[] rowIndexes, uint256[] fullRows) external nonpayable
 ```
 
-
+Set application statuses
 
 
 
@@ -597,8 +580,8 @@ function setStatuses(uint256[] rowIndexes, uint256[] fullRows) external nonpayab
 
 | Name | Type | Description |
 |---|---|---|
-| rowIndexes | uint256[] | undefined |
-| fullRows | uint256[] | undefined |
+| rowIndexes | uint256[] | indexes of the rows |
+| fullRows | uint256[] | full rows |
 
 ### supportsInterface
 
@@ -670,22 +653,6 @@ function updateMatchAmount(uint256 newAmount) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | newAmount | uint256 | new Amount |
-
-### updateProjectsMetaPtr
-
-```solidity
-function updateProjectsMetaPtr(MetaPtr newProjectsMetaPtr) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newProjectsMetaPtr | MetaPtr | undefined |
 
 ### updateRoundFeeAddress
 
@@ -802,7 +769,7 @@ Withdraw funds from the contract (only by ROUND_OPERATOR_ROLE)
 | Name | Type | Description |
 |---|---|---|
 | tokenAddress | address | token address |
-| recipent | address payable | undefined |
+| recipent | address payable | recipient address |
 
 
 
@@ -894,7 +861,7 @@ Emitted when match amount is updated
 ### NewProjectApplication
 
 ```solidity
-event NewProjectApplication(bytes32 indexed project, MetaPtr applicationMetaPtr)
+event NewProjectApplication(bytes32 indexed projectID, uint256 applicationIndex, MetaPtr applicationMetaPtr)
 ```
 
 Emitted when a project has applied to the round
@@ -905,7 +872,8 @@ Emitted when a project has applied to the round
 
 | Name | Type | Description |
 |---|---|---|
-| project `indexed` | bytes32 | undefined |
+| projectID `indexed` | bytes32 | undefined |
+| applicationIndex  | uint256 | undefined |
 | applicationMetaPtr  | MetaPtr | undefined |
 
 ### PayFeeAndEscrowFundsToPayoutContract

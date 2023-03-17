@@ -32,17 +32,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice round operator role
   bytes32 public constant ROUND_OPERATOR_ROLE = keccak256("ROUND_OPERATOR");
 
-  struct Application {
-    bytes32 projectID;
-    MetaPtr metaPtr;
-  }
-
-  uint256 public nextApplicationIndex;
-    
-  // An array of applications, each new application is appended to the array
-  Application[] public applications;
-  mapping(bytes32 => uint256[]) public applicationsIndexesByProjectID;
-
   // This is a packed array of booleans.
   // statuses[0] is the first row of the bitmap and allows to store 256 bits to describe
   // the status of 256 projects.
@@ -91,7 +80,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   event ProjectsMetaPtrUpdated(MetaPtr oldMetaPtr, MetaPtr newMetaPtr);
 
   /// @notice Emitted when a project has applied to the round
-  event NewProjectApplication(bytes32 indexed project, MetaPtr applicationMetaPtr);
+  event NewProjectApplication(bytes32 indexed projectID, uint256 applicationIndex, MetaPtr applicationMetaPtr);
 
   /// @notice Emitted when protocol & round fees are paid
   event PayFeeAndEscrowFundsToPayoutContract(uint256 matchAmountAfterFees, uint protocolFeeAmount, uint roundFeeAmount);
@@ -99,7 +88,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   // --- Modifier ---
 
   /// @notice modifier to check if round has not ended.
-  modifier roundHasNotEnded() {only
+  modifier roundHasNotEnded() {
     // slither-disable-next-line timestamp
     require(block.timestamp <= roundEndTime, "Round: Round has ended");
    _;
@@ -153,9 +142,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @notice MetaPtr to the application form schema
   MetaPtr public applicationMetaPtr;
 
-  /// @notice MetaPtr to the projects
-  MetaPtr public projectsMetaPtr;
-
   // --- Struct ---
 
   struct InitAddress {
@@ -179,6 +165,18 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     address[] adminRoles; // Addresses to be granted DEFAULT_ADMIN_ROLE
     address[] roundOperators; // Addresses to be granted ROUND_OPERATOR_ROLE
   }
+
+  struct Application {
+    bytes32 projectID;
+    uint256 applicationIndex;
+    MetaPtr metaPtr;
+  }
+
+  uint256 public nextApplicationIndex;
+    
+  // An array of applications, each new application is appended to the array
+  Application[] public applications;
+  mapping(bytes32 => uint256[]) public applicationsIndexesByProjectID;
 
   // --- Core methods ---
 
@@ -376,15 +374,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   }
 
-  /// @notice Update projectsMetaPtr (only by ROUND_OPERATOR_ROLE)
-  /// @param newProjectsMetaPtr new ProjectsMetaPtr
-  function updateProjectsMetaPtr(MetaPtr calldata newProjectsMetaPtr) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
-    emit ProjectsMetaPtrUpdated(projectsMetaPtr, newProjectsMetaPtr);
-
-    projectsMetaPtr = newProjectsMetaPtr;
-  }
-
   /// @notice Submit a project application
   /// @param projectID unique hash of the project
   /// @param newApplicationMetaPtr appliction metaPtr
@@ -395,10 +384,50 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       block.timestamp <= applicationsEndTime,
       "Round: Applications period over"
     );
-    applications.push(Application(projectID, newApplicationMetaPtr));
+    applications.push(Application(projectID, nextApplicationIndex, newApplicationMetaPtr));
     applicationsIndexesByProjectID[projectID].push(nextApplicationIndex);
-    emit NewProjectApplication(projectID, newApplicationMetaPtr);
+    emit NewProjectApplication(projectID, nextApplicationIndex, newApplicationMetaPtr);
     nextApplicationIndex++;
+  }
+
+  /// @notice Get all applications of a projectID
+  /// @param projectID unique hash of the project
+  /// @return applicationIndexes indexes of the applications
+  function getApplicationIndexesByProjectID(bytes32 projectID) public view returns(uint256[] memory) {
+    return applicationsIndexesByProjectID[projectID];
+  }
+  // Statuses:
+  // * 0 - pending
+  // * 1 - approved
+  // * 2 - rejected
+  // * 3 - canceled
+  /// Set application statuses
+  /// @param rowIndexes indexes of the rows
+  /// @param fullRows full rows
+  function setStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
+    require(rowIndexes.length == fullRows.length);
+
+    for (uint256 i = 0; i < rowIndexes.length; i++) {
+      uint256 rowIndex = rowIndexes[i];
+      uint256 fullRow = fullRows[i];
+            
+      applicationStatusesBitMap[rowIndex] = fullRow;
+    }
+  }
+
+  /// @notice Get application status
+  /// @param applicationIndex index of the application
+  /// @return status status of the application
+  function getApplicationStatus(uint256 applicationIndex) public view returns(uint256) {
+    require(applicationIndex < applications.length);
+
+    uint256 rowIndex = applicationIndex / 128;
+    uint256 colIndex = (applicationIndex % 128) * 2;
+
+    uint256 currentRow = applicationStatusesBitMap[rowIndex];        
+    uint256 status = (currentRow >> colIndex) & 3;                         
+
+    return status;
   }
 
   /// @notice Invoked by voter to cast votes
@@ -414,33 +443,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     votingStrategy.vote{value: msg.value}(encodedVotes, msg.sender);
   }
 
-  function getApplicationIndexesByProjectID(bytes32 projectID) public view returns(uint256[] memory) {
-    return applicationsIndexesByProjectID[projectID];
-  }
-
-  function setStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-    require(rowIndexes.length == fullRows.length);
-
-    for (uint256 i = 0; i < rowIndexes.length; i++) {
-      uint256 rowIndex = rowIndexes[i];
-      uint256 fullRow = fullRows[i];
-            
-      applicationStatusesBitMap[rowIndex] = fullRow;
-    }
-  }
-
-
-  function getApplicationStatus(uint256 applicationIndex) public view returns(uint256) {
-    require(applicationIndex < applications.length);
-
-    uint256 rowIndex = applicationIndex / 128;
-    uint256 colIndex = (applicationIndex % 128) * 2;
-
-    uint256 currentRow = applicationStatusesBitMap[rowIndex];        
-    uint256 status = (currentRow >> colIndex) & 3;                         
-
-    return status;
-  }
 
   /// @notice Pay Protocol & Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
@@ -483,7 +485,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   /// @notice Withdraw funds from the contract (only by ROUND_OPERATOR_ROLE)
   /// @param tokenAddress token address
-  // @param recipent recipient address
+  /// @param recipent recipient address
   function withdraw(address tokenAddress, address payable recipent) external onlyRole(ROUND_OPERATOR_ROLE) {
     require(tokenAddress != token, "Round: Cannot withdraw round token");
     _transferAmount(recipent, _getTokenBalance(tokenAddress), tokenAddress);
