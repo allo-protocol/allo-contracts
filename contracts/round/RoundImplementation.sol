@@ -77,14 +77,14 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   modifier roundHasNotEnded() {
     // slither-disable-next-line timestamp
     require(block.timestamp <= roundEndTime, "Round: Round has ended");
-   _;
+     _;
   }
 
   /// @notice modifier to check if round has not ended.
   modifier roundHasEnded() {
     // slither-disable-next-line timestamp
     require(block.timestamp > roundEndTime, "Round: Round has not ended");
-   _;
+    _;
   }
 
   // --- Data ---
@@ -161,7 +161,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   }
 
   uint256 public nextApplicationIndex;
-    
+  
   // An array of applications, each new application is appended to the array
   Application[] public applications;
   mapping(bytes32 => uint256[]) public applicationsIndexesByProjectID;
@@ -220,7 +220,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       (InitMetaPtr),
       (InitRoles)
     ));
-
+  
     // slither-disable-next-line timestamp
     require(
       _initRoundTime.applicationsStartTime >= block.timestamp,
@@ -245,7 +245,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
     alloSettings = AlloSettings(_alloSettings);
     roundFactory = IRoundFactory(_roundFactory);
-
+  
     votingStrategy = _initAddress.votingStrategy;
     payoutStrategy = _initAddress.payoutStrategy;
     applicationsStartTime = _initRoundTime.applicationsStartTime;
@@ -253,30 +253,30 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
     roundStartTime = _initRoundTime.roundStartTime;
     roundEndTime = _initRoundTime.roundEndTime;
     token = _token;
-
+  
     // Invoke init on voting contract
     votingStrategy.init();
-
+  
     // Invoke init on payout contract
     payoutStrategy.init();
-
+  
     matchAmount = _matchAmount;
     roundFeePercentage = _roundFeePercentage;
     roundFeeAddress = _roundFeeAddress;
     roundMetaPtr = _initMetaPtr.roundMetaPtr;
     applicationMetaPtr = _initMetaPtr.applicationMetaPtr;
-
+  
     // Assigning default admin role
     for (uint256 i = 0; i < _initRoles.adminRoles.length; ++i) {
       _grantRole(DEFAULT_ADMIN_ROLE, _initRoles.adminRoles[i]);
     }
-
+  
     // Assigning round operators
     for (uint256 i = 0; i < _initRoles.roundOperators.length; ++i) {
       _grantRole(ROUND_OPERATOR_ROLE, _initRoles.roundOperators[i]);
     }
   }
-
+  
   // @notice Update match amount (only by ROUND_OPERATOR_ROLE)
   /// @param newAmount new Amount
   function updateMatchAmount(uint256 newAmount) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
@@ -293,7 +293,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   function updateRoundFeePercentage(uint32 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
     roundFeePercentage = newFeePercentage;
-
+  
     emit RoundFeePercentageUpdated(roundFeePercentage);
   }
 
@@ -301,9 +301,9 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @param newFeeAddress new fee address
   function updateRoundFeeAddress(address payable newFeeAddress) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
 
-    roundFeeAddress = newFeeAddress;
+  roundFeeAddress = newFeeAddress;
 
-    emit RoundFeeAddressUpdated(roundFeeAddress);
+  emit RoundFeeAddressUpdated(roundFeeAddress);
   }
 
   // @notice Update roundMetaPtr (only by ROUND_OPERATOR_ROLE)
@@ -331,19 +331,19 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @param newRoundStartTime new roundStartTime
   /// @param newRoundEndTime new roundEndTime
   function updateStartAndEndTimes(
-    uint256 newApplicationsStartTime,
-    uint256 newApplicationsEndTime,
-    uint256 newRoundStartTime,
-    uint256 newRoundEndTime
+  uint256 newApplicationsStartTime,
+  uint256 newApplicationsEndTime,
+  uint256 newRoundStartTime,
+  uint256 newRoundEndTime
   ) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
+  
     // slither-disable-next-line timestamp
     require(newApplicationsStartTime < newApplicationsEndTime, "Round: Application end is before application start");
     require(newRoundStartTime < newRoundEndTime, "Round: Round end is before round start");
     require(newApplicationsStartTime <= newRoundStartTime, "Round: Round start is before application start");
     require(newApplicationsEndTime <= newRoundEndTime, "Round: Round end is before application end");
     require(block.timestamp <= newApplicationsStartTime, "Round: Time has already passed");
-
+  
     if (
       applicationsStartTime >= block.timestamp &&
       newApplicationsStartTime != applicationsStartTime
@@ -351,7 +351,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       emit ApplicationsStartTimeUpdated(applicationsStartTime, newApplicationsStartTime);
       applicationsStartTime = newApplicationsStartTime;
     }
-
+  
     if (
       applicationsEndTime >= block.timestamp &&
       newApplicationsEndTime != applicationsEndTime
@@ -359,7 +359,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       emit ApplicationsEndTimeUpdated(applicationsEndTime, newApplicationsEndTime);
       applicationsEndTime = newApplicationsEndTime;
     }
-
+  
     if (
       roundStartTime >= block.timestamp &&
       newRoundStartTime != roundStartTime
@@ -367,7 +367,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       emit RoundStartTimeUpdated(roundStartTime, newRoundStartTime);
       roundStartTime = newRoundStartTime;
     }
-
+  
     if (
       roundEndTime >= block.timestamp &&
       newRoundEndTime != roundEndTime
@@ -411,14 +411,14 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @param fullRows full rows
   function setApplicationStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
     require(rowIndexes.length == fullRows.length, "Round: Different array lengths");
-
+  
     for (uint256 i = 0; i < rowIndexes.length; i++) {
       uint256 rowIndex = rowIndexes[i];
       uint256 fullRow = fullRows[i];
-            
+        
       applicationStatusesBitMap[rowIndex] = fullRow;
     }
-
+  
     emit ApplicationStatusesUpdated(rowIndexes, fullRows);
   }
 
@@ -427,13 +427,13 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   /// @return status status of the application
   function getApplicationStatus(uint256 applicationIndex) external view returns(uint256) {
     require(applicationIndex < applications.length, "Round: Application does not exist");
-
+  
     uint256 rowIndex = applicationIndex / 128;
     uint256 colIndex = (applicationIndex % 128) * 2;
-
-    uint256 currentRow = applicationStatusesBitMap[rowIndex];        
-    uint256 status = (currentRow >> colIndex) & 3;                         
-
+  
+    uint256 currentRow = applicationStatusesBitMap[rowIndex];    
+    uint256 status = (currentRow >> colIndex) & 3;             
+  
     return status;
   }
 
@@ -445,15 +445,15 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       roundStartTime <= block.timestamp &&
       block.timestamp <= roundEndTime,
       "Round: Round is not active"
-    );
-
+    );  
+  
     votingStrategy.vote{value: msg.value}(encodedVotes, msg.sender);
-  }
+  }  
 
 
   /// @notice Pay Protocol & Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
+  
     uint256 fundsInContract = _getTokenBalance(token);
     uint32 denominator = alloSettings.DENOMINATOR();
 
@@ -462,23 +462,23 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
     // total funds needed for payout
     uint256 neededFunds = matchAmount + protocolFeeAmount + roundFeeAmount;
-
+  
     require(fundsInContract >= neededFunds, "Round: Not enough funds in contract");
-
+  
     // deduct protocol fee
     if (protocolFeeAmount > 0) {
       address payable protocolTreasury = alloSettings.protocolTreasury();
       _transferAmount(protocolTreasury, protocolFeeAmount, token);
     }
-
+  
     // deduct round fee
     if (roundFeeAmount > 0) {
       _transferAmount(roundFeeAddress, roundFeeAmount, token);
     }
-
+  
     // update funds in contract after fee deduction
     fundsInContract = _getTokenBalance(token);
-
+  
     // transfer funds to payout contract
     if (token == address(0)) {
       payoutStrategy.setReadyForPayout{value: fundsInContract}();
@@ -486,7 +486,7 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
       IERC20(token).safeTransfer(address(payoutStrategy), fundsInContract);
       payoutStrategy.setReadyForPayout();
     }
-
+  
     emit PayFeeAndEscrowFundsToPayoutContract(fundsInContract, protocolFeeAmount, roundFeeAmount);
   }
 
