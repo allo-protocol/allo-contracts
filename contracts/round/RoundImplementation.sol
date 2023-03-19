@@ -218,7 +218,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
       (InitMetaPtr),
       (InitRoles)
     ));
-  
+
     // slither-disable-next-line timestamp
     require(
       _initRoundTime.applicationsStartTime >= block.timestamp,
@@ -319,10 +319,10 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   /// @param newRoundStartTime new roundStartTime
   /// @param newRoundEndTime new roundEndTime
   function updateStartAndEndTimes(
-  uint256 newApplicationsStartTime,
-  uint256 newApplicationsEndTime,
-  uint256 newRoundStartTime,
-  uint256 newRoundEndTime
+    uint256 newApplicationsStartTime,
+    uint256 newApplicationsEndTime,
+    uint256 newRoundStartTime,
+    uint256 newRoundEndTime
   ) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
     // slither-disable-next-line timestamp
     require(newApplicationsStartTime < newApplicationsEndTime, "Round: Application end is before application start");
