@@ -1088,8 +1088,8 @@ describe.only("RoundImplementation", function () {
         await initRound(_currentBlockTimestamp);
       });
 
-      const buildNewState = (indexes: number[], statusArray: number[]) => {
-        let newState = BigInt(0);
+      const buildNewState = (current: bigint, indexes: number[], statusArray: number[]) => {
+        let newState:bigint = current;
 
         for (let i = 0; i < indexes.length; i++) {
           const index = indexes[i];
@@ -1122,7 +1122,7 @@ describe.only("RoundImplementation", function () {
           STATUS.CANCELED,
         ];
 
-        const newState = buildNewState(indexes, statusArray);
+        const newState = buildNewState(BigInt(0), indexes, statusArray);
 
         await roundImplementation.setApplicationStatuses([0], [newState]);
 
@@ -1152,7 +1152,7 @@ describe.only("RoundImplementation", function () {
           STATUS.CANCELED,
         ];
 
-        const newState = buildNewState(indexes, statusArray);
+        const newState = buildNewState(BigInt(0), indexes, statusArray);
 
         let tx = await roundImplementation.setApplicationStatuses([0], [newState]);
 

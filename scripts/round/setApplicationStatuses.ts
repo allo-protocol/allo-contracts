@@ -1,4 +1,4 @@
-// This script deals with updating a rounds projectMetaPtr.
+// This script deals with setting new application statuses.
 // Ideally this would be done via the UI and not this script
 import { ethers } from "hardhat";
 import hre from "hardhat";
@@ -26,11 +26,11 @@ const statusArray: number[] = [
 ];
 
 const buildNewState = (
-  current: any,
+  current: bigint,
   indexes: number[],
   statusArray: number[]
 ) => {
-  let newState = BigInt(current);
+  let newState: bigint = current;
 
   for (let i = 0; i < indexes.length; i++) {
     const index = indexes[i];
@@ -67,9 +67,8 @@ export async function main() {
   const currentStatuses = await round.applicationStatusesBitMap(
     applicationStatusBitMapIndex
   );
-  const newState = buildNewState(currentStatuses, projectIndexes, statusArray);
+  const newState = buildNewState(BigInt(currentStatuses.toString()), projectIndexes, statusArray);
 
-  // Update ProjectMetaPtr
   const updateTx = await round.setApplicationStatuses(
     [applicationStatusBitMapIndex],
     [newState]

@@ -276,7 +276,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   // @notice Update match amount (only by ROUND_OPERATOR_ROLE)
   /// @param newAmount new Amount
   function updateMatchAmount(uint256 newAmount) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
     require(newAmount > matchAmount, "Round: Lesser than current match amount");
 
     matchAmount = newAmount;
@@ -287,36 +286,28 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   // @notice Update round fee percentage (only by ROUND_OPERATOR_ROLE)
   /// @param newFeePercentage new fee percentage
   function updateRoundFeePercentage(uint32 newFeePercentage) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
     roundFeePercentage = newFeePercentage;
-  
     emit RoundFeePercentageUpdated(roundFeePercentage);
   }
 
   // @notice Update round fee address (only by ROUND_OPERATOR_ROLE)
   /// @param newFeeAddress new fee address
   function updateRoundFeeAddress(address payable newFeeAddress) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
-  roundFeeAddress = newFeeAddress;
-
-  emit RoundFeeAddressUpdated(roundFeeAddress);
+    roundFeeAddress = newFeeAddress;
+    emit RoundFeeAddressUpdated(roundFeeAddress);
   }
 
   // @notice Update roundMetaPtr (only by ROUND_OPERATOR_ROLE)
   /// @param newRoundMetaPtr new roundMetaPtr
   function updateRoundMetaPtr(MetaPtr memory newRoundMetaPtr) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
     emit RoundMetaPtrUpdated(roundMetaPtr, newRoundMetaPtr);
-
     roundMetaPtr = newRoundMetaPtr;
   }
 
   // @notice Update applicationMetaPtr (only by ROUND_OPERATOR_ROLE)
   /// @param newApplicationMetaPtr new applicationMetaPtr
   function updateApplicationMetaPtr(MetaPtr memory newApplicationMetaPtr) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-
     emit ApplicationMetaPtrUpdated(applicationMetaPtr, newApplicationMetaPtr);
-
     applicationMetaPtr = newApplicationMetaPtr;
   }
 
@@ -332,7 +323,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
   uint256 newRoundStartTime,
   uint256 newRoundEndTime
   ) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-  
     // slither-disable-next-line timestamp
     require(newApplicationsStartTime < newApplicationsEndTime, "Round: Application end is before application start");
     require(newRoundStartTime < newRoundEndTime, "Round: Round end is before round start");
@@ -449,7 +439,6 @@ contract RoundImplementation is AccessControlEnumerable, Initializable {
 
   /// @notice Pay Protocol & Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
-  
     uint256 fundsInContract = _getTokenBalance(token);
     uint32 denominator = alloSettings.DENOMINATOR();
 
