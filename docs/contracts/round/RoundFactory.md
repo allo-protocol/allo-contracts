@@ -67,57 +67,6 @@ Clones RoundImplementation a new round and emits event
 |---|---|---|
 | _0 | address | undefined |
 
-### getProtocolFeePercentage
-
-```solidity
-function getProtocolFeePercentage() external view returns (uint8)
-```
-
-Get the protocol fee percentage
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint8 | undefined |
-
-### getProtocolTreasury
-
-```solidity
-function getProtocolTreasury() external view returns (address payable)
-```
-
-Get the address of the protocol treasury
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
-
-### getRoundContract
-
-```solidity
-function getRoundContract() external view returns (address)
-```
-
-Get the address of the RoundImplementation contract
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### initialize
 
 ```solidity

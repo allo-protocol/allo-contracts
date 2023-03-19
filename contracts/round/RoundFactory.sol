@@ -101,26 +101,11 @@ contract RoundFactory is OwnableUpgradeable {
 
     emit RoundCreated(clone, ownedBy, payable(roundImplementation));
 
-    RoundImplementation(payable(clone)).initialize(
+    IRoundImplementation(payable(clone)).initialize(
       encodedParameters,
       alloSettings
     );
 
     return clone;
-  }
-
-    /// @notice Get the address of the RoundImplementation contract
-  function getRoundContract() external view returns (address) {
-    return roundContract;
-  }
-
-  /// @notice Get the address of the protocol treasury
-  function getProtocolTreasury() external view returns (address payable) {
-    return protocolTreasury;
-  }
-
-  /// @notice Get the protocol fee percentage
-  function getProtocolFeePercentage() external view returns (uint8) {
-    return protocolFeePercentage;
   }
 }
