@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
+import "./IRoundFactory.sol";
 import "./IRoundImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
@@ -20,7 +21,7 @@ import "../utils/MetaPtr.sol";
  * @dev This contract is Ownable thus supports ownership transfership
  *
  */
-contract RoundFactory is OwnableUpgradeable {
+contract RoundFactory is IRoundFactory, OwnableUpgradeable {
   string public constant VERSION = "0.2.0";
 
   // --- Data ---
@@ -59,8 +60,7 @@ contract RoundFactory is OwnableUpgradeable {
    *
    * @param newAlloSettings New allo settings contract address
    */
-  function updateAlloSettings(address newAlloSettings) public onlyOwner {
-
+  function updateAlloSettings(address newAlloSettings) external onlyOwner {
     alloSettings = newAlloSettings;
 
     emit AlloSettingsUpdated(alloSettings);

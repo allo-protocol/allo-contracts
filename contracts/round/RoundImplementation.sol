@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
+import "./IRoundImplementation.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
@@ -18,7 +19,7 @@ import "../utils/MetaPtr.sol";
  * a group of ROUND_OPERATOR via the RoundFactory
  *
  */
-contract RoundImplementation is AccessControlEnumerable, Initializable {
+contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, Initializable {
 
   string public constant VERSION = "2.0.0";
 

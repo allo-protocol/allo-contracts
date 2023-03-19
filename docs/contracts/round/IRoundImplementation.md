@@ -74,7 +74,7 @@ function getApplicationStatus(uint256 applicationIndex) external view returns (u
 ### initialize
 
 ```solidity
-function initialize(bytes encodedParameters, address _roundFactory) external nonpayable
+function initialize(bytes encodedParameters, address _alloSettings) external nonpayable
 ```
 
 
@@ -86,7 +86,7 @@ function initialize(bytes encodedParameters, address _roundFactory) external non
 | Name | Type | Description |
 |---|---|---|
 | encodedParameters | bytes | undefined |
-| _roundFactory | address | undefined |
+| _alloSettings | address | undefined |
 
 ### setApplicationStatuses
 
@@ -167,7 +167,7 @@ function updateRoundFeeAddress(address payable newFeeAddress) external nonpayabl
 ### updateRoundFeePercentage
 
 ```solidity
-function updateRoundFeePercentage(uint8 newFeePercentage) external nonpayable
+function updateRoundFeePercentage(uint32 newFeePercentage) external nonpayable
 ```
 
 
@@ -178,7 +178,7 @@ function updateRoundFeePercentage(uint8 newFeePercentage) external nonpayable
 
 | Name | Type | Description |
 |---|---|---|
-| newFeePercentage | uint8 | undefined |
+| newFeePercentage | uint32 | undefined |
 
 ### updateRoundMetaPtr
 

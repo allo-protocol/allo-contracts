@@ -6,12 +6,12 @@ import "../utils/MetaPtr.sol";
 interface IRoundImplementation {
     function initialize(
         bytes calldata encodedParameters,
-        address _roundFactory
+        address _alloSettings
     ) external;
 
     function updateMatchAmount(uint256 newAmount) external;
 
-    function updateRoundFeePercentage(uint8 newFeePercentage) external;
+    function updateRoundFeePercentage(uint32 newFeePercentage) external;
 
     function updateRoundFeeAddress(address payable newFeeAddress) external;
 
