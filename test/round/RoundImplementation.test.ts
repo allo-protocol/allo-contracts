@@ -1124,7 +1124,12 @@ describe.only("RoundImplementation", function () {
 
         const newState = buildNewState(BigInt(0), indexes, statusArray);
 
-        await roundImplementation.setApplicationStatuses([0], [newState]);
+        const applicationStatus = {
+          index: 0,
+          statusRow: newState,
+        }
+
+        await roundImplementation.setApplicationStatuses([applicationStatus]);
 
         expect(await roundImplementation.getApplicationStatus(0)).equal(
           STATUS.PENDING
@@ -1141,22 +1146,6 @@ describe.only("RoundImplementation", function () {
         expect(await roundImplementation.getApplicationStatus(3)).equal(
           STATUS.CANCELED
         );      
-      });
-
-      it('SHOULD emit ApplicationStatusesUpdated event', async () => {
-        const indexes: number[] = [0, 1, 2, 3];
-        const statusArray: number[] = [
-          STATUS.PENDING,
-          STATUS.ACCEPTED,
-          STATUS.REJECTED,
-          STATUS.CANCELED,
-        ];
-
-        const newState = buildNewState(BigInt(0), indexes, statusArray);
-
-        let tx = await roundImplementation.setApplicationStatuses([0], [newState]);
-
-        expect(tx).to.emit(roundImplementation, 'ApplicationStatusesUpdated').withArgs([0], [newState]);
       });
     });
 

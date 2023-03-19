@@ -558,10 +558,10 @@ Unix timestamp of the start of the round
 ### setApplicationStatuses
 
 ```solidity
-function setApplicationStatuses(uint256[] rowIndexes, uint256[] fullRows) external nonpayable
+function setApplicationStatuses(IRoundImplementation.ApplicationStatus[] statuses) external nonpayable
 ```
 
-Set application statuses
+
 
 
 
@@ -569,8 +569,7 @@ Set application statuses
 
 | Name | Type | Description |
 |---|---|---|
-| rowIndexes | uint256[] | indexes of the rows |
-| fullRows | uint256[] | full rows |
+| statuses | IRoundImplementation.ApplicationStatus[] | undefined |
 
 ### setReadyForPayout
 
@@ -795,7 +794,7 @@ Emitted when the application form metaPtr is updated
 ### ApplicationStatusesUpdated
 
 ```solidity
-event ApplicationStatusesUpdated(uint256[] indexes, uint256[] statuses)
+event ApplicationStatusesUpdated(uint256 indexed index, uint256 indexed status)
 ```
 
 
@@ -806,8 +805,8 @@ event ApplicationStatusesUpdated(uint256[] indexes, uint256[] statuses)
 
 | Name | Type | Description |
 |---|---|---|
-| indexes  | uint256[] | undefined |
-| statuses  | uint256[] | undefined |
+| index `indexed` | uint256 | undefined |
+| status `indexed` | uint256 | undefined |
 
 ### ApplicationsEndTimeUpdated
 

@@ -4,6 +4,11 @@ pragma solidity 0.8.17;
 import "../utils/MetaPtr.sol";
 
 interface IRoundImplementation {
+    struct ApplicationStatus {
+        uint256 index;
+        uint256 statusRow;
+    }
+
     function initialize(
         bytes calldata encodedParameters,
         address _alloSettings
@@ -38,8 +43,7 @@ interface IRoundImplementation {
     ) external view returns (uint256[] memory);
 
     function setApplicationStatuses(
-        uint256[] memory rowIndexes,
-        uint256[] memory fullRows
+        ApplicationStatus[] memory statuses
     ) external;
 
     function getApplicationStatus(

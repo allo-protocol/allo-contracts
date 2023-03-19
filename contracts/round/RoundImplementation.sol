@@ -70,7 +70,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   /// @notice Emitted when protocol & round fees are paid
   event PayFeeAndEscrowFundsToPayoutContract(uint256 matchAmountAfterFees, uint protocolFeeAmount, uint roundFeeAmount);
 
-  event ApplicationStatusesUpdated(uint256[] indexes, uint256[] statuses);
+  event ApplicationStatusesUpdated(uint256 indexed index, uint256 indexed status);
   // --- Modifier ---
 
   /// @notice modifier to check if round has not ended.
@@ -394,19 +394,21 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   // * 2 - rejected
   // * 3 - canceled
   /// Set application statuses
-  /// @param rowIndexes indexes of the rows
-  /// @param fullRows full rows
-  function setApplicationStatuses(uint256[] memory rowIndexes, uint256[] memory fullRows) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
-    require(rowIndexes.length == fullRows.length, "Round: Different array lengths");
+  /// @param statuses new statuses
+  function setApplicationStatuses(ApplicationStatus[] memory statuses) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
   
-    for (uint256 i = 0; i < rowIndexes.length; i++) {
-      uint256 rowIndex = rowIndexes[i];
-      uint256 fullRow = fullRows[i];
+    for (uint256 i = 0; i < statuses.length;) {
+      uint256 rowIndex = statuses[i].index;
+      uint256 fullRow = statuses[i].statusRow;
         
       applicationStatusesBitMap[rowIndex] = fullRow;
+
+      emit ApplicationStatusesUpdated(rowIndex, fullRow);
+
+      unchecked {
+        i++;
+      }
     }
-  
-    emit ApplicationStatusesUpdated(rowIndexes, fullRows);
   }
 
   /// @notice Get application status

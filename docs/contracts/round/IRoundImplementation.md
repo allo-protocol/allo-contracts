@@ -91,7 +91,7 @@ function initialize(bytes encodedParameters, address _alloSettings) external non
 ### setApplicationStatuses
 
 ```solidity
-function setApplicationStatuses(uint256[] rowIndexes, uint256[] fullRows) external nonpayable
+function setApplicationStatuses(IRoundImplementation.ApplicationStatus[] statuses) external nonpayable
 ```
 
 
@@ -102,8 +102,7 @@ function setApplicationStatuses(uint256[] rowIndexes, uint256[] fullRows) extern
 
 | Name | Type | Description |
 |---|---|---|
-| rowIndexes | uint256[] | undefined |
-| fullRows | uint256[] | undefined |
+| statuses | IRoundImplementation.ApplicationStatus[] | undefined |
 
 ### setReadyForPayout
 

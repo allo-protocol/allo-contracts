@@ -67,12 +67,18 @@ export async function main() {
   const currentStatuses = await round.applicationStatusesBitMap(
     applicationStatusBitMapIndex
   );
-  const newState = buildNewState(BigInt(currentStatuses.toString()), projectIndexes, statusArray);
-
-  const updateTx = await round.setApplicationStatuses(
-    [applicationStatusBitMapIndex],
-    [newState]
+  const newState = buildNewState(
+    BigInt(currentStatuses.toString()),
+    projectIndexes,
+    statusArray
   );
+
+  const applicationStatus = {
+    index: applicationStatusBitMapIndex,
+    statusRow: newState,
+  };
+
+  const updateTx = await round.setApplicationStatuses([applicationStatus]);
   await updateTx.wait();
 
   console.log("✅ application statuses updated: ", updateTx.hash);
