@@ -54,18 +54,22 @@ Anytime the `NewProjectApplication` event is fired, the subgraph responds to the
 
 ### Approving or rejecting applications
 
-When the operators visits the review page, they would be able to see all the applications indexed by the graph, all in pending review state.
+When the operators visits the review page, they would be able to see all the applications stored in the RoundImplementation contract, all in pending review state.
 
 The operator would now be able to approve / reject the applications. Once the decision has been made.
-The round manager saves this information to IPFS and invokes `updateProjectsMetaPtr` with the IPFS hash
+The round manager saves this information in a Bitmap and invokes `setApplicationStatuses` with the indexes and rows of the bitmap.
 which:
-- updates the `projectsMetaPtr`
-- fires the `ProjectsMetaPtrUpdated` event
+- updates the `applicationStatusesBitMap`
+- fires the `ApplicationStatusesUpdated` event
 
-This `projectsMetaPtr` contains a list of all projects which have either been rejected or approved.
-Pending projects not be included here
+This `applicationStatusesBitMap` contains a bitmap of all applications and their statuses.
+Instead of using 1 bit for each application status, we use 2 bits to allow 4 statuses:
+- 0: pending
+- 1: approved
+- 2: rejected 
+- 3: canceled
 
-// TODO : decide structure of `projectsMetaPtr` content
+// TODO : add an example
 
 ### How does the graph update the project indexing ?
 

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
-import "./RoundImplementation.sol";
+import "./IRoundFactory.sol";
+import "./IRoundImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
@@ -20,8 +21,7 @@ import "../utils/MetaPtr.sol";
  * @dev This contract is Ownable thus supports ownership transfership
  *
  */
-contract RoundFactory is OwnableUpgradeable {
-
+contract RoundFactory is IRoundFactory, OwnableUpgradeable {
   string public constant VERSION = "0.2.0";
 
   // --- Data ---
@@ -41,8 +41,11 @@ contract RoundFactory is OwnableUpgradeable {
   event RoundImplementationUpdated(address roundImplementation);
 
   /// @notice Emitted when a new Round is created
-  event RoundCreated(address indexed roundAddress, address indexed ownedBy, address indexed roundImplementation);
-
+  event RoundCreated(
+    address indexed roundAddress,
+    address indexed ownedBy,
+    address indexed roundImplementation
+  );
 
   /// @notice constructor function which ensure deployer is set as owner
   function initialize() external initializer {
@@ -57,8 +60,7 @@ contract RoundFactory is OwnableUpgradeable {
    *
    * @param newAlloSettings New allo settings contract address
    */
-  function updateAlloSettings(address newAlloSettings) public onlyOwner {
-
+  function updateAlloSettings(address newAlloSettings) external onlyOwner {
     alloSettings = newAlloSettings;
 
     emit AlloSettingsUpdated(alloSettings);
@@ -99,12 +101,11 @@ contract RoundFactory is OwnableUpgradeable {
 
     emit RoundCreated(clone, ownedBy, payable(roundImplementation));
 
-    RoundImplementation(payable(clone)).initialize(
+    IRoundImplementation(payable(clone)).initialize(
       encodedParameters,
       alloSettings
     );
 
     return clone;
   }
-
 }

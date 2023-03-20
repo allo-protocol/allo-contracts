@@ -96,6 +96,52 @@ MetaPtr to the application form schema
 | protocol | uint256 | undefined |
 | pointer | string | undefined |
 
+### applicationStatusesBitMap
+
+```solidity
+function applicationStatusesBitMap(uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### applications
+
+```solidity
+function applications(uint256) external view returns (bytes32 projectID, uint256 applicationIndex, struct MetaPtr metaPtr)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | bytes32 | undefined |
+| applicationIndex | uint256 | undefined |
+| metaPtr | MetaPtr | undefined |
+
 ### applicationsEndTime
 
 ```solidity
@@ -106,6 +152,29 @@ Unix timestamp from when round stops accepting applications
 
 
 
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+### applicationsIndexesByProjectID
+
+```solidity
+function applicationsIndexesByProjectID(bytes32, uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bytes32 | undefined |
+| _1 | uint256 | undefined |
 
 #### Returns
 
@@ -146,6 +215,50 @@ function applyToRound(bytes32 projectID, MetaPtr newApplicationMetaPtr) external
 |---|---|---|
 | projectID | bytes32 | undefined |
 | newApplicationMetaPtr | MetaPtr | undefined |
+
+### getApplicationIndexesByProjectID
+
+```solidity
+function getApplicationIndexesByProjectID(bytes32 projectID) external view returns (uint256[])
+```
+
+Get all applications of a projectID
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | bytes32 | unique hash of the project |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256[] | applicationIndexes indexes of the applications |
+
+### getApplicationStatus
+
+```solidity
+function getApplicationStatus(uint256 applicationIndex) external view returns (uint256)
+```
+
+Get application status
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| applicationIndex | uint256 | index of the application |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | status status of the application |
 
 ### getRoleAdmin
 
@@ -288,6 +401,23 @@ Match Amount (excluding protocol fee &amp; round fee)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### nextApplicationIndex
+
+```solidity
+function nextApplicationIndex() external view returns (uint256)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### payoutStrategy
 
 ```solidity
@@ -304,24 +434,6 @@ Payout Strategy Contract Address
 | Name | Type | Description |
 |---|---|---|
 | _0 | contract IPayoutStrategy | undefined |
-
-### projectsMetaPtr
-
-```solidity
-function projectsMetaPtr() external view returns (uint256 protocol, string pointer)
-```
-
-MetaPtr to the projects
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| protocol | uint256 | undefined |
-| pointer | string | undefined |
 
 ### renounceRole
 
@@ -443,6 +555,22 @@ Unix timestamp of the start of the round
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### setApplicationStatuses
+
+```solidity
+function setApplicationStatuses(IRoundImplementation.ApplicationStatus[] statuses) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| statuses | IRoundImplementation.ApplicationStatus[] | undefined |
+
 ### setReadyForPayout
 
 ```solidity
@@ -524,22 +652,6 @@ function updateMatchAmount(uint256 newAmount) external nonpayable
 | Name | Type | Description |
 |---|---|---|
 | newAmount | uint256 | new Amount |
-
-### updateProjectsMetaPtr
-
-```solidity
-function updateProjectsMetaPtr(MetaPtr newProjectsMetaPtr) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newProjectsMetaPtr | MetaPtr | undefined |
 
 ### updateRoundFeeAddress
 
@@ -656,7 +768,7 @@ Withdraw funds from the contract (only by ROUND_OPERATOR_ROLE)
 | Name | Type | Description |
 |---|---|---|
 | tokenAddress | address | token address |
-| recipent | address payable | undefined |
+| recipent | address payable | recipient address |
 
 
 
@@ -678,6 +790,23 @@ Emitted when the application form metaPtr is updated
 |---|---|---|
 | oldMetaPtr  | MetaPtr | undefined |
 | newMetaPtr  | MetaPtr | undefined |
+
+### ApplicationStatusesUpdated
+
+```solidity
+event ApplicationStatusesUpdated(uint256 indexed index, uint256 indexed status)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| index `indexed` | uint256 | undefined |
+| status `indexed` | uint256 | undefined |
 
 ### ApplicationsEndTimeUpdated
 
@@ -748,7 +877,7 @@ Emitted when match amount is updated
 ### NewProjectApplication
 
 ```solidity
-event NewProjectApplication(bytes32 indexed project, MetaPtr applicationMetaPtr)
+event NewProjectApplication(bytes32 indexed projectID, uint256 applicationIndex, MetaPtr applicationMetaPtr)
 ```
 
 Emitted when a project has applied to the round
@@ -759,7 +888,8 @@ Emitted when a project has applied to the round
 
 | Name | Type | Description |
 |---|---|---|
-| project `indexed` | bytes32 | undefined |
+| projectID `indexed` | bytes32 | undefined |
+| applicationIndex  | uint256 | undefined |
 | applicationMetaPtr  | MetaPtr | undefined |
 
 ### PayFeeAndEscrowFundsToPayoutContract
