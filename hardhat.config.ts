@@ -12,6 +12,8 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-abi-exporter";
 import "hardhat-contract-sizer";
+import "@matterlabs/hardhat-zksync-deploy";
+import "@matterlabs/hardhat-zksync-solc";
 
 dotenv.config();
 
@@ -133,6 +135,16 @@ const config: HardhatUserConfig = {
       "https://rpc.testnet.fantom.network/"
     ),
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
+    zkSyncTestnet: {
+      url: "https://zksync2-testnet.zksync.dev",
+      ethNetwork: "goerli",
+      zksync: true,
+    },
+    zkSyncMainnet: {
+      url: "https://zksync2-mainnet.zksync.io",
+      ethNetwork: "mainnet",
+      zksync: true,
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
@@ -154,6 +166,11 @@ const config: HardhatUserConfig = {
   },
   abiExporter: abiExporter,
   dodoc: dodoc,
+  zksolc: {
+    version: "1.3.5",
+    compilerSource: "binary",
+    settings: {},
+  },
 };
 
 export default config;
