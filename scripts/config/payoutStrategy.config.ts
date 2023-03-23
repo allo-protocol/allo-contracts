@@ -33,4 +33,14 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "",
     contract: "",
   },
+  "zksync-testnet": {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
+  "zksync-mainnet": {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
 };

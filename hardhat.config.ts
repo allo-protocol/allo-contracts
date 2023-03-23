@@ -117,7 +117,6 @@ const config: HardhatUserConfig = {
         runs: 400,
       },
     },
-    // @ts-ignore
   },
   networks: {
     // Main Networks
@@ -127,6 +126,11 @@ const config: HardhatUserConfig = {
       "fantom-mainnet",
       "https://rpc.ftm.tools"
     ),
+    "zksync-mainnet": {
+      url: "https://zksync2-mainnet.zksync.io",
+      ethNetwork: "mainnet",
+      zksync: true,
+    },
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
@@ -135,14 +139,9 @@ const config: HardhatUserConfig = {
       "https://rpc.testnet.fantom.network/"
     ),
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
-    zkSyncTestnet: {
+    "zksync-testnet": {
       url: "https://zksync2-testnet.zksync.dev",
       ethNetwork: "goerli",
-      zksync: true,
-    },
-    zkSyncMainnet: {
-      url: "https://zksync2-mainnet.zksync.io",
-      ethNetwork: "mainnet",
       zksync: true,
     },
   },

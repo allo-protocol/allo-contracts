@@ -9,28 +9,38 @@ type DeployParams = Record<string, AlloSettingsParams>;
 
 export const AlloSettingsParams: DeployParams = {
   "mainnet": {
-    alloSettingsContract: '',
+    alloSettingsContract: "",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: '',
+    newProtocolTreasury: "",
   },
   "goerli": {
-    alloSettingsContract: '0xf37a5987052282eFAaE92c2B8c350595C28b81e0',
+    alloSettingsContract: "0xf37a5987052282eFAaE92c2B8c350595C28b81e0",
     newProtocolFeePercentage: 1000, // 1% == 1_000
-    newProtocolTreasury: '0xB8cEF765721A6da910f14Be93e7684e9a3714123',
+    newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
   },
   "optimism-mainnet": {
-    alloSettingsContract: '',
+    alloSettingsContract: "",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: '',
+    newProtocolTreasury: "",
   },
   "fantom-mainnet": {
-    alloSettingsContract: '',
+    alloSettingsContract: "",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: '',
+    newProtocolTreasury: "",
   },
   "fantom-testnet": {
-    alloSettingsContract: '',
+    alloSettingsContract: "",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: '',
-  }
+    newProtocolTreasury: "",
+  },
+  "zksync-testnet": {
+    alloSettingsContract: "",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "",
+  },
+  "zksync-mainnet": {
+    alloSettingsContract: "",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "",
+  },
 };
