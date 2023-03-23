@@ -1,13 +1,16 @@
-import { Wallet, utils } from "zksync-web3";
+import { Deployer } from "@matterlabs/hardhat-zksync-deploy";
+import * as dotenv from "dotenv";
 import * as ethers from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { Deployer } from "@matterlabs/hardhat-zksync-deploy";
+import { utils, Wallet } from "zksync-web3";
+
+dotenv.config();
 
 export default async function (hre: HardhatRuntimeEnvironment) {
   console.log("Deploying ProjectRegistry contract...");
 
   // Initialize the wallet
-  const wallet = new Wallet("<PrivateKey>");
+  const wallet = new Wallet(process.env.DEPLOYER_PRIVATE_KEY ?? "");
 
   // Create a deployer object and load the artifact(s)
   const deployer = new Deployer(hre, wallet);

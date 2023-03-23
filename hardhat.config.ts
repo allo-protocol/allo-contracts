@@ -23,11 +23,13 @@ const chainIds = {
   // testnet
   goerli: 5,
   "fantom-testnet": 4002,
+  "zksync-testnet": 280,
 
   // mainnet
   mainnet: 1,
   "optimism-mainnet": 10,
   "fantom-mainnet": 250,
+  "zksync-mainnet": 324,
 };
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -126,11 +128,10 @@ const config: HardhatUserConfig = {
       "fantom-mainnet",
       "https://rpc.ftm.tools"
     ),
-    "zksync-mainnet": {
-      url: "https://zksync2-mainnet.zksync.io",
-      ethNetwork: "mainnet",
-      zksync: true,
-    },
+    "zksync-mainnet": createMainnetConfig(
+      "zksync-mainnet",
+      "https://zksync2-mainnet.zksync.io"
+    ),
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
@@ -139,11 +140,10 @@ const config: HardhatUserConfig = {
       "https://rpc.testnet.fantom.network/"
     ),
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
-    "zksync-testnet": {
-      url: "https://zksync2-testnet.zksync.dev",
-      ethNetwork: "goerli",
-      zksync: true,
-    },
+    "zksync-testnet": createTestnetConfig(
+      "zksync-testnet",
+      "https://zksync2-testnet.zksync.dev"
+    ),
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
