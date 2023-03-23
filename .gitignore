@@ -10,6 +10,8 @@ typechain
 cache
 artifacts
 abis/
+/.openzeppelin/unknown-31337.json
 
 artifacts-zk
 cache-zk
+.idea

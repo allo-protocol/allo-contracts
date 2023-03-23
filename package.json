@@ -100,6 +100,7 @@
     "@openzeppelin/contracts": "^4.8.2",
     "@openzeppelin/contracts-upgradeable": "^4.8.2",
     "@openzeppelin/merkle-tree": "^1.0.4",
+    "chalk": "^5.2.0",
     "hardhat-contract-sizer": "^2.8.0"
   }
 }
