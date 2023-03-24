@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7e1fe94-65ed-4889-a6ca-499f0c7c450f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/scripts/deployTest.ts" afterDir="false" />
-    </list>
+    <list default="true" id="c7e1fe94-65ed-4889-a6ca-499f0c7c450f" name="Changes" comment="feat: add test deployment script" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +12,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="h7jp7r91" />
@@ -23,6 +22,7 @@
   </component>
   <component name="ProjectId" id="2NQDTH08fmFS5fiXCvsx2lLP8Th" />
   <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -39,7 +39,7 @@
     "nodejs_package_manager_path": "pnpm",
     "prettierjs.PrettierConfiguration.Package": "/Users/vacekj/Programming/contracts/node_modules/prettier",
     "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie",
-    "ts.external.directory.path": "/Users/vacekj/Library/Application Support/JetBrains/Toolbox/apps/WebStorm/ch-0/223.8836.27/WebStorm.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
+    "ts.external.directory.path": "/Users/vacekj/Programming/contracts/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -57,7 +57,23 @@
       <option name="presentableId" value="Default" />
       <updated>1679587418249</updated>
       <workItem from="1679587419780" duration="7011000" />
+      <workItem from="1679594675059" duration="1159000" />
     </task>
+    <task id="LOCAL-00001" summary="feat: add test deployment script">
+      <created>1679594724258</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1679594724258</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: add test deployment script">
+      <created>1679594810411</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1679594810411</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -77,5 +93,7 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="feat: add test deployment script" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: add test deployment script" />
   </component>
 </project>
