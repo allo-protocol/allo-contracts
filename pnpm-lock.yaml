@@ -22,6 +22,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^4.33.0
   '@typescript-eslint/parser': ^4.33.0
   chai: ^4.3.6
+  chalk: ^5.2.0
   dotenv: ^16.0.1
   eslint: ^7.32.0
   eslint-config-prettier: ^8.5.0
@@ -53,6 +54,7 @@ dependencies:
   '@openzeppelin/contracts': 4.8.2
   '@openzeppelin/contracts-upgradeable': 4.8.2
   '@openzeppelin/merkle-tree': 1.0.2
+  chalk: 5.2.0
   hardhat-contract-sizer: 2.8.0_hardhat@2.13.0
 
 devDependencies:
@@ -3096,6 +3098,11 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
+
+  /chalk/5.2.0:
+    resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: false
 
   /chardet/0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}

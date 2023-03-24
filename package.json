@@ -97,6 +97,7 @@
     "@openzeppelin/contracts": "^4.6.0",
     "@openzeppelin/contracts-upgradeable": "^4.6.0",
     "@openzeppelin/merkle-tree": "^1.0.2",
+    "chalk": "^5.2.0",
     "hardhat-contract-sizer": "^2.8.0"
   }
 }
