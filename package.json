@@ -17,6 +17,7 @@
     "size": "npx hardhat size-contracts",
     "force-import": "pnpm hardhat run scripts/forceImport.ts --network",
     "//allo-settings-deploy-scripts": "echo '//-- Allo Settings deploy Script --//'",
+    "deploy:zk": "pnpm hardhat run scripts/deployZkSync.ts --network",
     "deploy-allo-settings": "pnpm hardhat run scripts/settings/deployAlloSettings.ts --network",
     "set-protocol-fee": "pnpm hardhat run scripts/settings/setProtocolFeeDetails.ts --network",
     "// project-registry-deploy-scripts": "echo '//-- Project Registry deploy Script --//'",
