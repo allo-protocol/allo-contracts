@@ -1,19 +1,19 @@
 import * as dotenv from "dotenv";
 
-import { HardhatUserConfig, task } from "hardhat/config";
-import { NetworkUserConfig } from "hardhat/types";
-import "@nomiclabs/hardhat-etherscan";
-import "@nomiclabs/hardhat-solhint";
-import "@openzeppelin/hardhat-upgrades";
-import "@primitivefi/hardhat-dodoc";
-import "@nomiclabs/hardhat-waffle";
-import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
-import "hardhat-abi-exporter";
-import "hardhat-contract-sizer";
 import "@matterlabs/hardhat-zksync-deploy";
 import "@matterlabs/hardhat-zksync-solc";
+import "@nomiclabs/hardhat-etherscan";
+import "@nomiclabs/hardhat-solhint";
+import "@nomiclabs/hardhat-waffle";
+import "@openzeppelin/hardhat-upgrades";
+import "@primitivefi/hardhat-dodoc";
+import "@typechain/hardhat";
+import "hardhat-abi-exporter";
+import "hardhat-contract-sizer";
+import "hardhat-gas-reporter";
+import { HardhatUserConfig, task } from "hardhat/config";
+import { NetworkUserConfig } from "hardhat/types";
+import "solidity-coverage";
 
 dotenv.config();
 
@@ -140,6 +140,7 @@ const config: HardhatUserConfig = {
       "https://rpc.testnet.fantom.network/"
     ),
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
+    hardhat: { zksync: true },
     "zksync-testnet": createTestnetConfig(
       "zksync-testnet",
       "https://zksync2-testnet.zksync.dev"

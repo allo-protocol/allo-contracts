@@ -1,8 +1,10 @@
+/* eslint-disable node/no-unpublished-import */
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy";
 import * as dotenv from "dotenv";
 import * as ethers from "ethers";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { utils, Wallet } from "zksync-web3";
+// eslint-disable-next-line no-unused-vars
+import { Wallet } from "zksync-web3";
 
 dotenv.config();
 
