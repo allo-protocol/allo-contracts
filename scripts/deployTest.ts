@@ -25,8 +25,15 @@ const buildNewState = (current: bigint, indexes: number[], statusArray: number[]
 
 async function deployEverything() {
     async function getCurrentBlock() {
-        const blockN = await ethers.provider.getBlockNumber();
+        // Get the current block
+        const blockN = await ethers.provider.getBlockNumber()
         const block = await ethers.provider.getBlock(blockN);
+        // Extract the block number and timestamp
+        const timestamp = block.timestamp;
+
+        // Log the block number, timestamp, and human-readable UTC date
+        console.log(`Block Number: ${block.number}`);
+        console.log(`Timestamp: ${timestamp}`);
         return block.timestamp;
     }
 
@@ -284,10 +291,8 @@ async function deployEverything() {
     /* Wait until round starts */
     if (networkName === 'localhost') {
         /* Set block-timestamp */
-        let currentTimeStamp = await getCurrentBlock();
-        let timeToAdd = roundStartTime.sub(currentTimeStamp).add(1).toNumber();
-        console.log(timeToAdd);
-        await ethers.provider.send("evm_increaseTime", [timeToAdd])
+        await ethers.provider.send("evm_setNextBlockTimestamp", [roundStartTime.toNumber() + 1])
+        await ethers.provider.send("evm_mine", []);
     } else {
         /*TODO: for non-dev environments, listen for blocks and wait until timestamp is within voting period */
     }
@@ -296,12 +301,12 @@ async function deployEverything() {
     // Cast Vote
     const votes = [
         [
-            ethers.utils.getAddress("0"), // token
+            ethers.constants.AddressZero, // token
             100, // amount
             projects[1].project // grantAddress
         ],
         [
-            ethers.utils.getAddress("0"), // token
+            ethers.constants.AddressZero, // token
             250,  // amount
             projects[1].project  // grantAddress
         ]
@@ -318,6 +323,9 @@ async function deployEverything() {
         );
     }
 
+    await getCurrentBlock();
+    console.log(await round.roundStartTime());
+    console.log(await round.roundEndTime());
     await round.vote(encodedVotes);
 }
 
