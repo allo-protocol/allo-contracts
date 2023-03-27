@@ -312,15 +312,15 @@ async function deployEverything() {
     const votes = [
         [
             ethers.constants.AddressZero, // token
-            100, // amount
+            1, // amount
             projects[1].project, // grantAddress,
-            1
+            100
         ],
         [
             ethers.constants.AddressZero, // token
-            250,  // amount
+            1,  // amount
             projects[1].project,  // grantAddress
-            1
+            200
         ]
     ];
 
@@ -334,8 +334,12 @@ async function deployEverything() {
             )
         );
     }
-    console.log(await account.getBalance());
-    await round.vote(encodedVotes);
+
+    let vote = await round.vote(encodedVotes, {
+        value: 300
+    });
+    console.log("Voted in transaction", vote.hash);
+    console.log('Round simulation complete.')
 }
 
 const generateAndEncodeRoundParam = async (
