@@ -120,18 +120,6 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  // outputSelection: {
-  //   "*": {
-  //     "*": [
-  //       "abi",
-  //       "evm.bytecode.object",
-  //       "evm.deployedBytecode.object",
-  //       "evm.methodIdentifiers",
-  //       "storageLayout",
-  //     ],
-  //     "" : ["ast"],
-  //   },
-  // },
   networks: {
     // Main Networks
     mainnet: createMainnetConfig("mainnet"),
