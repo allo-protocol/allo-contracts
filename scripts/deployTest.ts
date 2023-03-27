@@ -1,6 +1,7 @@
 import hre, {ethers, upgrades} from "hardhat";
 import {encodeProgramParameters, encodeRoundParameters} from "./utils";
 import {AddressZero} from "@ethersproject/constants";
+import {address} from "hardhat/internal/core/config/config-validation";
 
 const STATUS = {
     PENDING: 0,
@@ -200,7 +201,16 @@ async function deployEverything() {
 
     for (const project of projects) {
         let tx = await registry.createProject(project.metaPtr);
+        let receipt = await tx.wait();
         console.log(`Created project in tx ${tx.hash}`);
+        // @ts-ignore
+        const event = receipt.events.find(
+            (e) => e.event === "ProjectCreated"
+        );
+        if (event && event.args) {
+            // @ts-ignore
+            project.id = event.args.projectId;
+        }
     }
 
     /* Create a program */
@@ -303,12 +313,14 @@ async function deployEverything() {
         [
             ethers.constants.AddressZero, // token
             100, // amount
-            projects[1].project // grantAddress
+            projects[1].project, // grantAddress,
+            1
         ],
         [
             ethers.constants.AddressZero, // token
             250,  // amount
-            projects[1].project  // grantAddress
+            projects[1].project,  // grantAddress
+            1
         ]
     ];
 
@@ -317,15 +329,12 @@ async function deployEverything() {
     for (let i = 0; i < votes.length; i++) {
         encodedVotes.push(
             ethers.utils.defaultAbiCoder.encode(
-                ["address", "uint256", "address"],
+                ["address", "uint256", "address", "uint256"],
                 votes[i]
             )
         );
     }
-
-    await getCurrentBlock();
-    console.log(await round.roundStartTime());
-    console.log(await round.roundEndTime());
+    console.log(await account.getBalance());
     await round.vote(encodedVotes);
 }
 
