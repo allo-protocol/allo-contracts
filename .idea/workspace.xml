@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7e1fe94-65ed-4889-a6ca-499f0c7c450f" name="Changes" comment="feat: make applications work">
+    <list default="true" id="c7e1fe94-65ed-4889-a6ca-499f0c7c450f" name="Changes" comment="fix: applications">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/deployTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deployTest.ts" afterDir="false" />
     </list>
@@ -61,7 +61,7 @@
       <updated>1679587418249</updated>
       <workItem from="1679587419780" duration="7011000" />
       <workItem from="1679594675059" duration="3719000" />
-      <workItem from="1679667723319" duration="6293000" />
+      <workItem from="1679667723319" duration="7290000" />
     </task>
     <task id="LOCAL-00001" summary="feat: add test deployment script">
       <created>1679594724258</created>
@@ -98,7 +98,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679913986489</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fix: applications">
+      <created>1679914242424</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1679914242424</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,6 +129,7 @@
     <MESSAGE value="chore: add git" />
     <MESSAGE value="chore: push" />
     <MESSAGE value="feat: make applications work" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: make applications work" />
+    <MESSAGE value="fix: applications" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: applications" />
   </component>
 </project>

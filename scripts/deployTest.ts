@@ -1,7 +1,6 @@
 import hre, {ethers, upgrades} from "hardhat";
 import {encodeProgramParameters, encodeRoundParameters} from "./utils";
 import {AddressZero} from "@ethersproject/constants";
-import {address} from "hardhat/internal/core/config/config-validation";
 
 const STATUS = {
     PENDING: 0,
@@ -26,21 +25,9 @@ const buildNewState = (current: bigint, indexes: number[], statusArray: number[]
 
 async function deployEverything() {
     async function getCurrentBlock() {
-        // Get the current block
         const blockN = await ethers.provider.getBlockNumber();
         const block = await ethers.provider.getBlock(blockN);
-
-        // Extract the block number and timestamp
-        const blockNumber = block.number;
-        const timestamp = block.timestamp;
-
-        // Convert the timestamp to a human-readable UTC date
-        const utcDate = new Date(timestamp * 1000).toISOString();
-
-        // Log the block number, timestamp, and human-readable UTC date
-        console.log(`Block Number: ${blockNumber}`);
-        console.log(`Timestamp: ${timestamp}`);
-        console.log(`UTC Date: ${utcDate}`);
+        return block.timestamp;
     }
 
     const account = (await ethers.getSigners())[0];
@@ -181,7 +168,6 @@ async function deployEverything() {
                 pointer: "bafybeiekytxwrrfzxvuq3ge5glfzlhkuxjgvx2qb4swodhqd3c3mtc5jay",
             },
         },
-
         {
             project: "0x1bCD46B724fD4C08995CEC46ffd51bD45feDE200",
             metaPtr: {
@@ -291,13 +277,48 @@ async function deployEverything() {
         index: 0,
         statusRow: newState,
     }
-
     await round.setApplicationStatuses([applicationStatus]);
+    console.log('set application statuses:', statusArray);
 
+    let roundStartTime = await round.roundStartTime();
     /* Wait until round starts */
-
+    if (networkName === 'localhost') {
+        /* Set block-timestamp */
+        let currentTimeStamp = await getCurrentBlock();
+        let timeToAdd = roundStartTime.sub(currentTimeStamp).add(1).toNumber();
+        console.log(timeToAdd);
+        await ethers.provider.send("evm_increaseTime", [timeToAdd])
+    } else {
+        /*TODO: for non-dev environments, listen for blocks and wait until timestamp is within voting period */
+    }
 
     /* Cast 3-4 votes for each project */
+    // Cast Vote
+    const votes = [
+        [
+            ethers.utils.getAddress("0"), // token
+            100, // amount
+            projects[1].project // grantAddress
+        ],
+        [
+            ethers.utils.getAddress("0"), // token
+            250,  // amount
+            projects[1].project  // grantAddress
+        ]
+    ];
+
+    const encodedVotes = [];
+
+    for (let i = 0; i < votes.length; i++) {
+        encodedVotes.push(
+            ethers.utils.defaultAbiCoder.encode(
+                ["address", "uint256", "address"],
+                votes[i]
+            )
+        );
+    }
+
+    await round.vote(encodedVotes);
 }
 
 const generateAndEncodeRoundParam = async (
@@ -360,7 +381,6 @@ const generateAndEncodeRoundParam = async (
         initRoles,
     ];
 
-    console.log(params);
     return encodeRoundParameters(params);
 };
 
