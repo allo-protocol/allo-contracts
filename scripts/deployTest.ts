@@ -336,10 +336,10 @@ const generateAndEncodeRoundParam = async (
 
     /* All timestamps are in seconds*/
     const initRoundTime = [
-        _currentTimestamp, // immediate  appStartTime
-        _currentTimestamp + SECONDS_PER_SLOT * 4, // 2 slots, roughly 30 seconds on goerli  appEndTime
-        _currentTimestamp + SECONDS_PER_SLOT * 5, // immediately after applications end  roundStartTime
-        _currentTimestamp + SECONDS_PER_SLOT * 8, // 75 seconds   roundEndTime
+        _currentTimestamp + 1, // appStartTime
+        _currentTimestamp + SECONDS_PER_SLOT * 4, // appEndTime
+        _currentTimestamp + SECONDS_PER_SLOT * 6, // roundStartTime
+        _currentTimestamp + SECONDS_PER_SLOT * 8, // roundEndTime
     ];
 
     const initMetaPtr = [roundMetaPtr, applicationMetaPtr];
