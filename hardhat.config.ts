@@ -120,6 +120,18 @@ const config: HardhatUserConfig = {
       },
     },
   },
+  // outputSelection: {
+  //   "*": {
+  //     "*": [
+  //       "abi",
+  //       "evm.bytecode.object",
+  //       "evm.deployedBytecode.object",
+  //       "evm.methodIdentifiers",
+  //       "storageLayout",
+  //     ],
+  //     "" : ["ast"],
+  //   },
+  // },
   networks: {
     // Main Networks
     mainnet: createMainnetConfig("mainnet"),
@@ -128,10 +140,12 @@ const config: HardhatUserConfig = {
       "fantom-mainnet",
       "https://rpc.ftm.tools"
     ),
-    "zksync-mainnet": createMainnetConfig(
-      "zksync-mainnet",
-      "https://zksync2-mainnet.zksync.io"
-    ),
+    "zksync-mainnet": {
+      ...createMainnetConfig(
+        "zksync-mainnet",
+        "https://zksync2-mainnet.zksync.io",
+      ), zksync: true, ethNetwork: "mainnet"
+    },
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
@@ -141,11 +155,14 @@ const config: HardhatUserConfig = {
     ),
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: { zksync: true },
-    "zksync-testnet": createTestnetConfig(
-      "zksync-testnet",
-      "https://zksync2-testnet.zksync.dev"
-    ),
+    "zksync-testnet": {
+      ...createTestnetConfig(
+        "zksync-testnet",
+        "https://zksync2-testnet.zksync.dev"
+      ), zksync: true, ethNetwork: "goerli"
+    },
   },
+  defaultNetwork: "zksync-testnet",
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
@@ -167,9 +184,11 @@ const config: HardhatUserConfig = {
   abiExporter: abiExporter,
   dodoc: dodoc,
   zksolc: {
-    version: "1.3.5",
+    version: "1.3.7",
     compilerSource: "binary",
-    settings: {},
+    settings: {
+      isSystem: true,
+    },
   },
 };
 

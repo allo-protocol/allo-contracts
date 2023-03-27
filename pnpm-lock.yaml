@@ -6,7 +6,9 @@ specifiers:
   '@ethersproject/bytes': ^5.0.0
   '@ethersproject/constants': ^5.6.1
   '@ethersproject/hardware-wallets': ^5.7.0
+  '@ethersproject/hash': ^5.7.0
   '@ethersproject/providers': ^5.0.0
+  '@ethersproject/web': ^5.7.1
   '@ledgerhq/hw-app-eth': ^6.30.5
   '@matterlabs/hardhat-zksync-deploy': ^0.6.2
   '@matterlabs/hardhat-zksync-solc': ^0.3.14
@@ -51,16 +53,17 @@ specifiers:
   ts-node: ^10.7.0
   typechain: ^5.2.0
   typescript: ^4.6.4
-  zksync-web3: ^0.13.4
+  zksync-web3: ^0.13.1
 
 dependencies:
   '@anders-t/ethers-ledger': 1.0.4
   '@ethersproject/abi': 5.7.0
   '@ethersproject/bytes': 5.7.0
   '@ethersproject/hardware-wallets': 5.7.0
+  '@ethersproject/hash': 5.7.0
   '@ethersproject/providers': 5.7.2
+  '@ethersproject/web': 5.7.1
   '@ledgerhq/hw-app-eth': 6.32.0
-  '@matterlabs/hardhat-zksync-deploy': 0.6.2_uxmwhxtx3ycgm5pjqlvste2lse
   '@openzeppelin/contracts': 4.8.2
   '@openzeppelin/contracts-upgradeable': 4.8.2
   '@openzeppelin/merkle-tree': 1.0.2
@@ -70,6 +73,7 @@ dependencies:
 
 devDependencies:
   '@ethersproject/constants': 5.7.0
+  '@matterlabs/hardhat-zksync-deploy': 0.6.2_uxmwhxtx3ycgm5pjqlvste2lse
   '@matterlabs/hardhat-zksync-solc': 0.3.14_hardhat@2.13.0
   '@nomiclabs/hardhat-ethers': 2.2.2_wknqauzjtp3mhprkntsmqpccee
   '@nomiclabs/hardhat-etherscan': 3.1.7_hardhat@2.13.0
@@ -819,7 +823,7 @@ packages:
       ethers: 5.7.2
       hardhat: 2.13.0_6qtx7vkbdhwvdm4crzlegk4mvi
       zksync-web3: 0.13.4_ethers@5.7.2
-    dev: false
+    dev: true
 
   /@matterlabs/hardhat-zksync-solc/0.3.14_hardhat@2.13.0:
     resolution: {integrity: sha512-iKuQ+vvnpv3K2lkFO41xpJcNWH0KHJ/5JbOboTlPZATVR7F3GJeHfJL+GG4wkxKXnxZczpxyQqC4rAfMKvRaDg==}
@@ -11781,7 +11785,6 @@ packages:
       ethers: ^5.7.0
     dependencies:
       ethers: 5.7.2
-    dev: false
 
   github.com/ethereumjs/ethereumjs-abi/ee3994657fa7a427238e6ba92a84d0b529bbcde0:
     resolution: {tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/ee3994657fa7a427238e6ba92a84d0b529bbcde0}

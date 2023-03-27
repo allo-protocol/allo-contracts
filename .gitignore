@@ -8,5 +8,7 @@ typechain
 
 # Hardhat files
 cache
+cache-zk
 artifacts
+artifacts-zk
 abis/
