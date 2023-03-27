@@ -304,7 +304,16 @@ async function deployEverything() {
         await ethers.provider.send("evm_setNextBlockTimestamp", [roundStartTime.toNumber() + 1])
         await ethers.provider.send("evm_mine", []);
     } else {
-        /*TODO: for non-dev environments, listen for blocks and wait until timestamp is within voting period */
+        /* testnet, can't directly mine blocks, need to listen for blocks and wait until our time comes */
+        await new Promise((resolve) => {
+            ethers.provider.on('block', async (blockNumber) => {
+                let block = await ethers.provider.getBlock(blockNumber);
+                if (block.timestamp >= roundStartTime.toNumber()) {
+                    /* Continue */
+                    resolve(null);
+                }
+            });
+        })
     }
 
     /* Cast 3-4 votes for each project */
