@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7e1fe94-65ed-4889-a6ca-499f0c7c450f" name="Changes" comment="chore: add git">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="c7e1fe94-65ed-4889-a6ca-499f0c7c450f" name="Changes" comment="chore: push">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/deployTest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deployTest.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,7 +61,7 @@
       <updated>1679587418249</updated>
       <workItem from="1679587419780" duration="7011000" />
       <workItem from="1679594675059" duration="3719000" />
-      <workItem from="1679667723319" duration="1826000" />
+      <workItem from="1679667723319" duration="5933000" />
     </task>
     <task id="LOCAL-00001" summary="feat: add test deployment script">
       <created>1679594724258</created>
@@ -87,7 +84,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679655572216</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="chore: push">
+      <created>1679670023453</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1679670023453</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -109,6 +113,7 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="feat: add test deployment script" />
     <MESSAGE value="chore: add git" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: add git" />
+    <MESSAGE value="chore: push" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: push" />
   </component>
 </project>
