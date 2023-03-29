@@ -14,8 +14,8 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolTreasury: '',
   },
   "goerli": {
-    alloSettingsContract: '0xf37a5987052282eFAaE92c2B8c350595C28b81e0',
-    newProtocolFeePercentage: 1000, // 1% == 1_000
+    alloSettingsContract: '0x2330b7ABA1DbC159E14113C0Ec56F273e2134F2c',
+    newProtocolFeePercentage: 5000, // 5% == 5_000
     newProtocolTreasury: '0xB8cEF765721A6da910f14Be93e7684e9a3714123',
   },
   "optimism-mainnet": {

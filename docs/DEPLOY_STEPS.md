@@ -211,7 +211,7 @@ pnpm run deploy-qf-implementation goerli
 pnpm run link-qf-implementation goerli
 
 # Payout
-pnpm run deploy-merkle-contract goerli
+pnpm run deploy-merkle-factory goerli
 pnpm run deploy-merkle-implementation goerli
 pnpm run link-merkle-implementation goerli
 
@@ -232,6 +232,6 @@ pnpm run deploy-builder goerli
 # These scripts would be used to create a test round
 pnpm run create-program goerli
 pnpm run create-qf-contract goerli
-pnpm run deploy-merkle-contract goerli
+pnpm run create-merkle-contract goerli
 pnpm run create-round goerli
 ```
