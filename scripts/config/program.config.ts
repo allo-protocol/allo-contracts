@@ -14,9 +14,9 @@ export const programParams: DeployParams = {
     programContract: '0x4fde273e009F58Aa0e5e09289242D5336FD18ad1'
   },
   "goerli": {
-    programFactoryContract: '0x548c775c4Bd61d873a445ee4E769cf1A18d60eA9',
-    programImplementationContract: '0x8568133fF3Ef0BD108868278Cb2a516Eaa3B8ABf',
-    programContract: '0x86DceaCc03A52b7914b72eB4E10290f72BD99e68'
+    programFactoryContract: '0x79Ba35cb31620db1b5b101A9A13A1b0A82B5BC9e',
+    programImplementationContract: '0xe0281a20dFaCb0E179E6581c33542bC533DdC4AB',
+    programContract: '0x6ac4C161768bDc64762f5C1c173af339e2E6a689'
   },
   "optimism-mainnet": {
     programFactoryContract: '0x8918401DD47f1645fF1111D8E513c0404b84d5bB',

@@ -14,9 +14,9 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   goerli: {
-    factory: "0xBb380EEEF1D33e9B993CEDbb77A6753EbA0d2F9f",
-    implementation: "0x8c2781F2681C66eCb477FD11e93699F56Db38b63",
-    contract: "0xB4b9f865Ee0948238AC56534cbbd8B8c45d5fC60",
+    factory: "0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe",
+    implementation: "0x3e7f72DFeDF6ba1BcBFE77A94a752C529Bb4429E",
+    contract: "0x3172a6cCE26529e7DD2B533e7c3622a0b544f349",
   },
   "optimism-mainnet": {
     factory: "",

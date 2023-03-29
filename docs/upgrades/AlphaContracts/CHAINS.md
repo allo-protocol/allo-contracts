@@ -91,17 +91,16 @@ These are contracts that are created/deployed once for goerli
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        | 0x79Ba35cb31620db1b5b101A9A13A1b0A82B5BC9e |
-| ProgramImplementation                 | 0xe0281a20dFaCb0E179E6581c33542bC533DdC4AB |
-| QuadraticFundingVotingStrategyFactory | 0x06A6Cc566c5A88E77B1353Cdc3110C2e6c828e38 |
-| QFVotingStrategyImplementation        | 0x114885035DAF6f8E09BE55Ed2169d41A512dad45 |
-| MerklePayoutStrategyFactory           | 0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe |
-| MerklePayouStrategyImplementation     | 0x3e7f72DFeDF6ba1BcBFE77A94a752C529Bb4429E |
-| AlloSettings                          | 0x2330b7ABA1DbC159E14113C0Ec56F273e2134F2c |    
-| RoundFactory                          | 0x24F9EBFAdf095e0afe3d98635ee83CD72e49B5B0 |
-| RoundImplementation                   | 0x1c582D2c6Abdc3E53cB6c5747C7c3bb96663Ab77 |
-| ProjectRegistry                       | 0xa71864fAd36439C50924359ECfF23Bb185FFDf21 |
-
+| ProgramFactory                        | 0x548c775c4Bd61d873a445ee4E769cf1A18d60eA9 |
+| ProgramImplementation                 | 0x8568133fF3Ef0BD108868278Cb2a516Eaa3B8ABf |
+| QuadraticFundingVotingStrategyFactory | 0xF741F7B6a4cb3B4869B2e2C01aB70A12575B53Ab |
+| QFVotingStrategyImplementation        | 0xcaBE5370293addA85e961bc46fE5ec6D3c6aab28 |
+| RoundFactory                          | 0x8fFaDeC99708a69b1D8e143b2aE7C96039b338f6 |
+| RoundImplementation                   | 0x0bbB660E151F4A404AA5692445465291A95400C4 |
+| ProjectRegistry                       | 0x832c5391dc7931312CbdBc1046669c9c3A4A28d5 |
+| MerklePayoutStrategyFactory           | 0xBb380EEEF1D33e9B993CEDbb77A6753EbA0d2F9f |
+| MerklePayouStrategyImplementation     | 0x8c2781F2681C66eCb477FD11e93699F56Db38b63 |
+| AlloSettings                          | 0xf37a5987052282eFAaE92c2B8c350595C28b81e0 |
 
 **Sample contracts unique to a round **
 
@@ -109,10 +108,10 @@ These are contracts that are created/deployed for every round created on goerli
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| Program                               | 0x6ac4C161768bDc64762f5C1c173af339e2E6a689 |
-| QFVotingContract                      | 0x818A3C8F82667bd222faF84a954F35d2b0Eb6a78 |
-| MerklePayoutContract                  | 0x3172a6cCE26529e7DD2B533e7c3622a0b544f349 |
-| Round                                 | 0xF7b7d21257DEaC12F75D901309026913429C9bdF |
+| Program                               | 0x86DceaCc03A52b7914b72eB4E10290f72BD99e68 |
+| QFVotingContract                      | 0xBF539cD4024Ab2140aA864ba2C6A430201b19318 |
+| MerklePayoutContract                  | 0xEC041ea461a59B355671CC1F87c904519375A6FD |
+| Round                                 | 0x9aCcdbf1805088145a168f2D496e9F775222a82C |
 
 
 ## Fantom Testnetwork
