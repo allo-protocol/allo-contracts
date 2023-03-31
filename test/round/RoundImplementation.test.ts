@@ -22,11 +22,11 @@ type MetaPtr = {
   pointer: string;
 };
 
-const STATUS = {
-  PENDING: 0,
-  ACCEPTED: 1,
-  REJECTED: 2,
-  CANCELED: 3,
+enum STATUS  {
+  PENDING = 0,
+  ACCEPTED = 1,
+  REJECTED = 2,
+  CANCELED = 3,
 };
 
 describe.only("RoundImplementation", function () {
@@ -1088,15 +1088,20 @@ describe.only("RoundImplementation", function () {
         await initRound(_currentBlockTimestamp);
       });
 
-      const buildNewState = (current: bigint, indexes: number[], statusArray: number[]) => {
-        let newState:bigint = current;
+      const buildStatusRow = (
+        indexes: number[],
+        statusArray: number[]
+      ) => {
+        if(indexes.length > 128) {
+          throw new Error("Cannot build a status row with more than 128 statuses.");
+        }
+
+        let newState = 0n;
 
         for (let i = 0; i < indexes.length; i++) {
-          const index = indexes[i];
-          const position = (index % 32) * 2;
-          const mask = BigInt(~(BigInt(3) << BigInt(position)));
-          newState =
-            (newState & mask) | (BigInt(statusArray[i]) << BigInt(position));
+          const index = BigInt(indexes[i]);
+          const position = index * 2n;
+          newState = newState | (BigInt(statusArray[i]) << position);
         }
 
         return newState.toString();
@@ -1122,7 +1127,7 @@ describe.only("RoundImplementation", function () {
           STATUS.CANCELED,
         ];
 
-        const newState = buildNewState(BigInt(0), indexes, statusArray);
+        const newState = buildStatusRow(indexes, statusArray);
 
         const applicationStatus = {
           index: 0,
