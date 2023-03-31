@@ -6,6 +6,7 @@ import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
+import { buildStatusRow, ApplicationStatus } from "../../utils/applicationStatus";
 import {
   MockERC20,
   MerklePayoutStrategyImplementation,
@@ -20,13 +21,6 @@ import {
 type MetaPtr = {
   protocol: BigNumberish;
   pointer: string;
-};
-
-enum ApplicationStatus  {
-  PENDING = 0,
-  ACCEPTED = 1,
-  REJECTED = 2,
-  CANCELED = 3,
 };
 
 describe.only("RoundImplementation", function () {
@@ -1087,29 +1081,6 @@ describe.only("RoundImplementation", function () {
 
         await initRound(_currentBlockTimestamp);
       });
-
-      const buildStatusRow = (
-        currentRow: bigint,
-        statuses: {index: number, status: ApplicationStatus}[]
-      ) => {
-        if(statuses.length > 128) {
-          throw new Error("Cannot build a status row with more than 128 statuses.");
-        }
-
-        let newRow = currentRow;
-
-        for (let i = 0; i < statuses.length; i++) {
-          const columnIndex = BigInt(statuses[i].index) * 2n;
-          const status = BigInt(statuses[i].status);
-
-          // build a mask and clear the previous status of this index
-          newRow = newRow & ~(3n << columnIndex);
-          // set the new status
-          newRow = newRow | status << columnIndex;
-        }
-
-        return newRow.toString();
-      };
 
       it("SHOULD set the correct application statuses", async () => {
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 110]);
