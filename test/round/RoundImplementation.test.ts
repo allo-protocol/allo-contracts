@@ -1099,13 +1099,13 @@ describe.only("RoundImplementation", function () {
         let newRow = currentRow;
 
         for (let i = 0; i < statuses.length; i++) {
-          const rowIndex = BigInt(statuses[i].index) * 2n;
+          const columnIndex = BigInt(statuses[i].index) * 2n;
           const status = BigInt(statuses[i].status);
 
           // build a mask and clear the previous status of this index
-          newRow = newRow & ~(3n << rowIndex);
+          newRow = newRow & ~(3n << columnIndex);
           // set the new status
-          newRow = newRow | status << rowIndex;
+          newRow = newRow | status << columnIndex;
         }
 
         return newRow.toString();
