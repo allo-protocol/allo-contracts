@@ -22,7 +22,7 @@ type MetaPtr = {
   pointer: string;
 };
 
-enum STATUS  {
+enum ApplicationStatus  {
   PENDING = 0,
   ACCEPTED = 1,
   REJECTED = 2,
@@ -1089,22 +1089,26 @@ describe.only("RoundImplementation", function () {
       });
 
       const buildStatusRow = (
-        indexes: number[],
-        statusArray: number[]
+        currentRow: bigint,
+        statuses: {index: number, status: ApplicationStatus}[]
       ) => {
-        if(indexes.length > 128) {
+        if(statuses.length > 128) {
           throw new Error("Cannot build a status row with more than 128 statuses.");
         }
 
-        let newState = 0n;
+        let newRow = currentRow;
 
-        for (let i = 0; i < indexes.length; i++) {
-          const index = BigInt(indexes[i]);
-          const position = index * 2n;
-          newState = newState | (BigInt(statusArray[i]) << position);
+        for (let i = 0; i < statuses.length; i++) {
+          const rowIndex = BigInt(statuses[i].index) * 2n;
+          const status = BigInt(statuses[i].status);
+
+          // build a mask and clear the previous status of this index
+          newRow = newRow & ~(3n << rowIndex);
+          // set the new status
+          newRow = newRow | status << rowIndex;
         }
 
-        return newState.toString();
+        return newRow.toString();
       };
 
       it("SHOULD set the correct application statuses", async () => {
@@ -1119,15 +1123,14 @@ describe.only("RoundImplementation", function () {
           );
         }
 
-        const indexes: number[] = [0, 1, 2, 3];
-        const statusArray: number[] = [
-          STATUS.PENDING,
-          STATUS.ACCEPTED,
-          STATUS.REJECTED,
-          STATUS.CANCELED,
+        const statuses = [
+          {index: 0, status:ApplicationStatus.PENDING},
+          {index: 1, status:ApplicationStatus.ACCEPTED},
+          {index: 2, status:ApplicationStatus.REJECTED},
+          {index: 3, status:ApplicationStatus.CANCELED},
         ];
 
-        const newState = buildStatusRow(indexes, statusArray);
+        const newState = buildStatusRow(0n, statuses);
 
         const applicationStatus = {
           index: 0,
@@ -1137,19 +1140,19 @@ describe.only("RoundImplementation", function () {
         await roundImplementation.setApplicationStatuses([applicationStatus]);
 
         expect(await roundImplementation.getApplicationStatus(0)).equal(
-          STATUS.PENDING
+          ApplicationStatus.PENDING
         );
 
         expect(await roundImplementation.getApplicationStatus(1)).equal(
-          STATUS.ACCEPTED
+          ApplicationStatus.ACCEPTED
         );
 
         expect(await roundImplementation.getApplicationStatus(2)).equal(
-          STATUS.REJECTED
+          ApplicationStatus.REJECTED
         );
 
         expect(await roundImplementation.getApplicationStatus(3)).equal(
-          STATUS.CANCELED
+          ApplicationStatus.CANCELED
         );      
       });
     });
