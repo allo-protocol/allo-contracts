@@ -1124,10 +1124,10 @@ describe.only("RoundImplementation", function () {
         }
 
         const statuses = [
-          {index: 0, status:ApplicationStatus.PENDING},
-          {index: 1, status:ApplicationStatus.ACCEPTED},
-          {index: 2, status:ApplicationStatus.REJECTED},
-          {index: 3, status:ApplicationStatus.CANCELED},
+          { index: 0, status: ApplicationStatus.PENDING },
+          { index: 1, status: ApplicationStatus.ACCEPTED },
+          { index: 2, status: ApplicationStatus.REJECTED },
+          { index: 3, status: ApplicationStatus.CANCELED },
         ];
 
         const newState = buildStatusRow(0n, statuses);
