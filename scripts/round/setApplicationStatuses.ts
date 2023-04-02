@@ -5,42 +5,18 @@ import hre from "hardhat";
 import { confirmContinue } from "../../utils/script-utils";
 import { roundParams } from "../config/round.config";
 import * as utils from "../utils";
+import { buildStatusRow, ApplicationStatus } from "../../utils/applicationStatus";
 
 utils.assertEnvironment();
 
-const STATUS = {
-  PENDING: 0,
-  ACCEPTED: 1,
-  REJECTED: 2,
-  CANCELED: 3,
-};
-
 const applicationStatusBitMapIndex = 0;
 
-const projectIndexes: number[] = [0, 1, 2, 3];
-const statusArray: number[] = [
-  STATUS.PENDING,
-  STATUS.ACCEPTED,
-  STATUS.REJECTED,
-  STATUS.CANCELED,
+const statuses = [
+  { index: 0, status: ApplicationStatus.PENDING },
+  { index: 1, status: ApplicationStatus.ACCEPTED },
+  { index: 2, status: ApplicationStatus.REJECTED },
+  { index: 3, status: ApplicationStatus.CANCELED },
 ];
-
-const buildNewState = (
-  current: bigint,
-  indexes: number[],
-  statusArray: number[]
-) => {
-  let newState: bigint = current;
-
-  for (let i = 0; i < indexes.length; i++) {
-    const index = indexes[i];
-    const position = (index % 32) * 2;
-    const mask = BigInt(~(BigInt(3) << BigInt(position)));
-    newState = (newState & mask) | (BigInt(statusArray[i]) << BigInt(position));
-  }
-
-  return newState.toString();
-};
 
 export async function main() {
   const network = hre.network;
@@ -67,10 +43,9 @@ export async function main() {
   const currentStatuses = await round.applicationStatusesBitMap(
     applicationStatusBitMapIndex
   );
-  const newState = buildNewState(
+  const newState = buildStatusRow(
     BigInt(currentStatuses.toString()),
-    projectIndexes,
-    statusArray
+    statuses
   );
 
   const applicationStatus = {

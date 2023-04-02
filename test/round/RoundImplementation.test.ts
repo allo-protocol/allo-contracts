@@ -6,6 +6,7 @@ import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
+import { buildStatusRow, ApplicationStatus } from "../../utils/applicationStatus";
 import {
   MockERC20,
   MerklePayoutStrategyImplementation,
@@ -20,13 +21,6 @@ import {
 type MetaPtr = {
   protocol: BigNumberish;
   pointer: string;
-};
-
-const STATUS = {
-  PENDING: 0,
-  ACCEPTED: 1,
-  REJECTED: 2,
-  CANCELED: 3,
 };
 
 describe.only("RoundImplementation", function () {
@@ -1088,20 +1082,6 @@ describe.only("RoundImplementation", function () {
         await initRound(_currentBlockTimestamp);
       });
 
-      const buildNewState = (current: bigint, indexes: number[], statusArray: number[]) => {
-        let newState:bigint = current;
-
-        for (let i = 0; i < indexes.length; i++) {
-          const index = indexes[i];
-          const position = (index % 32) * 2;
-          const mask = BigInt(~(BigInt(3) << BigInt(position)));
-          newState =
-            (newState & mask) | (BigInt(statusArray[i]) << BigInt(position));
-        }
-
-        return newState.toString();
-      };
-
       it("SHOULD set the correct application statuses", async () => {
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 110]);
         for (let i = 0; i < 4; i++) {
@@ -1114,15 +1094,14 @@ describe.only("RoundImplementation", function () {
           );
         }
 
-        const indexes: number[] = [0, 1, 2, 3];
-        const statusArray: number[] = [
-          STATUS.PENDING,
-          STATUS.ACCEPTED,
-          STATUS.REJECTED,
-          STATUS.CANCELED,
+        const statuses = [
+          { index: 0, status: ApplicationStatus.PENDING },
+          { index: 1, status: ApplicationStatus.ACCEPTED },
+          { index: 2, status: ApplicationStatus.REJECTED },
+          { index: 3, status: ApplicationStatus.CANCELED },
         ];
 
-        const newState = buildNewState(BigInt(0), indexes, statusArray);
+        const newState = buildStatusRow(0n, statuses);
 
         const applicationStatus = {
           index: 0,
@@ -1132,19 +1111,19 @@ describe.only("RoundImplementation", function () {
         await roundImplementation.setApplicationStatuses([applicationStatus]);
 
         expect(await roundImplementation.getApplicationStatus(0)).equal(
-          STATUS.PENDING
+          ApplicationStatus.PENDING
         );
 
         expect(await roundImplementation.getApplicationStatus(1)).equal(
-          STATUS.ACCEPTED
+          ApplicationStatus.ACCEPTED
         );
 
         expect(await roundImplementation.getApplicationStatus(2)).equal(
-          STATUS.REJECTED
+          ApplicationStatus.REJECTED
         );
 
         expect(await roundImplementation.getApplicationStatus(3)).equal(
-          STATUS.CANCELED
+          ApplicationStatus.CANCELED
         );      
       });
     });
