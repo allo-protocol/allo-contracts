@@ -30,6 +30,7 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
     address indexed voter,            // voter address
     address grantAddress,             // grant address
     bytes32 indexed projectId,        // project id
+    uint256 applicationIndex,         // application index
     address indexed roundAddress      // round address
   );
 
@@ -53,21 +54,21 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
    * @param voterAddress voter address
    */
   function vote(bytes[] calldata encodedVotes, address voterAddress) external override payable nonReentrant isRoundContract {
-
     /// @dev iterate over multiple donations and transfer funds
     for (uint256 i = 0; i < encodedVotes.length; i++) {
-
       /// @dev decode encoded vote
       (
         address _token,
         uint256 _amount,
         address _grantAddress,
-        bytes32 _projectId
+        bytes32 _projectId,
+        uint256 _applicationIndex
       ) = abi.decode(encodedVotes[i], (
         address,
         uint256,
         address,
-        bytes32
+        bytes32,
+        uint256
       ));
 
       if (_token == address(0)) {
@@ -84,7 +85,6 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
           _grantAddress,
           _amount
         );
-
       }
 
       /// @dev emit event for transfer
@@ -94,10 +94,9 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
         voterAddress,
         _grantAddress,
         _projectId,
+        _applicationIndex,
         msg.sender
       );
-
     }
-
   }
 }

@@ -1214,13 +1214,14 @@ describe.only("RoundImplementation", function () {
             5,
             Wallet.createRandom().address,
             formatBytes32String("grant2"),
+            1,
           ],
         ];
 
         for (let i = 0; i < votes.length; i++) {
           encodedVotes.push(
             ethers.utils.defaultAbiCoder.encode(
-              ["address", "uint256", "address", "bytes32"],
+              ["address", "uint256", "address", "bytes32", "uint256"],
               votes[i]
             )
           );
