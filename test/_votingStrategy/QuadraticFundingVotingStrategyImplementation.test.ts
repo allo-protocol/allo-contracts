@@ -2,7 +2,7 @@ import { AddressZero } from "@ethersproject/constants";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { deployContract } from "ethereum-waffle";
-import { Event, Wallet } from "ethers";
+import { Event, Wallet, BigNumber } from 'ethers';
 import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
 import { artifacts, ethers } from "hardhat";
 import { Artifact } from "hardhat/types";
@@ -331,12 +331,14 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             grant1NativeTokenTransferAmount,
             grant1.address,
             formatBytes32String("grant1"),
+            BigNumber.from("99")
           ],
           [
             nativeTokenAddress,
             grant2NativeTokenTransferAmount,
             grant2.address,
             formatBytes32String("grant2"),
+            BigNumber.from("99")
           ],
         ];
 
@@ -359,7 +361,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           for (let i = 0; i < votesInNativeToken.length; i++) {
             encodedVotesInNativeToken.push(
               ethers.utils.defaultAbiCoder.encode(
-                ["address", "uint256", "address", "bytes32"],
+                ["address", "uint256", "address", "bytes32", "uint256"],
                 votesInNativeToken[i]
               )
             );
@@ -376,7 +378,9 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             { value: "100000000000000000" }
           );
 
-          await expect(txn).to.revertedWith("Address: insufficient balance");
+          await expect(txn).to.revertedWith(  
+            "Address: insufficient balance"
+          );
         });
 
         it("SHOULD transfer balance from user to grant", async () => {
@@ -433,6 +437,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             user.address,
             grant1.address,
             formatBytes32String("grant1"),
+            BigNumber.from("99"),
             user.address // note: this would be the round contract
           );
 
@@ -443,6 +448,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             user.address,
             grant2.address,
             formatBytes32String("grant2"),
+            BigNumber.from("99"),
             user.address // note: this would be the round contract
           );
 
@@ -486,12 +492,14 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
               grant1NativeTokenTransferAmount,
               grant1.address,
               formatBytes32String("grant1"),
+              BigNumber.from("99")
             ],
             [
               mockERC20.address,
               grant2TokenTransferAmount,
               grant2.address,
               formatBytes32String("grant2"),
+              BigNumber.from("99")
             ],
           ];
 
@@ -501,7 +509,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           for (let i = 0; i < votes.length; i++) {
             encodedVotes.push(
               ethers.utils.defaultAbiCoder.encode(
-                ["address", "uint256", "address", "bytes32"],
+                ["address", "uint256", "address", "bytes32", "uint256"],
                 votes[i]
               )
             );
@@ -572,6 +580,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             user.address,
             grant1.address,
             formatBytes32String("grant1"),
+            BigNumber.from("99"),
             user.address // note: this would be the round contract
           );
 
@@ -582,6 +591,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             user.address,
             grant2.address,
             formatBytes32String("grant2"),
+            BigNumber.from("99"),
             user.address // note: this would be the round contract
           );
 
