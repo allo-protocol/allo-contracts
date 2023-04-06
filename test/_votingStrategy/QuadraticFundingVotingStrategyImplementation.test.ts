@@ -459,6 +459,77 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
 
           expect(votedEvents.length).to.equal(2);
         });
+
+        it("SHOULD revert if receiver cannot receive native tokens", async () => {
+          const receiverFactory = await ethers.getContractFactory(
+            "MockRevertingReceiver"
+          );
+          const receiver = await receiverFactory.deploy();
+          await receiver.deployed();
+
+          const nativeTokenVotes = [
+            [
+              nativeTokenAddress,
+              grant1NativeTokenTransferAmount,
+              grant1.address,
+              formatBytes32String("grant1"),
+              BigNumber.from("99"),
+            ],
+            [
+              nativeTokenAddress,
+              grant2NativeTokenTransferAmount,
+              receiver.address,
+              formatBytes32String("revert-me"),
+              BigNumber.from("100"),
+            ],
+            [
+              nativeTokenAddress,
+              grant2NativeTokenTransferAmount,
+              grant2.address,
+              formatBytes32String("grant2"),
+              BigNumber.from("101"),
+            ],
+          ];
+
+          // Encode Votes
+          encodedVotesInNativeToken = [];
+
+          for (let i = 0; i < nativeTokenVotes.length; i++) {
+            encodedVotesInNativeToken.push(
+              ethers.utils.defaultAbiCoder.encode(
+                ["address", "uint256", "address", "bytes32", "uint256"],
+                nativeTokenVotes[i]
+              )
+            );
+          }
+
+          // Invoke init
+          await quadraticFundingVotingStrategy.init();
+
+          await expect(
+            quadraticFundingVotingStrategy.vote(
+              encodedVotesInNativeToken,
+              user.address,
+              { value: "200000000000000000" }
+            )
+          ).to.revertedWith(
+            "Address: unable to send value, recipient may have reverted"
+          );
+        });
+
+        it("SHOULD revert if user sends too many eth", async () => {
+          // Invoke init
+          await quadraticFundingVotingStrategy.init();
+
+          await expect(
+            quadraticFundingVotingStrategy.vote(
+              encodedVotesInNativeToken,
+              user.address,
+              { value: "99900000000000000000" }
+            )
+          ).to.revertedWith("msg.value does not match vote amount");
+        });
+
       });
 
       describe("test: vote with native and ERC20 tokens", () => {
