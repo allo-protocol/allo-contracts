@@ -23,7 +23,7 @@ type MetaPtr = {
   pointer: string;
 };
 
-describe.only("RoundImplementation", function () {
+describe("RoundImplementation", function () {
   let user: SignerWithAddress;
 
   // Allotment Settings
