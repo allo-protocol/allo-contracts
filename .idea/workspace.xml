@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bdf6b4da-9cf3-4e58-a025-7d3b00d731b3" name="Changes" comment="fix: actually run all the tests&#10;&#10;(remove .only)">
+    <list default="true" id="bdf6b4da-9cf3-4e58-a025-7d3b00d731b3" name="Changes" comment="fix: refuse push when .only is present">
       <change beforePath="$PROJECT_DIR$/.husky/pre-push" beforeDir="false" afterPath="$PROJECT_DIR$/.husky/pre-push" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +51,7 @@
       <option name="presentableId" value="Default" />
       <updated>1680806814112</updated>
       <workItem from="1680806815383" duration="1877000" />
-      <workItem from="1680808698335" duration="644000" />
+      <workItem from="1680808698335" duration="663000" />
     </task>
     <task id="LOCAL-00001" summary="fix: actually run all the tests&#10;&#10;(remove .only)">
       <created>1680808780563</created>
@@ -68,7 +67,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680809230506</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="fix: refuse push when .only is present">
+      <created>1680809352035</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1680809352035</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -78,6 +84,7 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="fix: actually run all the tests&#10;&#10;(remove .only)" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: actually run all the tests&#10;&#10;(remove .only)" />
+    <MESSAGE value="fix: refuse push when .only is present" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: refuse push when .only is present" />
   </component>
 </project>
