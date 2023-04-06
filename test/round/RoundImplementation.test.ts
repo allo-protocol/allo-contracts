@@ -23,7 +23,7 @@ type MetaPtr = {
   pointer: string;
 };
 
-describe.only("RoundImplementation", function () {
+describe("RoundImplementation", function () {
   let user: SignerWithAddress;
 
   // Allotment Settings
@@ -1124,7 +1124,7 @@ describe.only("RoundImplementation", function () {
 
         expect(await roundImplementation.getApplicationStatus(3)).equal(
           ApplicationStatus.CANCELED
-        );      
+        );
       });
     });
 
