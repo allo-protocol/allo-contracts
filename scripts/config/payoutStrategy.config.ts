@@ -9,8 +9,8 @@ type DeployParams = Record<string, MerklePayoutParams>;
 
 export const MerklePayoutParams: DeployParams = {
   mainnet: {
-    factory: "",
-    implementation: "",
+    factory: "0x8F8d78f119Aa722453d33d6881f4D400D67D054F",
+    implementation: "0xfF94fAfC740Be8D2010304108266E7b90ed232fc",
     contract: "",
   },
   goerli: {

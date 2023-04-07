@@ -8,15 +8,16 @@ These are contracts that are created/deployed once for ethereum mainnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        | 0xe0281a20dFaCb0E179E6581c33542bC533DdC4AB |
-| ProgramImplementation                 | 0x21B0be8253DEdA0d2d8f010d06ED86093d52359b |
-| QuadraticFundingVotingStrategyFactory | 0x06A6Cc566c5A88E77B1353Cdc3110C2e6c828e38 |
-| QFVotingStrategyImplementation        | 0x5030e1a81330d5098473E8d309E116C2792202eB |
-| RoundFactory                          | 0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe |
-| RoundImplementation                   | 0x3e7f72DFeDF6ba1BcBFE77A94a752C529Bb4429E |
+| ProgramFactory                        | 0x56296242CA408bA36393f3981879fF9692F193cC |
+| ProgramImplementation                 | 0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8 |
+| QuadraticFundingVotingStrategyFactory | 0x4a850F463D1C4842937c5Bc9540dBc803D744c9F |
+| QFVotingStrategyImplementation        | 0xB3Ee4800c93cBec7eD2a31050161240e4663Ff5E |
+| RoundFactory                          | 0x9Cb7f434aD3250d1656854A9eC7A71EceC6eE1EF |
+| RoundImplementation                   | 0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C |
 | ProjectRegistry                       | 0x03506eD3f57892C85DB20C36846e9c808aFe9ef4 |
-| MerklePayoutStrategyFactory           |  |
-| MerklePayouStrategyImplementation     |  |
+| MerklePayoutStrategyFactory           | 0x8F8d78f119Aa722453d33d6881f4D400D67D054F |
+| MerklePayouStrategyImplementation     | 0xfF94fAfC740Be8D2010304108266E7b90ed232fc |
+| AlloSettings                          | 0x9fcC854b145Bd3640a01c49Aa2Cfa725Ed0B4210 |
 
 **Sample contracts unique to a round **
 
@@ -24,10 +25,10 @@ These are contracts that are created/deployed for every round created on ethereu
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| Program                               | 0x4fde273e009F58Aa0e5e09289242D5336FD18ad1 |
-| QFVotingContract                      | 0x818A3C8F82667bd222faF84a954F35d2b0Eb6a78 |
-| MerklePayoutContract                  | 0xC068C0EAF90533D3817a1782847eAA6719ABB6c7 |
-| Round                                 | 0x3172a6cCE26529e7DD2B533e7c3622a0b544f349 |
+| Program                               |  |
+| QFVotingContract                      |  |
+| MerklePayoutContract                  |  |
+| Round                                 |  |
 
 ## Optimism Mainnet
 
@@ -35,13 +36,13 @@ These are contracts that are created/deployed once for optimism mainnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        | 0x8918401DD47f1645fF1111D8E513c0404b84d5bB |
-| ProgramImplementation                 | 0x809E751e5C5bB1446e9ab2Ac37c687a35DE53BC6 |
-| QuadraticFundingVotingStrategyFactory | 0xE1F4A28299966686c689223Ee7803258Dbde0942 |
-| QFVotingStrategyImplementation        | 0xB70aCf9654fe304CfE24ee2fA9302a987d22c31e |
-| RoundFactory                          | 0x0f0A4961274A578443089D06AfB9d1fC231A5a4D |
+| ProgramFactory                        |  |
+| ProgramImplementation                 |  |
+| QuadraticFundingVotingStrategyFactory |  |
+| QFVotingStrategyImplementation        |  |
+| RoundFactory                          |  |
 | RoundImplementation                   | 0xCd5AbD09ee34BA604795F7f69413caf20ee0Ab60 |
-| ProjectRegistry                       | 0x8e1bD5Da87C14dd8e08F7ecc2aBf9D1d558ea174 |
+| ProjectRegistry                       |  |
 | MerklePayoutStrategyFactory           |  |
 | MerklePayouStrategyImplementation     |  |
 
@@ -51,10 +52,10 @@ These are contracts that are created/deployed for every round created on optimis
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| Program                               | 0x228907B3b4C4877885320654b98465daF62C3766 |
-| QFVotingContract                      | 0x2D3Abb193d5118A2F96004A9316830d9E96f44Aa |
-| MerklePayoutContract                  | 0x835A581472Ce6a1f1108d9484567a2162C9959C8 |
-| Round                                 | 0xe0883e6F3113FC4C2d9539b9eE1659E59531e312 |
+| Program                               |  |
+| QFVotingContract                      |  |
+| MerklePayoutContract                  |  |
+| Round                                 |  |
 | MerklePayoutStrategyFactory           |  |
 | MerklePayouStrategyImplementation     |  |
 
