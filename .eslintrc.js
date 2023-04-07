@@ -5,18 +5,20 @@ module.exports = {
     mocha: true,
     node: true,
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "no-only-tests"],
   extends: ["plugin:node/recommended"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 12,
+    project: ["./tsconfig.json"]
   },
   rules: {
     "node/no-unsupported-features/es-syntax": [
       "error",
-      { ignores: ["modules"] },
+      {ignores: ["modules"]},
     ],
-    "no-unused-vars": ["error", { varsIgnorePattern: "_" }],
+    "no-only-tests/no-only-tests": "error",
+    "no-unused-vars": ["off", {varsIgnorePattern: "_"}],
     "no-prototype-builtins": ["off"],
     "node/no-missing-import": ["off"],
     "no-unused-expressions": ["off"],
