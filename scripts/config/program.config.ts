@@ -19,8 +19,8 @@ export const programParams: DeployParams = {
     programContract: '0x6ac4C161768bDc64762f5C1c173af339e2E6a689'
   },
   "optimism-mainnet": {
-    programFactoryContract: '',
-    programImplementationContract: '',
+    programFactoryContract: '0xd5Fb00093Ebd30011d932cB69bb6313c550aB05f',
+    programImplementationContract: '0xBA4999bd9Cea79a76442F1E1Fb0E5E448867E3bE',
     programContract: ''
   },
   "fantom-mainnet": {

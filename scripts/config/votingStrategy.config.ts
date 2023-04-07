@@ -19,8 +19,8 @@ export const QFVotingParams: DeployParams = {
     contract: '0x818A3C8F82667bd222faF84a954F35d2b0Eb6a78'
   },
   "optimism-mainnet": {
-    factory: '',
-    implementation: '',
+    factory: '0x838C5e10dcc1e54d62761d994722367BA167AC22',
+    implementation: '0x268ef1E2c19c4D10CDb24A1C8D95b7FcA1bAdD01',
     contract: ''
   },
   "fantom-mainnet": {
