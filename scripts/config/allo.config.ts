@@ -9,7 +9,7 @@ type DeployParams = Record<string, AlloSettingsParams>;
 
 export const AlloSettingsParams: DeployParams = {
   "mainnet": {
-    alloSettingsContract: '',
+    alloSettingsContract: '0x9fcC854b145Bd3640a01c49Aa2Cfa725Ed0B4210',
     newProtocolFeePercentage: 0,
     newProtocolTreasury: '',
   },
@@ -19,7 +19,7 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolTreasury: '0xB8cEF765721A6da910f14Be93e7684e9a3714123',
   },
   "optimism-mainnet": {
-    alloSettingsContract: '',
+    alloSettingsContract: '0xD092e383478Bc565655331f0B88f758eeFa2eEB7',
     newProtocolFeePercentage: 0,
     newProtocolTreasury: '',
   },
