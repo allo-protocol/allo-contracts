@@ -54,6 +54,7 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
    * @param voterAddress voter address
    */
   function vote(bytes[] calldata encodedVotes, address voterAddress) external override payable nonReentrant isRoundContract {
+    uint256 msgValue = 0;
     /// @dev iterate over multiple donations and transfer funds
     for (uint256 i = 0; i < encodedVotes.length; i++) {
       /// @dev decode encoded vote
@@ -74,9 +75,9 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
       if (_token == address(0)) {
         /// @dev native token transfer to grant address
         // slither-disable-next-line reentrancy-events
+        msgValue += _amount;
         AddressUpgradeable.sendValue(payable(_grantAddress), _amount);
       } else {
-
         /// @dev erc20 transfer to grant address
         // slither-disable-next-line arbitrary-send-erc20,reentrancy-events,
         SafeERC20Upgradeable.safeTransferFrom(
@@ -98,5 +99,7 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
         msg.sender
       );
     }
+
+    require(msgValue == msg.value, "msg.value does not match vote amount");
   }
 }
