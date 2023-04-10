@@ -74,6 +74,11 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
     emit DistributionUpdated(merkleRoot, distributionMetaPtr);
   }
 
+  /// @notice function to check if distribution is set
+  function isDistributionSet() public view override returns (bool) {
+    return merkleRoot != "";
+  }
+
   /// @notice Util function to check if distribution is done
   /// @param _index index of the distribution
   function hasBeenDistributed(uint256 _index) public view returns (bool) {
@@ -86,13 +91,6 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
     return distributedWord & mask == mask;
   }
 
-  /// @notice payout function defined in IPayoutStrategy
-  /// @dev NOT IMPLEMENTED. Use payout(Distribution[] calldata _distributions) instead
-  /// @param _distributions encoded distribution
-  function payout(bytes[] calldata _distributions) external virtual override payable isRoundOperator {
-    /// Not implemented from IPayoutStrategy due as encoding of struct with dynamic array is
-    // different in solidity 0.8.17 (more padding while encoding) and ethers
-  }
 
   /// @notice function to distribute funds to recipient
   /// @dev can be invoked only by round operator

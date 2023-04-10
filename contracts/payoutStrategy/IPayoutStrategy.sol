@@ -116,24 +116,17 @@ abstract contract IPayoutStrategy {
    */
   function updateDistribution(bytes calldata _encodedDistribution) external virtual;
 
+  /// @notice checks that distribution is set before setReadyForPayout
+  function isDistributionSet() public virtual view returns (bool);
+
   /// @notice Invoked by RoundImplementation to set isReadyForPayout
   function setReadyForPayout() external payable isRoundContract roundHasEnded {
     require(isReadyForPayout == false, "isReadyForPayout already set");
+    require(isDistributionSet(), "distribution not set");
+
     isReadyForPayout = true;
     emit ReadyForPayout();
   }
-
-  /**
-   * @notice Invoked by RoundImplementation to trigger payout
-   *
-   * @dev
-   * - could be used to trigger payout / enable payout
-   * - should be invoked only when isReadyForPayout is ttue
-   * - should emit event after every payout is triggered
-   *
-   * @param _encodedPayoutData encoded payout data
-   */
-  function payout(bytes[] calldata _encodedPayoutData) external virtual payable;
 
   /**
    * @notice Invoked by RoundImplementation to withdraw funds to
@@ -149,13 +142,13 @@ abstract contract IPayoutStrategy {
 
     uint balance = _getTokenBalance();
 
-    if (tokenAddress == address(0)) { 
+    if (tokenAddress == address(0)) {
       /// @dev native token
       AddressUpgradeable.sendValue(
         withdrawAddress,
         balance
       );
-    } else { 
+    } else {
       /// @dev ERC20 token
       IERC20Upgradeable(tokenAddress).safeTransfer(
         withdrawAddress,
