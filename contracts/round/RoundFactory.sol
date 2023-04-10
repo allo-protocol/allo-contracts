@@ -97,7 +97,8 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
     require(roundImplementation != address(0), "roundImplementation is 0x");
     require(alloSettings != address(0), "alloSettings is 0x");
 
-    address clone = ClonesUpgradeable.clone(roundImplementation);
+    bytes32 salt = keccak256(abi.encodePacked(msg.sender));
+    address clone = ClonesUpgradeable.cloneDeterministic(roundImplementation, salt);
 
     emit RoundCreated(clone, ownedBy, payable(roundImplementation));
 

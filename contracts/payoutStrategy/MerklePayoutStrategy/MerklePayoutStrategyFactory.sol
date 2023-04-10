@@ -54,7 +54,9 @@ contract MerklePayoutStrategyFactory is OwnableUpgradeable {
   function create(
   ) external returns (address) {
 
-    address clone = ClonesUpgradeable.clone(payoutImplementation);
+    bytes32 salt = keccak256(abi.encodePacked(msg.sender));
+    address clone = ClonesUpgradeable.cloneDeterministic(payoutImplementation, salt);
+
     MerklePayoutStrategyImplementation(payable(clone)).initialize();
     emit PayoutContractCreated(clone, payoutImplementation);
 

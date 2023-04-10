@@ -47,7 +47,9 @@ contract QuadraticFundingVotingStrategyFactory is OwnableUpgradeable {
    */
   function create() external returns (address) {
 
-    address clone = ClonesUpgradeable.clone(votingContract);
+    bytes32 salt = keccak256(abi.encodePacked(msg.sender));
+    address clone = ClonesUpgradeable.cloneDeterministic(votingContract, salt);
+
     emit VotingContractCreated(clone, votingContract);
     QuadraticFundingVotingStrategyImplementation(clone).initialize();
 
