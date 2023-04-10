@@ -293,8 +293,6 @@ describe("IPayoutInterface", function () {
 
       let params: any;
 
-      const LOCK_DURATION = 5185000; // 60 days
-
       beforeEach(async () => {
         [user] = await ethers.getSigners();
 
@@ -327,7 +325,7 @@ describe("IPayoutInterface", function () {
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
 
         // Mine Blocks
-        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + LOCK_DURATION + 1200])
+        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
         const tx = merklePayoutStrategy.withdrawFunds(Wallet.createRandom().address);
         await expect(tx).to.not.reverted;
@@ -340,7 +338,7 @@ describe("IPayoutInterface", function () {
         });
 
         // Mine Blocks
-        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + LOCK_DURATION + 1200])
+        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
         // transfer funds to payout strategy
         await user.sendTransaction({
@@ -366,7 +364,7 @@ describe("IPayoutInterface", function () {
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy, {});
 
         // Mine Blocks
-        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + LOCK_DURATION + 1200])
+        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
         // transfer funds to payout strategy
         await mockERC20.transfer(merklePayoutStrategy.address, 10);
@@ -386,7 +384,7 @@ describe("IPayoutInterface", function () {
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
 
         // Mine Blocks
-        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + LOCK_DURATION + 1200])
+        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
         // transfer funds to payout strategy
         await mockERC20.transfer(merklePayoutStrategy.address, 10);
