@@ -10,23 +10,6 @@ Merkle Payout Strategy contract which is deployed once per round and is used to 
 
 ## Methods
 
-### LOCK_DURATION
-
-```solidity
-function LOCK_DURATION() external view returns (uint256)
-```
-
-Locking duration
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### ROUND_OPERATOR_ROLE
 
 ```solidity

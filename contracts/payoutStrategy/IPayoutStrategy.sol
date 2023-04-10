@@ -32,9 +32,6 @@ abstract contract IPayoutStrategy {
   /// @notice round operator role
   bytes32 public constant ROUND_OPERATOR_ROLE = keccak256("ROUND_OPERATOR");
 
-  /// @notice Locking duration
-  uint256 public constant LOCK_DURATION = 0 days;
-
   // --- Data ---
 
   /// @notice RoundImplementation address
@@ -137,7 +134,7 @@ abstract contract IPayoutStrategy {
   function withdrawFunds(address payable withdrawAddress) external payable virtual isRoundOperator {
 
     uint roundEndTime = RoundImplementation(roundAddress).roundEndTime();
-    require(block.timestamp >= roundEndTime + LOCK_DURATION, "Lock duration has not ended");
+    require(block.timestamp >= roundEndTime, "Lock duration has not ended");
 
 
     uint balance = _getTokenBalance();
