@@ -232,7 +232,10 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         it("SHOULD revert if round has not ended", async () => {
           expect(await merklePayoutStrategy.isReadyForPayout()).to.equal(false);
-          const tx = merklePayoutStrategy.updateDistribution(RANDOM_BYTES32);
+          const tx = merklePayoutStrategy.updateDistribution(
+            encodeDistributionParameters(hexlify(RANDOM_BYTES32), 1, "test")
+          );
+
           await expect(tx).to.revertedWith("round has not ended");
         });
 
@@ -241,7 +244,9 @@ describe("MerklePayoutStrategyImplementation", function () {
             _currentBlockTimestamp + 1300,
           ]);
           await mockERC20.transfer(roundImplementation.address, 110);
-
+          await merklePayoutStrategy.updateDistribution(
+            encodeDistributionParameters(hexlify(RANDOM_BYTES32), 1, "test")
+          );
           await roundImplementation.setReadyForPayout();
 
           expect(await merklePayoutStrategy.isReadyForPayout()).to.equal(true);
@@ -367,7 +372,12 @@ describe("MerklePayoutStrategyImplementation", function () {
         ).timestamp;
 
         await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
+        
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300]);
+
+        await merklePayoutStrategy.updateDistribution(
+          encodeDistributionParameters(hexlify(RANDOM_BYTES32), 1, "test")
+        );
       });
 
       it("SHOULD revert if not called by round operator for payout", async () => {
@@ -768,7 +778,7 @@ async function preparePayoutContract(
 }
 
 // Encode Round Parameters
-function encodeDistributionParameters(
+export function encodeDistributionParameters(
   merkleRoot: string,
   protocol: number,
   pointer: string

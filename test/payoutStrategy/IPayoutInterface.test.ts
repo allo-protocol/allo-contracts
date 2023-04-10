@@ -3,11 +3,13 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { deployContract, MockContract } from "ethereum-waffle";
 import { Wallet } from "ethers";
-import { isAddress } from "ethers/lib/utils";
+import { hexlify, isAddress } from "ethers/lib/utils";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
 import { AlloSettings, AlloSettings__factory, MerklePayoutStrategyImplementation, MockERC20, QuadraticFundingVotingStrategyImplementation, RoundFactory, RoundFactory__factory, RoundImplementation } from "../../typechain";
+import { randomBytes } from "crypto";
+import { encodeDistributionParameters } from "./MerklePayoutStrategyImplementation.test";
 
 describe("IPayoutInterface", function () {
 
@@ -144,7 +146,7 @@ describe("IPayoutInterface", function () {
         encodeRoundParameters(params),
         alloSettingsContract.address
       );
-      
+
       return params;
     };
 
@@ -185,7 +187,7 @@ describe("IPayoutInterface", function () {
         // update protocol treasury
         let protocolTreasury = Wallet.createRandom().address;
         await alloSettingsContract.updateProtocolTreasury(protocolTreasury);
-                  
+
         [user] = await ethers.getSigners();
 
         _currentBlockTimestamp = (await ethers.provider.getBlock(
@@ -196,7 +198,7 @@ describe("IPayoutInterface", function () {
         merklePayoutStrategyArtifact = await artifacts.readArtifact('MerklePayoutStrategyImplementation');
         merklePayoutStrategy = <MerklePayoutStrategyImplementation>await deployContract(user, merklePayoutStrategyArtifact, []);
       });
-      
+
       it("SHOULD revert if invoked when roundAddress is not set", async() => {
         const tx = merklePayoutStrategy.setReadyForPayout();
         await expect(tx).to.revertedWith('not linked to a round');
@@ -219,10 +221,25 @@ describe("IPayoutInterface", function () {
         await expect(tx).to.revertedWith('Round: Round has not ended');
       });
 
+      it("SHOULD revert if distribution is not set", async() => {
+        await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
+        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300]);
+
+        // transfer some tokens to roundImplementation
+        await mockERC20.transfer(roundImplementation.address, 110);
+
+        const tx = roundImplementation.setReadyForPayout();
+        await expect(tx).to.revertedWith('distribution not set');
+      });
+
       it("SHOULD set isReadyForPayout as true", async() => {
         await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
 
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300]);
+
+        await merklePayoutStrategy.updateDistribution(
+          encodeDistributionParameters(hexlify(randomBytes(32)), 1, "test")
+        );
 
         // transfer some tokens to roundImplementation
         await mockERC20.transfer(roundImplementation.address, 110);
@@ -239,6 +256,10 @@ describe("IPayoutInterface", function () {
         await mockERC20.transfer(roundImplementation.address, 110);
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300])
 
+        await merklePayoutStrategy.updateDistribution(
+          encodeDistributionParameters(hexlify(randomBytes(32)), 1, "test")
+        );
+
         // set isReadyForPayout as true
         const tx = roundImplementation.setReadyForPayout();
 
@@ -247,18 +268,22 @@ describe("IPayoutInterface", function () {
 
       it("SHOULD revert if isReadyForPayout is already true", async() => {
         await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
-
+        
         // transfer some tokens to roundImplementation
         await mockERC20.transfer(roundImplementation.address, 110);
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300])
 
+        await merklePayoutStrategy.updateDistribution(
+          encodeDistributionParameters(hexlify(randomBytes(32)), 1, "test")
+        );
+        
         // set isReadyForPayout as true
         await roundImplementation.setReadyForPayout();
 
         // try to set isReadyForPayout as true again
         await mockERC20.transfer(roundImplementation.address, 110);
-        const tx = roundImplementation.setReadyForPayout(); 
-  
+        const tx = roundImplementation.setReadyForPayout();
+
         await expect(tx).to.revertedWith('isReadyForPayout already set');
       });
 
@@ -287,14 +312,14 @@ describe("IPayoutInterface", function () {
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
 
         const [_, notRoundOperator] = await ethers.getSigners();
-        const tx = merklePayoutStrategy.connect(notRoundOperator).withdrawFunds(Wallet.createRandom().address);        
+        const tx = merklePayoutStrategy.connect(notRoundOperator).withdrawFunds(Wallet.createRandom().address);
         await expect(tx).to.revertedWith('not round operator');
       });
 
       it("SHOULD revert WHEN invoked before endLockingTime", async() => {
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
 
-        const tx = merklePayoutStrategy.withdrawFunds(Wallet.createRandom().address);        
+        const tx = merklePayoutStrategy.withdrawFunds(Wallet.createRandom().address);
         await expect(tx).to.revertedWith('Lock duration has not ended');
       });
 
@@ -309,7 +334,7 @@ describe("IPayoutInterface", function () {
       });
 
       it("SHOULD transfer native funds WHEN invoked after endLockingTime", async() => {
-        
+
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy, {
           token: AddressZero
         });
@@ -322,13 +347,13 @@ describe("IPayoutInterface", function () {
           to: merklePayoutStrategy.address,
           value: ethers.utils.parseEther("1.0"),
         });
-        
+
         expect(await ethers.provider.getBalance(merklePayoutStrategy.address)).to.equal(ethers.utils.parseEther("1.0"));
 
         // withdraw funds
         const withdrawAddress = Wallet.createRandom().address;
         await merklePayoutStrategy.withdrawFunds(withdrawAddress);
-        
+
         expect(await ethers.provider.getBalance(merklePayoutStrategy.address)).to.equal(0);
         expect(await ethers.provider.getBalance(withdrawAddress)).to.equal(ethers.utils.parseEther("1.0"));
 
@@ -339,7 +364,7 @@ describe("IPayoutInterface", function () {
         const [_, withdrawAddress] = await ethers.getSigners();
 
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy, {});
-        
+
         // Mine Blocks
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + LOCK_DURATION + 1200])
 
@@ -359,7 +384,7 @@ describe("IPayoutInterface", function () {
 
       it("SHOULD emit event WHEN invoked after endLockingTime", async() => {
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
-        
+
         // Mine Blocks
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + LOCK_DURATION + 1200])
 
@@ -371,7 +396,7 @@ describe("IPayoutInterface", function () {
 
         // withdraw funds
         const withdrawAddress = Wallet.createRandom().address;
-        const tx = merklePayoutStrategy.withdrawFunds(withdrawAddress);        
+        const tx = merklePayoutStrategy.withdrawFunds(withdrawAddress);
 
         await expect(tx).to.emit(
           merklePayoutStrategy, 'FundsWithdrawn'
