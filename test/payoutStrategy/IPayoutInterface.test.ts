@@ -317,8 +317,8 @@ describe("IPayoutInterface", function () {
       it("SHOULD revert WHEN invoked before endLockingTime", async() => {
         params = await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
 
-        const tx = merklePayoutStrategy.withdrawFunds(Wallet.createRandom().address);
-        await expect(tx).to.revertedWith('Lock duration has not ended');
+        const tx = merklePayoutStrategy.withdrawFunds(Wallet.createRandom().address);        
+        await expect(tx).to.revertedWith('round has not ended');
       });
 
       it("SHOULD not revert WHEN invoked when the contract has no funds", async() => {

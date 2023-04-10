@@ -75,7 +75,7 @@ abstract contract IPayoutStrategy {
   /// @notice modifier to check if round has ended.
   modifier roundHasEnded() {
     uint roundEndTime = RoundImplementation(roundAddress).roundEndTime();
-    require(block.timestamp >= roundEndTime,"round has not ended");
+    require(block.timestamp > roundEndTime, "round has not ended");
     _;
   }
 
@@ -131,11 +131,7 @@ abstract contract IPayoutStrategy {
    *
    * @param withdrawAddress withdraw funds address
    */
-  function withdrawFunds(address payable withdrawAddress) external payable virtual isRoundOperator {
-
-    uint roundEndTime = RoundImplementation(roundAddress).roundEndTime();
-    require(block.timestamp >= roundEndTime, "Lock duration has not ended");
-
+  function withdrawFunds(address payable withdrawAddress) external payable virtual isRoundOperator roundHasEnded {
 
     uint balance = _getTokenBalance();
 
