@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { deployContract } from "ethereum-waffle";
 import { BigNumber, BigNumberish, Wallet } from "ethers";
-import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
+import { BytesLike, formatBytes32String, hexlify, isAddress } from "ethers/lib/utils";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
@@ -17,6 +17,8 @@ import {
   AlloSettings__factory,
   AlloSettings,
 } from "../../typechain";
+import { encodeDistributionParameters } from "../payoutStrategy/MerklePayoutStrategyImplementation.test";
+import { randomBytes } from "crypto";
 
 type MetaPtr = {
   protocol: BigNumberish;
@@ -1414,6 +1416,15 @@ describe("RoundImplementation", function () {
           let payoutContractBalance = await ethers.provider.getBalance(
             payoutContract
           );
+
+          // Set distribution metaPtry
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          ); 
+
           expect(Number(payoutContractBalance)).to.be.equal(0);
 
           tx = await roundImplementation.setReadyForPayout();
@@ -1522,6 +1533,15 @@ describe("RoundImplementation", function () {
             _currentBlockTimestamp + 1200,
           ]);
 
+          // Set distribution metaPtr
+          const payoutContract = await roundImplementation.payoutStrategy();
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          ); 
+
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
         });
@@ -1610,6 +1630,15 @@ describe("RoundImplementation", function () {
           await ethers.provider.send("evm_mine", [
             _currentBlockTimestamp + 1200,
           ]);
+
+          // Set distribution metaPtr
+          const payoutContract = await roundImplementation.payoutStrategy();
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          ); 
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
@@ -1704,6 +1733,15 @@ describe("RoundImplementation", function () {
           await ethers.provider.send("evm_mine", [
             _currentBlockTimestamp + 1200,
           ]);
+
+          // Set distribution metaPtr
+          const payoutContract = await roundImplementation.payoutStrategy();
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          ); 
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
