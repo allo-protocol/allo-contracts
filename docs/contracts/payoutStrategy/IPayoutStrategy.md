@@ -73,6 +73,23 @@ Invoked by RoundImplementation on creation to set the round for which the payout
 
 
 
+### isDistributionSet
+
+```solidity
+function isDistributionSet() external view returns (bool)
+```
+
+checks that distribution is set before setReadyForPayout
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### isReadyForPayout
 
 ```solidity
@@ -89,22 +106,6 @@ function isReadyForPayout() external view returns (bool)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bool | undefined |
-
-### payout
-
-```solidity
-function payout(bytes[] _encodedPayoutData) external payable
-```
-
-Invoked by RoundImplementation to trigger payout
-
-*- could be used to trigger payout / enable payout - should be invoked only when isReadyForPayout is ttue - should emit event after every payout is triggered*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _encodedPayoutData | bytes[] | encoded payout data |
 
 ### roundAddress
 
