@@ -7,7 +7,7 @@ All the deploy scripts will expect network param to know which network the contr
 |--------------------|
 | `goerli`           |
 | `optimism-mainnet` |
-| 'fantom-mainnet'   |
+| `fantom-mainnet`   |
 | `fantom-testnet`   |
 | `mainnet`          |
 
@@ -22,9 +22,9 @@ cp ../.env.example ../.env
 ```
 
 1. Create an `.env` file and fill out
-    - `INFURA_ID`               : Infura ID for deploying contract
+    - `INFURA_ID`               : Infura ID for deploying contract ([Get one here](https://app.infura.io/dashboard))
     - `DEPLOYER_PRIVATE_KEY`    : address which deploys the contract
-    - `ETHERSCAN_API_KEY`       : API key for etherscan verification
+    - `ETHERSCAN_API_KEY`       : API key for etherscan verification ([Get one here](https://etherscan.io/myapikey))
 
 2. Deploy the `ProgramRegistry` contract
 ```shell
