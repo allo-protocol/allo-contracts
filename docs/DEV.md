@@ -2,6 +2,8 @@
 
 ### Pre Requisites
 
+Make sure you have pnpm installed. ([How to install](https://pnpm.io/installation))
+
 Before running any command, make sure to install dependencies:
 
 ```sh
