@@ -11,6 +11,8 @@ contract QuadraticFundingVotingStrategyFactory is OwnableUpgradeable {
  
   address public votingContract;
 
+  uint256 public nonce;
+
   // --- Event ---
 
   /// @notice Emitted when a Voting contract is updated
@@ -47,7 +49,10 @@ contract QuadraticFundingVotingStrategyFactory is OwnableUpgradeable {
    */
   function create() external returns (address) {
 
-    address clone = ClonesUpgradeable.clone(votingContract);
+    nonce++;
+    bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
+    address clone = ClonesUpgradeable.cloneDeterministic(votingContract, salt);
+
     emit VotingContractCreated(clone, votingContract);
     QuadraticFundingVotingStrategyImplementation(clone).initialize();
 

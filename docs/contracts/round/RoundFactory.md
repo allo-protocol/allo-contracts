@@ -78,6 +78,23 @@ constructor function which ensure deployer is set as owner
 
 
 
+### nonce
+
+```solidity
+function nonce() external view returns (uint256)
+```
+
+Nonce used to generate deterministic salt for Clones
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### owner
 
 ```solidity
