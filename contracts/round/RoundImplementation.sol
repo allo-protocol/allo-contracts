@@ -101,10 +101,10 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   IPayoutStrategyFactory public payoutStrategyFactory;
 
     /// @notice Voting Strategy Contract Address
-  IVotingStrategy public votingStrategy;
+  address public votingStrategy;
 
   /// @notice Payout Strategy Contract Address
-  IPayoutStrategy public payoutStrategy;
+  address payable public payoutStrategy;
 
   /// @notice Unix timestamp from when round can accept applications
   uint256 public applicationsStartTime;
@@ -264,13 +264,13 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
     votingStrategy = votingStrategyFactory.create();
 
     // Invoke init on voting contract
-    votingStrategy.init();
+    IVotingStrategy(votingStrategy).init();
 
     // deploy payout contract
-    payoutStrategy = payoutStrategyFactory.create();
+    payoutStrategy = payable(payoutStrategyFactory.create());
 
     // Invoke init on payout contract
-    payoutStrategy.init();
+    IPayoutStrategy(payoutStrategy).init();
 
     matchAmount = _matchAmount;
     roundFeePercentage = _roundFeePercentage;
@@ -450,7 +450,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
       "Round: Round is not active"
     );
 
-    votingStrategy.vote{value: msg.value}(encodedVotes, msg.sender);
+    IVotingStrategy(votingStrategy).vote{value: msg.value}(encodedVotes, msg.sender);
   }
 
 
@@ -483,10 +483,10 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
 
     // transfer funds to payout contract
     if (token == address(0)) {
-      payoutStrategy.setReadyForPayout{value: fundsInContract}();
+      IPayoutStrategy(payoutStrategy).setReadyForPayout{value: fundsInContract}();
     } else {
       IERC20(token).safeTransfer(address(payoutStrategy), fundsInContract);
-      payoutStrategy.setReadyForPayout();
+      IPayoutStrategy(payoutStrategy).setReadyForPayout();
     }
 
     emit PayFeeAndEscrowFundsToPayoutContract(fundsInContract, protocolFeeAmount, roundFeeAmount);

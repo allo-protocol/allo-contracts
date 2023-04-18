@@ -421,7 +421,7 @@ function nextApplicationIndex() external view returns (uint256)
 ### payoutStrategy
 
 ```solidity
-function payoutStrategy() external view returns (contract IPayoutStrategy)
+function payoutStrategy() external view returns (address payable)
 ```
 
 Payout Strategy Contract Address
@@ -433,7 +433,24 @@ Payout Strategy Contract Address
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract IPayoutStrategy | undefined |
+| _0 | address payable | undefined |
+
+### payoutStrategyFactory
+
+```solidity
+function payoutStrategyFactory() external view returns (contract IPayoutStrategyFactory)
+```
+
+Payout Strategy Factory Contract Address
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract IPayoutStrategyFactory | undefined |
 
 ### renounceRole
 
@@ -739,7 +756,7 @@ Invoked by voter to cast votes
 ### votingStrategy
 
 ```solidity
-function votingStrategy() external view returns (contract IVotingStrategy)
+function votingStrategy() external view returns (address)
 ```
 
 Voting Strategy Contract Address
@@ -751,7 +768,24 @@ Voting Strategy Contract Address
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract IVotingStrategy | undefined |
+| _0 | address | undefined |
+
+### votingStrategyFactory
+
+```solidity
+function votingStrategyFactory() external view returns (contract IVotingStrategyFactory)
+```
+
+Voting Strategy Factory Contract Address
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract IVotingStrategyFactory | undefined |
 
 ### withdraw
 
