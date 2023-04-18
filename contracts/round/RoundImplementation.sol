@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "../settings/AlloSettings.sol";
+import "../votingStrategy/IVotingStrategyFactory.sol";
+import "../payoutStrategy/IPayoutStrategyFactory.sol";
 import "../votingStrategy/IVotingStrategy.sol";
 import "../payoutStrategy/IPayoutStrategy.sol";
 
@@ -92,7 +94,13 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   /// @notice Allo Config Contract Address
   AlloSettings public alloSettings;
 
-  /// @notice Voting Strategy Contract Address
+  /// @notice Voting Strategy Factory Contract Address
+  IVotingStrategyFactory public votingStrategyFactory;
+
+  /// @notice Payout Strategy Factory Contract Address
+  IPayoutStrategyFactory public payoutStrategyFactory;
+
+    /// @notice Voting Strategy Contract Address
   IVotingStrategy public votingStrategy;
 
   /// @notice Payout Strategy Contract Address
@@ -131,8 +139,8 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   // --- Struct ---
 
   struct InitAddress {
-    IVotingStrategy votingStrategy; // Deployed voting strategy contract
-    IPayoutStrategy payoutStrategy; // Deployed payout strategy contract
+    IVotingStrategyFactory votingStrategyFactory; // Deployed voting strategy factory contract
+    IPayoutStrategyFactory payoutStrategyFactory; // Deployed payout strategy factory contract
   }
 
   struct InitRoundTime {
@@ -243,16 +251,23 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
 
     alloSettings = AlloSettings(_alloSettings);
 
-    votingStrategy = _initAddress.votingStrategy;
-    payoutStrategy = _initAddress.payoutStrategy;
+    votingStrategyFactory = _initAddress.votingStrategyFactory;
+    payoutStrategyFactory = _initAddress.payoutStrategyFactory;
     applicationsStartTime = _initRoundTime.applicationsStartTime;
     applicationsEndTime = _initRoundTime.applicationsEndTime;
     roundStartTime = _initRoundTime.roundStartTime;
     roundEndTime = _initRoundTime.roundEndTime;
     token = _token;
 
+
+    // deploy voting contract
+    votingStrategy = votingStrategyFactory.create();
+
     // Invoke init on voting contract
     votingStrategy.init();
+
+    // deploy payout contract
+    payoutStrategy = payoutStrategyFactory.create();
 
     // Invoke init on payout contract
     payoutStrategy.init();

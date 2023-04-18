@@ -5,9 +5,10 @@ import "./MerklePayoutStrategyImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
+import "../IPayoutStrategyFactory.sol";
 import "../../utils/MetaPtr.sol";
 
-contract MerklePayoutStrategyFactory is OwnableUpgradeable {
+contract MerklePayoutStrategyFactory is IPayoutStrategyFactory, OwnableUpgradeable {
 
   // --- Data ---
 
