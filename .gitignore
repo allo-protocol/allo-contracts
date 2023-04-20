@@ -12,6 +12,9 @@ artifacts
 abis/
 /.openzeppelin/unknown-31337.json
 
+# macOS files
+.DS_Store
+
 artifacts-zk
 cache-zk
 .idea
