@@ -19,6 +19,9 @@ dependencies:
   '@openzeppelin/merkle-tree':
     specifier: ^1.0.4
     version: 1.0.4
+  chalk:
+    specifier: ^5.2.0
+    version: 5.2.0
   hardhat-contract-sizer:
     specifier: ^2.8.0
     version: 2.8.0(hardhat@2.13.0)
@@ -44,13 +47,13 @@ devDependencies:
     version: 1.22.1(@nomiclabs/hardhat-ethers@2.2.2)(@nomiclabs/hardhat-etherscan@3.1.7)(ethers@5.7.2)(hardhat@2.13.0)
   '@primitivefi/hardhat-dodoc':
     specifier: ^0.2.3
-    version: 0.2.3(hardhat@2.13.0)(squirrelly@8.0.8)
+    version: 0.2.3(hardhat@2.13.0)
   '@typechain/ethers-v5':
     specifier: ^7.2.0
-    version: 7.2.0(@ethersproject/abi@5.7.0)(@ethersproject/bytes@5.7.0)(@ethersproject/providers@5.7.2)(ethers@5.7.2)(typechain@5.2.0)(typescript@4.9.5)
+    version: 7.2.0(ethers@5.7.2)(typechain@5.2.0)(typescript@4.9.5)
   '@typechain/hardhat':
     specifier: ^2.3.1
-    version: 2.3.1(hardhat@2.13.0)(lodash@4.17.21)(typechain@5.2.0)
+    version: 2.3.1(hardhat@2.13.0)(typechain@5.2.0)
   '@types/chai':
     specifier: ^4.3.4
     version: 4.3.4
@@ -217,7 +220,7 @@ packages:
     engines: {node: ^10.12.0 || >=12.0.0}
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       espree: 7.3.1
       globals: 13.20.0
       ignore: 4.0.6
@@ -651,7 +654,7 @@ packages:
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -897,7 +900,7 @@ packages:
       '@nomicfoundation/ethereumjs-trie': 5.0.5
       '@nomicfoundation/ethereumjs-util': 8.0.6
       abstract-level: 1.0.3
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       ethereum-cryptography: 0.1.3
       level: 8.0.0
       lru-cache: 5.1.1
@@ -930,7 +933,7 @@ packages:
       '@nomicfoundation/ethereumjs-util': 8.0.6
       '@types/async-eventemitter': 0.2.1
       async-eventemitter: 0.2.4
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       ethereum-cryptography: 0.1.3
       mcl-wasm: 0.7.9
       rustbn.js: 0.2.0
@@ -949,7 +952,7 @@ packages:
       '@nomicfoundation/ethereumjs-rlp': 4.0.3
       '@nomicfoundation/ethereumjs-trie': 5.0.5
       '@nomicfoundation/ethereumjs-util': 8.0.6
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       ethereum-cryptography: 0.1.3
       functional-red-black-tree: 1.0.1
     transitivePeerDependencies:
@@ -995,7 +998,7 @@ packages:
       '@nomicfoundation/ethereumjs-util': 8.0.6
       '@types/async-eventemitter': 0.2.1
       async-eventemitter: 0.2.4
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       ethereum-cryptography: 0.1.3
       functional-red-black-tree: 1.0.1
       mcl-wasm: 0.7.9
@@ -1117,7 +1120,7 @@ packages:
       '@ethersproject/address': 5.7.0
       cbor: 8.1.0
       chalk: 2.4.2
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       fs-extra: 7.0.1
       hardhat: 2.13.0(ts-node@10.9.1)(typescript@4.9.5)
       lodash: 4.17.21
@@ -1178,7 +1181,7 @@ packages:
       '@nomiclabs/hardhat-etherscan': 3.1.7(hardhat@2.13.0)
       '@openzeppelin/upgrades-core': 1.24.1
       chalk: 4.1.2
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       ethers: 5.7.2
       hardhat: 2.13.0(ts-node@10.9.1)(typescript@4.9.5)
       proper-lockfile: 4.1.2
@@ -1199,7 +1202,7 @@ packages:
       cbor: 8.1.0
       chalk: 4.1.2
       compare-versions: 5.0.3
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       ethereumjs-util: 7.1.5
       proper-lockfile: 4.1.2
       solidity-ast: 0.4.46
@@ -1207,11 +1210,10 @@ packages:
       - supports-color
     dev: true
 
-  /@primitivefi/hardhat-dodoc@0.2.3(hardhat@2.13.0)(squirrelly@8.0.8):
+  /@primitivefi/hardhat-dodoc@0.2.3(hardhat@2.13.0):
     resolution: {integrity: sha512-ver9uHa79LTDTeebOKZ/eOVRL/FP1k0s0x/5Bo/8ZaDdLWFVClKqZyZYVjjW4CJqTPCt8uU9b9p71P2vzH4O9A==}
     peerDependencies:
       hardhat: ^2.6.4
-      squirrelly: ^8.0.8
     dependencies:
       hardhat: 2.13.0(ts-node@10.9.1)(typescript@4.9.5)
       squirrelly: 8.0.8
@@ -1402,7 +1404,7 @@ packages:
     dependencies:
       '@truffle/error': 0.1.1
       '@truffle/interface-adapter': 0.5.31
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       web3: 1.7.4
     transitivePeerDependencies:
       - bufferutil
@@ -1433,7 +1435,7 @@ packages:
       typechain: 3.0.0(typescript@4.9.5)
     dev: true
 
-  /@typechain/ethers-v5@7.2.0(@ethersproject/abi@5.7.0)(@ethersproject/bytes@5.7.0)(@ethersproject/providers@5.7.2)(ethers@5.7.2)(typechain@5.2.0)(typescript@4.9.5):
+  /@typechain/ethers-v5@7.2.0(ethers@5.7.2)(typechain@5.2.0)(typescript@4.9.5):
     resolution: {integrity: sha512-jfcmlTvaaJjng63QsT49MT6R1HFhtO/TBMWbyzPFSzMmVIqb2tL6prnKBs4ZJrSvmgIXWy+ttSjpaxCTq8D/Tw==}
     peerDependencies:
       '@ethersproject/abi': ^5.0.0
@@ -1443,9 +1445,6 @@ packages:
       typechain: ^5.0.0
       typescript: '>=4.0.0'
     dependencies:
-      '@ethersproject/abi': 5.7.0
-      '@ethersproject/bytes': 5.7.0
-      '@ethersproject/providers': 5.7.2
       ethers: 5.7.2
       lodash: 4.17.21
       ts-essentials: 7.0.3(typescript@4.9.5)
@@ -1453,7 +1452,7 @@ packages:
       typescript: 4.9.5
     dev: true
 
-  /@typechain/hardhat@2.3.1(hardhat@2.13.0)(lodash@4.17.21)(typechain@5.2.0):
+  /@typechain/hardhat@2.3.1(hardhat@2.13.0)(typechain@5.2.0):
     resolution: {integrity: sha512-BQV8OKQi0KAzLXCdsPO0pZBNQQ6ra8A2ucC26uFX/kquRBtJu1yEyWnVSmtr07b5hyRoJRpzUeINLnyqz4/MAw==}
     peerDependencies:
       hardhat: ^2.0.10
@@ -1462,7 +1461,6 @@ packages:
     dependencies:
       fs-extra: 9.1.0
       hardhat: 2.13.0(ts-node@10.9.1)(typescript@4.9.5)
-      lodash: 4.17.21
       typechain: 5.2.0(typescript@4.9.5)
     dev: true
 
@@ -1608,7 +1606,7 @@ packages:
       '@typescript-eslint/experimental-utils': 4.33.0(eslint@7.32.0)(typescript@4.9.5)
       '@typescript-eslint/parser': 4.33.0(eslint@7.32.0)(typescript@4.9.5)
       '@typescript-eslint/scope-manager': 4.33.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 7.32.0
       functional-red-black-tree: 1.0.1
       ignore: 5.2.4
@@ -1651,7 +1649,7 @@ packages:
       '@typescript-eslint/scope-manager': 4.33.0
       '@typescript-eslint/types': 4.33.0
       '@typescript-eslint/typescript-estree': 4.33.0(typescript@4.9.5)
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       eslint: 7.32.0
       typescript: 4.9.5
     transitivePeerDependencies:
@@ -1682,7 +1680,7 @@ packages:
     dependencies:
       '@typescript-eslint/types': 4.33.0
       '@typescript-eslint/visitor-keys': 4.33.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.3.8
@@ -1822,7 +1820,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
 
@@ -2160,7 +2158,7 @@ packages:
   /axios@0.26.1:
     resolution: {integrity: sha512-fPwcX4EvnSHuInCMItEhAGnaSEXRBjtzh9fOtsE6E1G6p7vl7edEeZe11QHf18+6+9gR5PbKV/sGKNaD8YaMeA==}
     dependencies:
-      follow-redirects: 1.15.2(debug@4.3.4)
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -3157,6 +3155,11 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  /chalk@5.2.0:
+    resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: false
+
   /chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
     dev: true
@@ -3628,6 +3631,18 @@ packages:
       ms: 2.0.0
     dev: true
 
+  /debug@3.2.6:
+    resolution: {integrity: sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==}
+    deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.1
+    dev: true
+
   /debug@3.2.6(supports-color@6.0.0):
     resolution: {integrity: sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==}
     deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
@@ -3651,6 +3666,17 @@ packages:
     dependencies:
       ms: 2.1.3
     dev: true
+
+  /debug@4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
 
   /debug@4.3.4(supports-color@8.1.1):
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -3844,7 +3870,7 @@ packages:
     hasBin: true
     dependencies:
       address: 1.2.2
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4331,7 +4357,7 @@ packages:
       ajv: 6.12.6
       chalk: 2.4.2
       cross-spawn: 6.0.5
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       doctrine: 3.0.0
       eslint-scope: 4.0.3
       eslint-utils: 1.4.3
@@ -4378,7 +4404,7 @@ packages:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       doctrine: 3.0.0
       enquirer: 2.3.6
       escape-string-regexp: 4.0.0
@@ -5274,6 +5300,16 @@ packages:
     resolution: {integrity: sha512-rDjbZUKpN8OYhB0IE/vY/I8UWO/602IIJEU/76Tv4LvYnwHCk0BCsvz4eRr9n+FQcri7L5cyaXOo0+/Kh4HisA==}
     dev: true
 
+  /follow-redirects@1.15.2:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
   /follow-redirects@1.15.2(debug@4.3.4):
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
@@ -5283,7 +5319,7 @@ packages:
       debug:
         optional: true
     dependencies:
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
 
   /for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -5458,7 +5494,7 @@ packages:
       bip39: 2.5.0
       cachedown: 1.0.0
       clone: 2.1.2
-      debug: 3.2.6(supports-color@6.0.0)
+      debug: 3.2.6
       encoding-down: 5.0.4
       eth-sig-util: 3.0.0
       ethereumjs-abi: 0.6.8
@@ -5878,7 +5914,7 @@ packages:
       chalk: 2.4.2
       chokidar: 3.5.3
       ci-info: 2.0.0
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       enquirer: 2.3.6
       env-paths: 2.2.1
       ethereum-cryptography: 1.2.0
@@ -6112,7 +6148,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
 
@@ -10086,7 +10122,7 @@ packages:
     hasBin: true
     dependencies:
       command-line-args: 4.0.7
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       fs-extra: 7.0.1
       js-sha3: 0.8.0
       lodash: 4.17.21
@@ -10105,7 +10141,7 @@ packages:
     dependencies:
       '@types/prettier': 2.7.2
       command-line-args: 4.0.7
-      debug: 4.3.4(supports-color@8.1.1)
+      debug: 4.3.4
       fs-extra: 7.0.1
       glob: 7.2.3
       js-sha3: 0.8.0
