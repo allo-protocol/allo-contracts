@@ -3,7 +3,13 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { expect } from "chai";
 import { deployContract } from "ethereum-waffle";
 import { Wallet } from "ethers";
-import { BytesLike, formatBytes32String, hexlify, isAddress, randomBytes } from "ethers/lib/utils";
+import {
+  BytesLike,
+  formatBytes32String,
+  hexlify,
+  isAddress,
+  randomBytes,
+} from "ethers/lib/utils";
 import { artifacts, upgrades, ethers } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
@@ -37,6 +43,7 @@ const RANDOM_BYTES32 = randomBytes(32);
 
 describe("MerklePayoutStrategyImplementation", function () {
   let user: SignerWithAddress;
+  let user2: SignerWithAddress;
 
   // AlloSettings
   let alloSettingsContractFactory: AlloSettings__factory;
@@ -52,12 +59,12 @@ describe("MerklePayoutStrategyImplementation", function () {
   let roundImplementationArtifact: Artifact;
 
   // QuadraticFundingVotingStrategy Factory
-  let QuadraticFundingVotingStrategyFactory: QuadraticFundingVotingStrategyFactory;
-  let QuadraticFundingVotingStrategyContractFactory: QuadraticFundingVotingStrategyFactory__factory;
+  let quadraticFundingVotingStrategyFactory: QuadraticFundingVotingStrategyFactory;
+  let quadraticFundingVotingStrategyContractFactory: QuadraticFundingVotingStrategyFactory__factory;
 
   // Merkle Payout Strategy Factory
-  let MerklePayoutStrategyFactory: MerklePayoutStrategyFactory;
-  let MerklePayoutStrategyContractFactory: MerklePayoutStrategyFactory__factory;
+  let merklePayoutStrategyFactory: MerklePayoutStrategyFactory;
+  let merklePayoutStrategyContractFactory: MerklePayoutStrategyFactory__factory;
 
   // MerklePayoutStrategy Implementation
   let merklePayoutStrategyImplementation: MerklePayoutStrategyImplementation;
@@ -70,10 +77,12 @@ describe("MerklePayoutStrategyImplementation", function () {
   const VERSION = "0.2.0";
 
   before(async () => {
-    [user] = await ethers.getSigners();
+    [user, user2] = await ethers.getSigners();
 
     // Deploy AlloSettings contract
-    alloSettingsContractFactory = await ethers.getContractFactory("AlloSettings");
+    alloSettingsContractFactory = await ethers.getContractFactory(
+      "AlloSettings"
+    );
     alloSettingsContract = <AlloSettings>(
       await upgrades.deployProxy(alloSettingsContractFactory)
     );
@@ -85,12 +94,32 @@ describe("MerklePayoutStrategyImplementation", function () {
     );
 
     // Deploy MerklePayoutStrategyFactory
-    MerklePayoutStrategyContractFactory = await ethers.getContractFactory('MerklePayoutStrategyFactory');
-    MerklePayoutStrategyFactory = <MerklePayoutStrategyFactory>await upgrades.deployProxy(MerklePayoutStrategyContractFactory);
+    merklePayoutStrategyContractFactory = await ethers.getContractFactory(
+      "MerklePayoutStrategyFactory"
+    );
+    merklePayoutStrategyFactory = <MerklePayoutStrategyFactory>(
+      await upgrades.deployProxy(merklePayoutStrategyContractFactory)
+    );
+
+    // Deploy MerklePayoutStrategyImplementation
+    merklePayoutStrategyArtifact = await artifacts.readArtifact(
+      "MerklePayoutStrategyImplementation"
+    );
+    merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+      await deployContract(user, merklePayoutStrategyArtifact, [])
+    );
+
+    merklePayoutStrategyFactory.updatePayoutImplementation(
+      merklePayoutStrategyImplementation.address
+    );
 
     // Deploy QuadraticFundingVotingStrategyFactory
-    QuadraticFundingVotingStrategyContractFactory = await ethers.getContractFactory('QuadraticFundingVotingStrategyFactory');
-    QuadraticFundingVotingStrategyFactory = <QuadraticFundingVotingStrategyFactory>await upgrades.deployProxy(QuadraticFundingVotingStrategyContractFactory);
+    quadraticFundingVotingStrategyContractFactory =
+      await ethers.getContractFactory("QuadraticFundingVotingStrategyFactory");
+    quadraticFundingVotingStrategyFactory = <
+      QuadraticFundingVotingStrategyFactory
+    >
+    await upgrades.deployProxy(quadraticFundingVotingStrategyContractFactory);
 
     roundImplementationArtifact = await artifacts.readArtifact(
       "RoundImplementation"
@@ -100,14 +129,6 @@ describe("MerklePayoutStrategyImplementation", function () {
   describe("constructor", () => {
     it("SHOULD deploy properly", async () => {
       [user] = await ethers.getSigners();
-
-      // Deploy MerklePayoutStrategyImplementation
-      merklePayoutStrategyArtifact = await artifacts.readArtifact(
-        "MerklePayoutStrategyImplementation"
-      );
-      merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
-        await deployContract(user, merklePayoutStrategyArtifact, [])
-      );
 
       // Verify deploy
       expect(
@@ -119,7 +140,7 @@ describe("MerklePayoutStrategyImplementation", function () {
 
   let _currentBlockTimestamp: number;
 
-  describe.only("MerklePayoutStrategyImplementation functions", () => {
+  describe("MerklePayoutStrategyImplementation functions", () => {
     const initPayoutStrategy = async (
       _currentBlockTimestamp: number,
       overrides?: any
@@ -158,18 +179,25 @@ describe("MerklePayoutStrategyImplementation", function () {
         await deployContract(user, roundImplementationArtifact, [])
       );
 
-
-      let roundFeeAddress = overrides && overrides.hasOwnProperty('roundFeeAddress') ? overrides.roundFeeAddress : Wallet.createRandom().address;
-      let matchAmount = overrides && overrides.hasOwnProperty('matchAmount') ? overrides.matchAmount : 100;
-      let roundFeePercentage = overrides && overrides.hasOwnProperty('roundFeePercentage') ? overrides.roundFeePercentage : 0;
-
+      let roundFeeAddress =
+        overrides && overrides.hasOwnProperty("roundFeeAddress")
+          ? overrides.roundFeeAddress
+          : Wallet.createRandom().address;
+      let matchAmount =
+        overrides && overrides.hasOwnProperty("matchAmount")
+          ? overrides.matchAmount
+          : 100;
+      let roundFeePercentage =
+        overrides && overrides.hasOwnProperty("roundFeePercentage")
+          ? overrides.roundFeePercentage
+          : 0;
 
       const denominator = await alloSettingsContract.DENOMINATOR();
       roundFeePercentage = roundFeePercentage * (denominator / 100);
 
       const initAddress = [
-        QuadraticFundingVotingStrategyFactory.address, // votingStrategyFactory
-        MerklePayoutStrategyFactory.address, // payoutStrategyFactory
+        quadraticFundingVotingStrategyFactory.address, // votingStrategyFactory
+        merklePayoutStrategyFactory.address, // payoutStrategyFactory
       ];
 
       const initRoundTime = [
@@ -199,7 +227,8 @@ describe("MerklePayoutStrategyImplementation", function () {
         alloSettingsContract.address
       );
 
-      const merklePayoutStrategyContract = await roundImplementation.payoutStrategy();
+      const merklePayoutStrategyContract =
+        await roundImplementation.payoutStrategy();
 
       merklePayoutStrategyImplementation = await ethers.getContractAt(
         "MerklePayoutStrategyImplementation",
@@ -224,19 +253,16 @@ describe("MerklePayoutStrategyImplementation", function () {
       });
 
       describe("test: updateDistribution", () => {
-        it.only("SHOULD have empty merkle root after deploy", async () => {
-          console.log(await merklePayoutStrategyImplementation.address)
-
-          // WHY DOES THIS FAIL
-          console.log(await merklePayoutStrategyImplementation.roundAddress());
-
-          // expect(await merklePayoutStrategy.merkleRoot()).to.be.equal(
-          //   "0x0000000000000000000000000000000000000000000000000000000000000000"
-          // );
+        it("SHOULD have empty merkle root after deploy", async () => {
+          expect(await merklePayoutStrategyImplementation.merkleRoot()).to.be.equal(
+            "0x0000000000000000000000000000000000000000000000000000000000000000"
+          );
         });
 
         it("SHOULD revert if round has not ended", async () => {
-          expect(await merklePayoutStrategyImplementation.isReadyForPayout()).to.equal(false);
+          expect(
+            await merklePayoutStrategyImplementation.isReadyForPayout()
+          ).to.equal(false);
           const tx = merklePayoutStrategyImplementation.updateDistribution(
             encodeDistributionParameters(hexlify(RANDOM_BYTES32), 1, "test")
           );
@@ -254,28 +280,33 @@ describe("MerklePayoutStrategyImplementation", function () {
           );
           await roundImplementation.setReadyForPayout();
 
-          expect(await merklePayoutStrategyImplementation.isReadyForPayout()).to.equal(true);
+          expect(
+            await merklePayoutStrategyImplementation.isReadyForPayout()
+          ).to.equal(true);
 
-          const tx = merklePayoutStrategyImplementation.updateDistribution(RANDOM_BYTES32);
+          const tx =
+            merklePayoutStrategyImplementation.updateDistribution(
+              RANDOM_BYTES32
+            );
 
-          await expect(tx).to.revertedWith(
-            "Payout: Already ready for payout"
-          );
+          await expect(tx).to.revertedWith("Payout: Already ready for payout");
         });
 
         it("SHOULD update merkle root", async () => {
           await ethers.provider.send("evm_mine", [
             _currentBlockTimestamp + 1300,
           ]);
-          expect(await merklePayoutStrategyImplementation.isReadyForPayout()).to.equal(false);
+          expect(
+            await merklePayoutStrategyImplementation.isReadyForPayout()
+          ).to.equal(false);
 
           await merklePayoutStrategyImplementation.updateDistribution(
             encodeDistributionParameters(hexlify(RANDOM_BYTES32), 1, "test")
           );
 
-          expect(await merklePayoutStrategyImplementation.merkleRoot()).to.be.equal(
-            hexlify(RANDOM_BYTES32)
-          );
+          expect(
+            await merklePayoutStrategyImplementation.merkleRoot()
+          ).to.be.equal(hexlify(RANDOM_BYTES32));
         });
       });
     });
@@ -297,7 +328,8 @@ describe("MerklePayoutStrategyImplementation", function () {
       });
 
       it("SHOULD return false if not distributed", async () => {
-        const hasDistributed = await merklePayoutStrategyImplementation.hasBeenDistributed(0);
+        const hasDistributed =
+          await merklePayoutStrategyImplementation.hasBeenDistributed(0);
         expect(hasDistributed).to.be.false;
       });
 
@@ -320,10 +352,11 @@ describe("MerklePayoutStrategyImplementation", function () {
             grantee: distributions[0][1],
             amount: distributions[0][2],
             merkleProof: validMerkleProof,
-            projectId: distributions[0][3]
+            projectId: distributions[0][3],
           },
         ]);
-        const hasDistributed = await merklePayoutStrategyImplementation.hasBeenDistributed(1);
+        const hasDistributed =
+          await merklePayoutStrategyImplementation.hasBeenDistributed(1);
         expect(hasDistributed).to.be.false;
       });
 
@@ -338,7 +371,13 @@ describe("MerklePayoutStrategyImplementation", function () {
         const validMerkleProof = tree.getProof(distributions[0]);
 
         const payouts = [
-          [0, distributions[0][1], distributions[0][2], validMerkleProof, distributions[0][3]],
+          [
+            0,
+            distributions[0][1],
+            distributions[0][2],
+            validMerkleProof,
+            distributions[0][3],
+          ],
         ];
 
         const distribution = arrayToDistribution(payouts);
@@ -347,30 +386,33 @@ describe("MerklePayoutStrategyImplementation", function () {
         await merklePayoutStrategyImplementation[
           "payout((uint256,address,uint256,bytes32[],bytes32)[])"
         ](distribution);
-        const hasDistributed = await merklePayoutStrategyImplementation.hasBeenDistributed(0);
+        const hasDistributed =
+          await merklePayoutStrategyImplementation.hasBeenDistributed(0);
         expect(hasDistributed).to.be.true;
       });
 
       it("SHOULD return false for invalid index", async () => {
-        const hasDistributed = await merklePayoutStrategyImplementation.hasBeenDistributed(
-          200
-        );
+        const hasDistributed =
+          await merklePayoutStrategyImplementation.hasBeenDistributed(200);
         expect(hasDistributed).to.be.false;
       });
     });
 
     describe("test: payout", () => {
       beforeEach(async () => {
-        merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, merklePayoutStrategyArtifact, [])
-        );
+        merklePayoutStrategyImplementation = <
+          MerklePayoutStrategyImplementation
+        >await deployContract(user, merklePayoutStrategyArtifact, []);
 
         _currentBlockTimestamp = (
           await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
         ).timestamp;
 
-        await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategyImplementation);
-        
+        await initPayoutStrategy(
+          _currentBlockTimestamp,
+          merklePayoutStrategyImplementation
+        );
+
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300]);
 
         await merklePayoutStrategyImplementation.updateDistribution(
@@ -382,29 +424,35 @@ describe("MerklePayoutStrategyImplementation", function () {
         const [_, notRoundOperator, grant1] = await ethers.getSigners();
 
         // Prepare Payout
-        const payouts = [[0, grant1.address, 10, [], formatBytes32String("test")]];
+        const payouts = [
+          [0, grant1.address, 10, [], formatBytes32String("test")],
+        ];
         const distribution = arrayToDistribution(payouts);
 
         await expect(
           // @ts-ignore
           merklePayoutStrategyImplementation
             .connect(notRoundOperator)
-            ["payout((uint256,address,uint256,bytes32[],bytes32)[])"](distribution)
+            ["payout((uint256,address,uint256,bytes32[],bytes32)[])"](
+              distribution
+            )
         ).to.be.revertedWith("not round operator");
       });
 
       it("SHOULD revert if not ready for payout", async () => {
         const [_, grant1] = await ethers.getSigners();
         // Prepare Payout
-        const payouts = [[0, grant1.address, 10, [], formatBytes32String("test")]];
+        const payouts = [
+          [0, grant1.address, 10, [], formatBytes32String("test")],
+        ];
 
         const distribution = arrayToDistribution(payouts);
 
         await expect(
           // @ts-ignore
-          merklePayoutStrategyImplementation["payout((uint256,address,uint256,bytes32[],bytes32)[])"](
-            distribution
-          )
+          merklePayoutStrategyImplementation[
+            "payout((uint256,address,uint256,bytes32[],bytes32)[])"
+          ](distribution)
         ).to.be.revertedWith("Payout: Not ready for payout");
       });
 
@@ -414,14 +462,16 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         // Prepare Payout
         const [_, grant1] = await ethers.getSigners();
-        const payouts = [[0, grant1.address, 1, [], formatBytes32String("test")]];
+        const payouts = [
+          [0, grant1.address, 1, [], formatBytes32String("test")],
+        ];
         const distribution = arrayToDistribution(payouts);
 
         await expect(
           // @ts-ignore
-          merklePayoutStrategyImplementation["payout((uint256,address,uint256,bytes32[],bytes32)[])"](
-            distribution
-          )
+          merklePayoutStrategyImplementation[
+            "payout((uint256,address,uint256,bytes32[],bytes32)[])"
+          ](distribution)
         ).to.be.revertedWith("Payout: Invalid proof");
       });
 
@@ -435,7 +485,13 @@ describe("MerklePayoutStrategyImplementation", function () {
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[1]);
         const payouts = [
-          [1, distributions[1][1], distributions[1][2], validMerkleProof, distributions[1][3]],
+          [
+            1,
+            distributions[1][1],
+            distributions[1][2],
+            validMerkleProof,
+            distributions[1][3],
+          ],
         ];
 
         const distribution = arrayToDistribution(payouts);
@@ -445,11 +501,9 @@ describe("MerklePayoutStrategyImplementation", function () {
             "payout((uint256,address,uint256,bytes32[],bytes32)[])"
           ](distribution);
 
-        await expect(tx).to.emit(
-          merklePayoutStrategyImplementation, "BatchPayoutSuccessful"
-        ).withArgs(
-          user.address
-        );
+        await expect(tx)
+          .to.emit(merklePayoutStrategyImplementation, "BatchPayoutSuccessful")
+          .withArgs(user.address);
 
         /* Verify balance */
         const balance = await mockERC20.balanceOf(user2.address);
@@ -462,9 +516,9 @@ describe("MerklePayoutStrategyImplementation", function () {
         const randomWallet = ethers.Wallet.createRandom();
 
         /* Initialize a Round with native token */
-        merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, merklePayoutStrategyArtifact, [])
-        );
+        merklePayoutStrategyImplementation = <
+          MerklePayoutStrategyImplementation
+        >await deployContract(user, merklePayoutStrategyArtifact, []);
 
         _currentBlockTimestamp = (
           await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
@@ -477,15 +531,25 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         /* Generate a simple distribution */
         const distributions = [
-          [0, user.address, ethers.utils.parseEther("100"), formatBytes32String("project1")],
-          [1, randomWallet.address, ethers.utils.parseEther("200"), formatBytes32String("project2")],
+          [
+            0,
+            user.address,
+            ethers.utils.parseEther("100"),
+            formatBytes32String("project1"),
+          ],
+          [
+            1,
+            randomWallet.address,
+            ethers.utils.parseEther("200"),
+            formatBytes32String("project2"),
+          ],
         ];
 
         const tree = StandardMerkleTree.of(distributions, [
           "uint256",
           "address",
           "uint256",
-          "bytes32"
+          "bytes32",
         ]);
 
         /* Set the merkle root */
@@ -505,7 +569,13 @@ describe("MerklePayoutStrategyImplementation", function () {
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[1]);
         const payouts = [
-          [1, distributions[1][1], distributions[1][2], validMerkleProof, distributions[1][3]],
+          [
+            1,
+            distributions[1][1],
+            distributions[1][2],
+            validMerkleProof,
+            distributions[1][3],
+          ],
         ];
         const distribution = arrayToDistribution(payouts);
 
@@ -514,11 +584,9 @@ describe("MerklePayoutStrategyImplementation", function () {
             "payout((uint256,address,uint256,bytes32[],bytes32)[])"
           ](distribution);
 
-        await expect(tx).to.emit(
-          merklePayoutStrategyImplementation, "BatchPayoutSuccessful")
-        .withArgs(
-          user.address
-        );
+        await expect(tx)
+          .to.emit(merklePayoutStrategyImplementation, "BatchPayoutSuccessful")
+          .withArgs(user.address);
 
         /* Verify balance */
         const balance = await randomWallet
@@ -539,8 +607,20 @@ describe("MerklePayoutStrategyImplementation", function () {
         const proofUser = tree.getProof(distributions[1]);
         const proofUser2 = tree.getProof(distributions[2]);
         const payouts = [
-          [1, distributions[1][1], distributions[1][2], proofUser, distributions[1][3]],
-          [2, distributions[2][1], distributions[2][2], proofUser2, distributions[2][3]],
+          [
+            1,
+            distributions[1][1],
+            distributions[1][2],
+            proofUser,
+            distributions[1][3],
+          ],
+          [
+            2,
+            distributions[2][1],
+            distributions[2][2],
+            proofUser2,
+            distributions[2][3],
+          ],
         ];
         const distribution = arrayToDistribution(payouts);
 
@@ -549,11 +629,9 @@ describe("MerklePayoutStrategyImplementation", function () {
             "payout((uint256,address,uint256,bytes32[],bytes32)[])"
           ](distribution);
 
-        await expect(tx).to.emit(
-          merklePayoutStrategyImplementation, "BatchPayoutSuccessful")
-        .withArgs(
-          user.address
-        );
+        await expect(tx)
+          .to.emit(merklePayoutStrategyImplementation, "BatchPayoutSuccessful")
+          .withArgs(user.address);
 
         /* Verify balance */
         const balance2 = await mockERC20.balanceOf(user2.address);
@@ -573,8 +651,20 @@ describe("MerklePayoutStrategyImplementation", function () {
         const proofUser = tree.getProof(distributions[1]);
         const proofUser2 = tree.getProof(distributions[2]);
         const payouts = [
-          [1, distributions[1][1], distributions[1][2], proofUser, distributions[1][3]],
-          [2, distributions[2][1], distributions[2][2], proofUser2, distributions[2][3]],
+          [
+            1,
+            distributions[1][1],
+            distributions[1][2],
+            proofUser,
+            distributions[1][3],
+          ],
+          [
+            2,
+            distributions[2][1],
+            distributions[2][2],
+            proofUser2,
+            distributions[2][3],
+          ],
         ];
         const distribution = arrayToDistribution(payouts);
         const tx = // @ts-ignore
@@ -582,21 +672,23 @@ describe("MerklePayoutStrategyImplementation", function () {
             "payout((uint256,address,uint256,bytes32[],bytes32)[])"
           ](distribution);
 
-        await expect(tx).to.emit(
-          merklePayoutStrategyImplementation, "FundsDistributed"
-        ).withArgs(
-          distributions[1][2], // amount
-          distributions[1][1], // recipient
-          mockERC20.address, // token
-          distributions[1][3] // projectId
-        );
+        await expect(tx)
+          .to.emit(merklePayoutStrategyImplementation, "FundsDistributed")
+          .withArgs(
+            distributions[1][2], // amount
+            distributions[1][1], // recipient
+            mockERC20.address, // token
+            distributions[1][3] // projectId
+          );
 
-        await expect(tx).to.emit(merklePayoutStrategyImplementation, "FundsDistributed").withArgs(
-          distributions[2][2], // amount
-          distributions[2][1], // recipient
-          mockERC20.address, // token
-          distributions[2][3] // projectId
-        );
+        await expect(tx)
+          .to.emit(merklePayoutStrategyImplementation, "FundsDistributed")
+          .withArgs(
+            distributions[2][2], // amount
+            distributions[2][1], // recipient
+            mockERC20.address, // token
+            distributions[2][3] // projectId
+          );
       });
 
       it("SHOULD revert if contract has not enough funds", async () => {
@@ -613,7 +705,7 @@ describe("MerklePayoutStrategyImplementation", function () {
           "uint256",
           "address",
           "uint256",
-          "bytes32"
+          "bytes32",
         ]);
 
         /* Set the merkle root */
@@ -626,7 +718,9 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         /* Mark ready for payouts */
         const tx = roundImplementation.setReadyForPayout();
-        await expect(tx).to.be.revertedWith("Round: Not enough funds in contract");
+        await expect(tx).to.be.revertedWith(
+          "Round: Not enough funds in contract"
+        );
       });
 
       it("SHOULD revert when user tries to claim the same distributions twice on one call", async () => {
@@ -639,16 +733,28 @@ describe("MerklePayoutStrategyImplementation", function () {
         // Prepare Payout
         const proofUser = tree.getProof(distributions[0]);
         const payouts = [
-          [0, distributions[0][1], distributions[0][2], proofUser, distributions[0][3]],
-          [0, distributions[0][1], distributions[0][2], proofUser, distributions[0][3]],
+          [
+            0,
+            distributions[0][1],
+            distributions[0][2],
+            proofUser,
+            distributions[0][3],
+          ],
+          [
+            0,
+            distributions[0][1],
+            distributions[0][2],
+            proofUser,
+            distributions[0][3],
+          ],
         ];
         const distribution = arrayToDistribution(payouts);
 
         await expect(
           // @ts-ignore
-          merklePayoutStrategyImplementation["payout((uint256,address,uint256,bytes32[],bytes32)[])"](
-            distribution
-          )
+          merklePayoutStrategyImplementation[
+            "payout((uint256,address,uint256,bytes32[],bytes32)[])"
+          ](distribution)
         ).to.be.revertedWith("Payout: Already distributed");
       });
 
@@ -662,7 +768,13 @@ describe("MerklePayoutStrategyImplementation", function () {
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[1]);
         const payouts = [
-          [1, distributions[1][1], distributions[1][2], validMerkleProof, distributions[1][3]],
+          [
+            1,
+            distributions[1][1],
+            distributions[1][2],
+            validMerkleProof,
+            distributions[1][3],
+          ],
         ];
         const distribution = arrayToDistribution(payouts);
 
@@ -671,11 +783,9 @@ describe("MerklePayoutStrategyImplementation", function () {
             "payout((uint256,address,uint256,bytes32[],bytes32)[])"
           ](distribution);
 
-        await expect(tx).to.emit(
-          merklePayoutStrategyImplementation, "BatchPayoutSuccessful")
-        .withArgs(
-          user.address
-        );
+        await expect(tx)
+          .to.emit(merklePayoutStrategyImplementation, "BatchPayoutSuccessful")
+          .withArgs(user.address);
 
         /* Verify balance */
         const balance = await mockERC20.balanceOf(user2.address);
@@ -683,9 +793,9 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         await expect(
           // @ts-ignore
-          merklePayoutStrategyImplementation["payout((uint256,address,uint256,bytes32[],bytes32)[])"](
-            distribution
-          )
+          merklePayoutStrategyImplementation[
+            "payout((uint256,address,uint256,bytes32[],bytes32)[])"
+          ](distribution)
         ).to.be.revertedWith("Payout: Already distributed");
       });
 
@@ -698,14 +808,22 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[1]);
-        const payouts = [[1, distributions[1][1], 10000, validMerkleProof, distributions[1][3]]];
+        const payouts = [
+          [
+            1,
+            distributions[1][1],
+            10000,
+            validMerkleProof,
+            distributions[1][3],
+          ],
+        ];
         const distribution = arrayToDistribution(payouts);
 
         await expect(
           // @ts-ignore
-          merklePayoutStrategyImplementation["payout((uint256,address,uint256,bytes32[],bytes32)[])"](
-            distribution
-          )
+          merklePayoutStrategyImplementation[
+            "payout((uint256,address,uint256,bytes32[],bytes32)[])"
+          ](distribution)
         ).to.be.revertedWith("Payout: Invalid proof");
       });
 
@@ -719,14 +837,22 @@ describe("MerklePayoutStrategyImplementation", function () {
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[1]);
         /* Address in the payout is different to the merkle proof */
-        const payouts = [[1, distributions[1][1], 10000, validMerkleProof, distributions[1][3]]];
+        const payouts = [
+          [
+            1,
+            distributions[1][1],
+            10000,
+            validMerkleProof,
+            distributions[1][3],
+          ],
+        ];
         const distribution = arrayToDistribution(payouts);
 
         await expect(
           // @ts-ignore
-          merklePayoutStrategyImplementation["payout((uint256,address,uint256,bytes32[],bytes32)[])"](
-            distribution
-          )
+          merklePayoutStrategyImplementation[
+            "payout((uint256,address,uint256,bytes32[],bytes32)[])"
+          ](distribution)
         ).to.be.revertedWith("Payout: Invalid proof");
       });
     });
@@ -752,7 +878,7 @@ async function preparePayoutContract(
     "uint256",
     "address",
     "uint256",
-    "bytes32"
+    "bytes32",
   ]);
 
   /* Set the merkle root */
