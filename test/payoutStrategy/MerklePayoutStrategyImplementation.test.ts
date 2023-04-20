@@ -10,9 +10,11 @@ import { encodeRoundParameters } from "../../scripts/utils";
 import {
   AlloSettings,
   AlloSettings__factory,
+  MerklePayoutStrategyFactory,
   MerklePayoutStrategyImplementation,
   MockERC20,
   MockRoundImplementation,
+  QuadraticFundingVotingStrategyFactory,
   QuadraticFundingVotingStrategyImplementation,
   RoundFactory,
   RoundFactory__factory,
@@ -47,9 +49,13 @@ describe("MerklePayoutStrategyImplementation", function () {
   let roundImplementation: MockRoundImplementation;
   let roundImplementationArtifact: Artifact;
 
-  // Voting Strategy
-  let votingStrategyContract: QuadraticFundingVotingStrategyImplementation;
-  let votingStrategyArtifact: Artifact;
+  // Voting Strategy Factory
+  let votingStrategyFactoryContract: QuadraticFundingVotingStrategyFactory;
+  let votingStrategyFactoryArtifact: Artifact;
+
+  // Payout Strategy Factory
+  let payoutStrategyFactoryContract: MerklePayoutStrategyFactory;
+  let payoutStrategyFactoryArtifact: Artifact;
 
   // MerklePayoutStrategy Implementation
   let merklePayoutStrategy: MerklePayoutStrategyImplementation;
@@ -74,14 +80,6 @@ describe("MerklePayoutStrategyImplementation", function () {
     roundContractFactory = await ethers.getContractFactory("RoundFactory");
     roundFactoryContract = <RoundFactory>(
       await upgrades.deployProxy(roundContractFactory)
-    );
-
-    // Deploy MerklePayoutStrategyImplementation
-    merklePayoutStrategyArtifact = await artifacts.readArtifact(
-      "MerklePayoutStrategyImplementation"
-    );
-    merklePayoutStrategy = <MerklePayoutStrategyImplementation>(
-      await deployContract(user, merklePayoutStrategyArtifact, [])
     );
 
     roundImplementationArtifact = await artifacts.readArtifact(
@@ -111,10 +109,9 @@ describe("MerklePayoutStrategyImplementation", function () {
 
   let _currentBlockTimestamp: number;
 
-  describe("MerklePayoutStrategyImplementation functions", () => {
+  describe.only("MerklePayoutStrategyImplementation functions", () => {
     const initPayoutStrategy = async (
       _currentBlockTimestamp: number,
-      payoutStrategyContract: MerklePayoutStrategyImplementation,
       overrides?: any
     ) => {
       // Deploy MockERC20 contract if _token is not provided
@@ -151,12 +148,20 @@ describe("MerklePayoutStrategyImplementation", function () {
         await deployContract(user, roundImplementationArtifact, [])
       );
 
-      // Deploy voting strategy
-      votingStrategyArtifact = await artifacts.readArtifact(
-        "QuadraticFundingVotingStrategyImplementation"
+      // Deploy voting strategy factory
+      votingStrategyFactoryArtifact = await artifacts.readArtifact(
+        "QuadraticFundingVotingStrategyFactory"
       );
-      votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-        await deployContract(user, votingStrategyArtifact, [])
+      votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+        await deployContract(user, votingStrategyFactoryArtifact, [])
+      );
+
+      // Deploy PayoutStrategyFactory contract
+      payoutStrategyFactoryArtifact = await artifacts.readArtifact(
+        "MerklePayoutStrategyFactory"
+      );
+      payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+        await deployContract(user, payoutStrategyFactoryArtifact, [])
       );
 
       let roundFeeAddress = overrides && overrides.hasOwnProperty('roundFeeAddress') ? overrides.roundFeeAddress : Wallet.createRandom().address;
@@ -168,8 +173,8 @@ describe("MerklePayoutStrategyImplementation", function () {
       roundFeePercentage = roundFeePercentage * (denominator / 100);
 
       const initAddress = [
-        votingStrategyContract.address, // votingStrategy
-        payoutStrategyContract.address, // payoutStrategy
+        votingStrategyFactoryContract.address, // votingStrategyFactory
+        payoutStrategyFactoryContract.address, // payoutStrategyFactory
       ];
 
       const initRoundTime = [
@@ -198,6 +203,15 @@ describe("MerklePayoutStrategyImplementation", function () {
         encodeRoundParameters(params),
         alloSettingsContract.address
       );
+
+      const merklePayoutStrategyContract = await roundImplementation.payoutStrategy();
+
+      merklePayoutStrategy = <MerklePayoutStrategyImplementation>(
+        await ethers.getContractAt(
+          "MerklePayoutStrategyImplementation",
+          merklePayoutStrategyContract
+        )
+      );
     };
 
     describe("test: init", () => {
@@ -212,19 +226,13 @@ describe("MerklePayoutStrategyImplementation", function () {
         _currentBlockTimestamp = (
           await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
         ).timestamp;
-        // Deploy MerklePayoutStrategyImplementation
-        merklePayoutStrategyArtifact = await artifacts.readArtifact(
-          "MerklePayoutStrategyImplementation"
-        );
-        merklePayoutStrategy = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, merklePayoutStrategyArtifact, [])
-        );
 
-        await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
+        await initPayoutStrategy(_currentBlockTimestamp);
       });
 
       describe("test: updateDistribution", () => {
         it("SHOULD have empty merkle root after deploy", async () => {
+
           expect(await merklePayoutStrategy.merkleRoot()).to.be.equal(
             "0x0000000000000000000000000000000000000000000000000000000000000000"
           );
@@ -286,15 +294,8 @@ describe("MerklePayoutStrategyImplementation", function () {
         _currentBlockTimestamp = (
           await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
         ).timestamp;
-        // Deploy MerklePayoutStrategyImplementation
-        merklePayoutStrategyArtifact = await artifacts.readArtifact(
-          "MerklePayoutStrategyImplementation"
-        );
-        merklePayoutStrategy = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, merklePayoutStrategyArtifact, [])
-        );
 
-        await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
+        await initPayoutStrategy(_currentBlockTimestamp);
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300]);
       });
 
@@ -472,7 +473,7 @@ describe("MerklePayoutStrategyImplementation", function () {
           await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
         ).timestamp;
 
-        await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy, {
+        await initPayoutStrategy(_currentBlockTimestamp, {
           token: ethers.constants.AddressZero,
         });
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300]);
