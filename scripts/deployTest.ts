@@ -1,7 +1,6 @@
 import hre, {ethers, upgrades} from "hardhat";
 import {encodeProgramParameters, encodeRoundParameters} from "./utils";
 import {AddressZero} from "@ethersproject/constants";
-import {address} from "hardhat/internal/core/config/config-validation";
 
 const STATUS = {
     PENDING: 0,
@@ -42,7 +41,7 @@ async function deployEverything() {
     const networkName = hre.network.name;
 
     console.log(
-        `Deploy test round on ${networkName} as ${account.address}`
+        `Deploying test round on ${networkName} as ${account.address}`
     );
 
     console.log("Deploying ProjectRegistry...");
@@ -61,6 +60,7 @@ async function deployEverything() {
     console.log("Deploying ProgramFactory...");
     const programFactory = await ethers.getContractFactory("ProgramFactory");
     const programFactoryDeployment = await programFactory.deploy();
+    await programFactoryDeployment.deployed();
     await programFactoryDeployment.initialize();
     console.log(
         "Program Factory deployed at: ",
@@ -72,6 +72,7 @@ async function deployEverything() {
         "ProgramImplementation"
     );
     const programImplementationDeployment = await programImplementation.deploy();
+    await programImplementationDeployment.deployed();
     console.log(
         "Program Implementation deployed at: ",
         programImplementationDeployment.address
@@ -97,6 +98,7 @@ async function deployEverything() {
     );
     const quadraticFundingVotingStrategyFactoryContract =
         await upgrades.deployProxy(quadraticFundingVotingStrategyFactory);
+    await quadraticFundingVotingStrategyFactoryContract.deployed()
     console.log(
         `Deployed Upgradable QuadraticFundingVotingStrategyFactory to ${quadraticFundingVotingStrategyFactoryContract.address}`
     );
@@ -105,6 +107,7 @@ async function deployEverything() {
         "QuadraticFundingVotingStrategyImplementation"
     );
     const qfVotingImplContract = await qfVotingImplFactory.deploy();
+    await qfVotingImplContract.deployed();
     await qfVotingImplContract.initialize();
     console.log(
         `Deployed QuadraticFundingVotingStrategyImplementation to ${qfVotingImplContract.address}`
@@ -123,6 +126,7 @@ async function deployEverything() {
     const merklePayoutStrategyFactoryContract = await upgrades.deployProxy(
         merklePayoutStrategyFactory
     );
+    await merklePayoutStrategyFactoryContract.deployed();
     console.log(
         `Deployed Upgradable MerklePayoutStrategyFactory to ${merklePayoutStrategyFactoryContract.address}`
     );
@@ -132,6 +136,7 @@ async function deployEverything() {
     );
     const merklePayoutStrategyImplContract =
         await merklePayoutStrategyImpl.deploy();
+    await merklePayoutStrategyImplContract.deployed();
     await merklePayoutStrategyImplContract.initialize();
     console.log(`Deployed MerklePayoutStrategyImplementation to ${qfVotingImplContract.address}`);
 
@@ -144,17 +149,20 @@ async function deployEverything() {
     /* Round */
     const roundFactory = await ethers.getContractFactory("RoundFactory");
     const roundFactoryContract = await upgrades.deployProxy(roundFactory);
+    await roundFactoryContract.deployed();
     console.log(`Deployed RoundFactory to ${roundFactoryContract.address}`);
     const rfActualContract = await ethers.getContractAt("RoundFactory", roundFactoryContract.address);
 
     const alloSettingsFactory = await ethers.getContractFactory("AlloSettings");
     const alloSettingsContract = await alloSettingsFactory.deploy();
+    await alloSettingsContract.deployed();
     await alloSettingsContract.initialize();
 
     await rfActualContract.updateAlloSettings(alloSettingsContract.address);
 
     const roundImpl = await ethers.getContractFactory("RoundImplementation");
     const roundImplContract = await roundImpl.deploy();
+    await roundImplContract.deployed();
     console.log(`Deployed RoundImplementation to ${roundImplContract.address}`);
 
     const linkRoundTx = await roundFactoryContract.updateRoundImplementation(
