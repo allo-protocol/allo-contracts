@@ -117,7 +117,7 @@ describe("RoundImplementation", function () {
     });
   });
 
-  describe.only("core functions", () => {
+  describe("core functions", () => {
     const initRound = async (
       _currentBlockTimestamp: number,
       overrides?: any
