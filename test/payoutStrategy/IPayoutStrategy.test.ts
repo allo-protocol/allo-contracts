@@ -7,11 +7,11 @@ import { hexlify, isAddress } from "ethers/lib/utils";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
-import { AlloSettings, AlloSettings__factory, MerklePayoutStrategyFactory, MerklePayoutStrategyImplementation, MockERC20, QuadraticFundingVotingStrategyFactory, QuadraticFundingVotingStrategyImplementation, RoundFactory, RoundFactory__factory, RoundImplementation } from "../../typechain";
+import { AlloSettings, AlloSettings__factory, MerklePayoutStrategyFactory, MerklePayoutStrategyFactory__factory, MerklePayoutStrategyImplementation, MockERC20, QuadraticFundingVotingStrategyFactory, QuadraticFundingVotingStrategyFactory__factory, QuadraticFundingVotingStrategyImplementation, RoundFactory, RoundFactory__factory, RoundImplementation } from "../../typechain";
 import { randomBytes } from "crypto";
 import { encodeDistributionParameters } from "./MerklePayoutStrategyImplementation.test";
 
-describe("IPayoutInterface", function () {
+describe("IPayoutStrategy", function () {
 
   let user: SignerWithAddress;
 
@@ -28,16 +28,20 @@ describe("IPayoutInterface", function () {
   let roundImplementationArtifact: Artifact;
 
   // Voting Strategy Factory
-  let votingStrategyFactoryContract: QuadraticFundingVotingStrategyFactory;
-  let votingStrategyFactoryArtifact: Artifact;
+  let VotingStrategyFactory: QuadraticFundingVotingStrategyFactory;
+  let VotingStrategyContractFactory: QuadraticFundingVotingStrategyFactory__factory;
+
+  // Voting Strategy Implementation
+  let votingStrategyImplementation: QuadraticFundingVotingStrategyImplementation;
+  let votingStrategyImplementationArtifact: Artifact;
 
   // MerklePayoutStrategy Factory
-  let payoutStrategyFactory: MerklePayoutStrategyFactory;
-  let payoutStrategyFactoryArtifact: Artifact;
+  let MerklePayoutStrategyFactory: MerklePayoutStrategyFactory;
+  let MerklePayoutStrategyContractFactory: MerklePayoutStrategyFactory__factory;
 
-   // MerklePayoutStrategy Implementation
-   let merklePayoutStrategy: MerklePayoutStrategyImplementation;
-   let merklePayoutStrategyArtifact: Artifact;
+  // MerklePayoutStrategy Implementation
+  let merklePayoutStrategyImplementation: MerklePayoutStrategyImplementation;
+  let merklePayoutStrategyImplementationArtifact: Artifact;
 
   // MockERC20
   let mockERC20: MockERC20;
@@ -58,9 +62,25 @@ describe("IPayoutInterface", function () {
     roundContractFactory = await ethers.getContractFactory('RoundFactory');
     roundFactoryContract = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
 
+    // Deploy voting strategy factory
+    VotingStrategyContractFactory = await ethers.getContractFactory('QuadraticFundingVotingStrategyFactory');
+    VotingStrategyFactory = <QuadraticFundingVotingStrategyFactory>await upgrades.deployProxy(VotingStrategyContractFactory);
+
+    // Deploy MerklePayoutStrategyFactory
+    MerklePayoutStrategyContractFactory = await ethers.getContractFactory('MerklePayoutStrategyFactory');
+    MerklePayoutStrategyFactory = <MerklePayoutStrategyFactory>await upgrades.deployProxy(MerklePayoutStrategyContractFactory);
+
+    // Deploy voting strategy implementation
+    votingStrategyImplementationArtifact = await artifacts.readArtifact('QuadraticFundingVotingStrategyImplementation');
+    votingStrategyImplementation = <QuadraticFundingVotingStrategyImplementation>await deployContract(user, votingStrategyImplementationArtifact, []);
+
     // Deploy MerklePayoutStrategyImplementation
-    merklePayoutStrategyArtifact = await artifacts.readArtifact('MerklePayoutStrategyImplementation');
-    merklePayoutStrategy = <MerklePayoutStrategyImplementation>await deployContract(user, merklePayoutStrategyArtifact, []);
+    merklePayoutStrategyImplementationArtifact = await artifacts.readArtifact('MerklePayoutStrategyImplementation');
+    merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>await deployContract(user, merklePayoutStrategyImplementationArtifact, []);
+
+    // link contracts to factory
+    await VotingStrategyFactory.updateVotingContract(votingStrategyImplementation.address);
+    await MerklePayoutStrategyFactory.updatePayoutImplementation(merklePayoutStrategyImplementation.address);
 
     roundImplementationArtifact = await artifacts.readArtifact('RoundImplementation');
 
@@ -71,13 +91,13 @@ describe("IPayoutInterface", function () {
     it('SHOULD deploy properly', async () => {
 
       // Verify deploy
-      expect(isAddress(merklePayoutStrategy.address), 'Failed to deploy MerklePayoutStrategyImplementation').to.be.true;
+      expect(isAddress(merklePayoutStrategyImplementation.address), 'Failed to deploy MerklePayoutStrategyImplementation').to.be.true;
     });
   });
 
   let _currentBlockTimestamp: number;
 
-  describe ('IPayoutInterface functions', () => {
+  describe('IPayoutStrategy functions', () => {
 
     const initPayoutStrategy = async (
       _currentBlockTimestamp: number,
@@ -103,18 +123,6 @@ describe("IPayoutInterface", function () {
       roundImplementationArtifact = await artifacts.readArtifact('RoundImplementation');
       roundImplementation = <RoundImplementation>await deployContract(user, roundImplementationArtifact, []);
 
-      // Deploy voting strategy factory
-      votingStrategyFactoryArtifact = await artifacts.readArtifact('QuadraticFundingVotingStrategyFactory');
-      votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>await deployContract(user, votingStrategyFactoryArtifact, []);
-      
-      // Deploy payoutStrategyFactory
-      payoutStrategyFactoryArtifact = await artifacts.readArtifact(
-        "MerklePayoutStrategyFactory"
-      );
-      payoutStrategyFactory = <MerklePayoutStrategyFactory>(
-        await deployContract(user, payoutStrategyFactoryArtifact, [])
-      );
-      
       const matchAmount = 100;
       const denominator = await alloSettingsContract.DENOMINATOR();
       const roundFeePercentage = 10 * (denominator / 100);
@@ -122,8 +130,8 @@ describe("IPayoutInterface", function () {
       const roundFeeAddress = Wallet.createRandom().address;
 
       const initAddress = [
-        votingStrategyFactoryContract.address, // votingStrategyFactory
-        payoutStrategyFactory.address, // payoutStrategyFactory
+        VotingStrategyFactory.address, // votingStrategyFactory
+        MerklePayoutStrategyFactory.address, // payoutStrategyFactory
       ];
 
       const initRoundTime = [
@@ -159,21 +167,12 @@ describe("IPayoutInterface", function () {
         alloSettingsContract.address
       );
 
-      const merklePayoutStrategyContract = await roundImplementation.payoutStrategy();
-
-      // merklePayoutStrategy
-     const merklePayoutStrategy = <MerklePayoutStrategyImplementation>(
-        await ethers.getContractAt(
-          "MerklePayoutStrategyImplementation",
-          merklePayoutStrategyContract
-        )
-      );
-
       return params;
     };
 
     describe('test: init', () => {
 
+      let merklePayoutStrategyImplementation: MerklePayoutStrategyImplementation;
       before(async () => {
         [user] = await ethers.getSigners();
 
@@ -181,19 +180,26 @@ describe("IPayoutInterface", function () {
           await ethers.provider.getBlockNumber())
         ).timestamp;
 
-        await initPayoutStrategy(_currentBlockTimestamp, merklePayoutStrategy);
+        await initPayoutStrategy(_currentBlockTimestamp);
+
+        merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
       });
 
       it("SHOULD set the contract version", async() => {
-        expect(await merklePayoutStrategy.VERSION()).to.equal(VERSION);
+        expect(await merklePayoutStrategyImplementation.VERSION()).to.equal(VERSION);
       });
 
       it("SHOULD set the round address", async() => {
-        expect(await merklePayoutStrategy.roundAddress()).to.equal(roundImplementation.address);
+        expect(await merklePayoutStrategyImplementation.roundAddress()).to.equal(roundImplementation.address);
       });
 
       it("SHOULD revert WHEN invoked more than once", async() => {
-        const tx = merklePayoutStrategy.init();
+        const tx = merklePayoutStrategyImplementation.init();
         await expect(tx).to.revertedWith('roundAddress already set');
       });
     });
@@ -215,14 +221,20 @@ describe("IPayoutInterface", function () {
       });
 
       it("SHOULD revert if invoked when roundAddress is not set", async() => {
-        const tx = merklePayoutStrategy.setReadyForPayout();
+        const tx = merklePayoutStrategyImplementation.setReadyForPayout();
         await expect(tx).to.revertedWith('not linked to a round');
       });
 
       it("SHOULD revert if not called by Round", async () => {
         await initPayoutStrategy(_currentBlockTimestamp);
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
 
-        const tx = merklePayoutStrategy.setReadyForPayout();
+        const tx = merklePayoutStrategyImplementation.setReadyForPayout();
         await expect(tx).to.revertedWith('not invoked by round');
       });
 
@@ -249,10 +261,16 @@ describe("IPayoutInterface", function () {
 
       it("SHOULD set isReadyForPayout as true", async() => {
         await initPayoutStrategy(_currentBlockTimestamp);
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
 
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300]);
 
-        await merklePayoutStrategy.updateDistribution(
+        await merklePayoutStrategyImplementation.updateDistribution(
           encodeDistributionParameters(hexlify(randomBytes(32)), 1, "test")
         );
 
@@ -261,37 +279,49 @@ describe("IPayoutInterface", function () {
 
         await roundImplementation.setReadyForPayout();
 
-        expect(await merklePayoutStrategy.isReadyForPayout()).to.equal(true);
+        expect(await merklePayoutStrategyImplementation.isReadyForPayout()).to.equal(true);
       });
 
       it("SHOULD emit ReadyForPayout event", async() => {
         await initPayoutStrategy(_currentBlockTimestamp);
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
 
         // transfer some tokens to roundImplementation
         await mockERC20.transfer(roundImplementation.address, 110);
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300])
 
-        await merklePayoutStrategy.updateDistribution(
+        await merklePayoutStrategyImplementation.updateDistribution(
           encodeDistributionParameters(hexlify(randomBytes(32)), 1, "test")
         );
 
         // set isReadyForPayout as true
         const tx = roundImplementation.setReadyForPayout();
 
-        await expect(tx).to.emit(merklePayoutStrategy, 'ReadyForPayout');
+        await expect(tx).to.emit(merklePayoutStrategyImplementation, 'ReadyForPayout');
       });
 
       it("SHOULD revert if isReadyForPayout is already true", async() => {
         await initPayoutStrategy(_currentBlockTimestamp);
-        
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
+
         // transfer some tokens to roundImplementation
         await mockERC20.transfer(roundImplementation.address, 110);
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1300])
 
-        await merklePayoutStrategy.updateDistribution(
+        await merklePayoutStrategyImplementation.updateDistribution(
           encodeDistributionParameters(hexlify(randomBytes(32)), 1, "test")
         );
-        
+
         // set isReadyForPayout as true
         await roundImplementation.setReadyForPayout();
 
@@ -316,33 +346,48 @@ describe("IPayoutInterface", function () {
         ).timestamp;
 
         // Deploy MerklePayoutStrategyImplementation
-        merklePayoutStrategyArtifact = await artifacts.readArtifact('MerklePayoutStrategyImplementation');
-        merklePayoutStrategy = <MerklePayoutStrategyImplementation>await deployContract(user, merklePayoutStrategyArtifact, []);
+        merklePayoutStrategyImplementationArtifact = await artifacts.readArtifact('MerklePayoutStrategyImplementation');
+        merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>await deployContract(user, merklePayoutStrategyImplementationArtifact, []);
 
       });
 
       it("SHOULD revert WHEN invoked by not round operator", async() => {
         params = await initPayoutStrategy(_currentBlockTimestamp);
-
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
         const [_, notRoundOperator] = await ethers.getSigners();
-        const tx = merklePayoutStrategy.connect(notRoundOperator).withdrawFunds(Wallet.createRandom().address);
+        const tx = merklePayoutStrategyImplementation.connect(notRoundOperator).withdrawFunds(Wallet.createRandom().address);
         await expect(tx).to.revertedWith('not round operator');
       });
 
       it("SHOULD revert WHEN invoked before endLockingTime", async() => {
         params = await initPayoutStrategy(_currentBlockTimestamp);
-
-        const tx = merklePayoutStrategy.withdrawFunds(Wallet.createRandom().address);        
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
+        const tx = merklePayoutStrategyImplementation.withdrawFunds(Wallet.createRandom().address);
         await expect(tx).to.revertedWith('round has not ended');
       });
 
       it("SHOULD not revert WHEN invoked when the contract has no funds", async() => {
         params = await initPayoutStrategy(_currentBlockTimestamp);
-
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
         // Mine Blocks
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
-        const tx = merklePayoutStrategy.withdrawFunds(Wallet.createRandom().address);
+        const tx = merklePayoutStrategyImplementation.withdrawFunds(Wallet.createRandom().address);
         await expect(tx).to.not.reverted;
       });
 
@@ -351,23 +396,28 @@ describe("IPayoutInterface", function () {
         params = await initPayoutStrategy(_currentBlockTimestamp, {
           token: AddressZero
         });
-
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
         // Mine Blocks
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
         // transfer funds to payout strategy
         await user.sendTransaction({
-          to: merklePayoutStrategy.address,
+          to: merklePayoutStrategyImplementation.address,
           value: ethers.utils.parseEther("1.0"),
         });
 
-        expect(await ethers.provider.getBalance(merklePayoutStrategy.address)).to.equal(ethers.utils.parseEther("1.0"));
+        expect(await ethers.provider.getBalance(merklePayoutStrategyImplementation.address)).to.equal(ethers.utils.parseEther("1.0"));
 
         // withdraw funds
         const withdrawAddress = Wallet.createRandom().address;
-        await merklePayoutStrategy.withdrawFunds(withdrawAddress);
+        await merklePayoutStrategyImplementation.withdrawFunds(withdrawAddress);
 
-        expect(await ethers.provider.getBalance(merklePayoutStrategy.address)).to.equal(0);
+        expect(await ethers.provider.getBalance(merklePayoutStrategyImplementation.address)).to.equal(0);
         expect(await ethers.provider.getBalance(withdrawAddress)).to.equal(ethers.utils.parseEther("1.0"));
 
       });
@@ -378,41 +428,54 @@ describe("IPayoutInterface", function () {
 
         params = await initPayoutStrategy(_currentBlockTimestamp, {});
 
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
+
         // Mine Blocks
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
         // transfer funds to payout strategy
-        await mockERC20.transfer(merklePayoutStrategy.address, 10);
+        await mockERC20.transfer(merklePayoutStrategyImplementation.address, 10);
 
         // check balance on payout strategy
-        expect(await mockERC20.balanceOf(merklePayoutStrategy.address)).to.equal(10);
+        expect(await mockERC20.balanceOf(merklePayoutStrategyImplementation.address)).to.equal(10);
 
         // withdraw funds
-        await merklePayoutStrategy.withdrawFunds(withdrawAddress.address);
+        await merklePayoutStrategyImplementation.withdrawFunds(withdrawAddress.address);
 
         // check balance on payout strategy & withdraw address
-        expect(await mockERC20.balanceOf(merklePayoutStrategy.address)).to.equal(0);
+        expect(await mockERC20.balanceOf(merklePayoutStrategyImplementation.address)).to.equal(0);
         expect(await mockERC20.balanceOf(withdrawAddress.address)).to.equal(10);
       });
 
       it("SHOULD emit event WHEN invoked after endLockingTime", async() => {
         params = await initPayoutStrategy(_currentBlockTimestamp);
+        const merklePayoutStrategyImplementation = <MerklePayoutStrategyImplementation>(
+          await ethers.getContractAt(
+            "MerklePayoutStrategyImplementation",
+            await roundImplementation.payoutStrategy()
+          )
+        );
 
         // Mine Blocks
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 1200])
 
         // transfer funds to payout strategy
-        await mockERC20.transfer(merklePayoutStrategy.address, 10);
+        await mockERC20.transfer(merklePayoutStrategyImplementation.address, 10);
 
         // check balance on payout strategy
-        expect(await mockERC20.balanceOf(merklePayoutStrategy.address)).to.equal(10);
+        expect(await mockERC20.balanceOf(merklePayoutStrategyImplementation.address)).to.equal(10);
 
         // withdraw funds
         const withdrawAddress = Wallet.createRandom().address;
-        const tx = merklePayoutStrategy.withdrawFunds(withdrawAddress);
+        const tx = merklePayoutStrategyImplementation.withdrawFunds(withdrawAddress);
 
         await expect(tx).to.emit(
-          merklePayoutStrategy, 'FundsWithdrawn'
+          merklePayoutStrategyImplementation, 'FundsWithdrawn'
         ).withArgs(
           mockERC20.address,
           10,
