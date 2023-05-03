@@ -401,6 +401,28 @@ Match Amount (excluding protocol fee &amp; round fee)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### multicall
+
+```solidity
+function multicall(bytes[] data) external nonpayable returns (bytes[] results)
+```
+
+
+
+*Receives and executes a batch of function calls on this contract.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| data | bytes[] | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| results | bytes[] | undefined |
+
 ### nextApplicationIndex
 
 ```solidity

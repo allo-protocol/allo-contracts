@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 
 import "../settings/AlloSettings.sol";
 import "../votingStrategy/IVotingStrategy.sol";
@@ -19,7 +20,7 @@ import "../utils/MetaPtr.sol";
  * a group of ROUND_OPERATOR via the RoundFactory
  *
  */
-contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, Initializable {
+contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, Initializable, MulticallUpgradeable {
 
   string public constant VERSION = "1.0.0";
 
@@ -272,6 +273,8 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
     for (uint256 i = 0; i < _initRoles.roundOperators.length; ++i) {
       _grantRole(ROUND_OPERATOR_ROLE, _initRoles.roundOperators[i]);
     }
+
+    __Multicall_init();
   }
 
   // @notice Update match amount (only by ROUND_OPERATOR_ROLE)
