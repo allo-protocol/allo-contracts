@@ -1074,6 +1074,126 @@ describe("RoundImplementation", function () {
       });
     });
 
+    describe("test: update using multicall", () => {
+      let _currentBlockTimestamp: number;
+      let newApplicationsStartTime: number;
+      let newApplicationsEndTime: number;
+      let newRoundStartTime: number;
+      let newRoundEndTime: number;
+
+      let newApplicationMetapointer: MetaPtr;
+      let newRoundMetapointer: MetaPtr;
+      let newRoundFeeAddress: string;
+
+      beforeEach(async () => {
+        _currentBlockTimestamp = (
+          await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
+        ).timestamp;
+
+        newApplicationsStartTime = _currentBlockTimestamp + 150;
+        newApplicationsEndTime = _currentBlockTimestamp + 350;
+        newRoundStartTime = _currentBlockTimestamp + 550;
+        newRoundEndTime = _currentBlockTimestamp + 750;
+
+        newApplicationMetapointer = {
+          protocol: 1,
+          pointer: "newApplicationMetapointer"
+        };
+        newRoundMetapointer ={
+          protocol: 1,
+          pointer: "newRoundMetapointer"
+        };
+
+        newRoundFeeAddress = "0x0000000000000000000000000000000000001234";
+
+        await initRound(_currentBlockTimestamp);
+      });
+
+      it("SHOULD revert if called by non-owner", async () => {
+        const [_, notRoundOperator] = await ethers.getSigners();
+
+        const updateApplicationMetaPtr =
+          roundImplementation.interface.encodeFunctionData(
+            "updateApplicationMetaPtr",
+            [newApplicationMetapointer]
+          );
+
+        await expect(
+          roundImplementation
+            .connect(notRoundOperator)
+            .multicall([updateApplicationMetaPtr])
+        ).to.be.revertedWith(
+          `AccessControl: account ${notRoundOperator.address.toLowerCase()} is missing role 0xec61da14b5abbac5c5fda6f1d57642a264ebd5d0674f35852829746dfb8174a5`
+        );
+
+      });
+
+      it("SHOULD update all values", async () => {
+        const updateStartAndEndTimes = roundImplementation.interface.encodeFunctionData(
+          "updateStartAndEndTimes",
+          [
+            newApplicationsStartTime,
+            newApplicationsEndTime,
+            newRoundStartTime,
+            newRoundEndTime,
+          ]
+        );
+
+        const updateApplicationMetaPtr = roundImplementation.interface.encodeFunctionData(
+          "updateApplicationMetaPtr",
+          [newApplicationMetapointer]
+        );
+
+        const updateRoundMetaPtr = roundImplementation.interface.encodeFunctionData(
+          "updateRoundMetaPtr",
+          [newRoundMetapointer]
+        );
+
+        const updateRoundFeeAddress = roundImplementation.interface.encodeFunctionData(
+          "updateRoundFeeAddress",
+          [newRoundFeeAddress]
+        );
+
+        const tx = await roundImplementation.multicall([
+          updateStartAndEndTimes,
+          updateApplicationMetaPtr,
+          updateRoundMetaPtr,
+          updateRoundFeeAddress,
+        ]);
+
+        await tx.wait();
+
+        expect(await roundImplementation.applicationsStartTime()).equals(
+          newApplicationsStartTime
+        );
+
+        expect(await roundImplementation.applicationsEndTime()).equals(
+          newApplicationsEndTime
+        );
+
+        expect(await roundImplementation.roundStartTime()).equals(
+          newRoundStartTime
+        );
+
+        expect(await roundImplementation.roundEndTime()).equals(
+          newRoundEndTime
+        );
+
+        const applicationMetaPtr = await roundImplementation.applicationMetaPtr();
+        expect(applicationMetaPtr.protocol).equals( newApplicationMetapointer.protocol);
+        expect(applicationMetaPtr.pointer).equals( newApplicationMetapointer.pointer);
+
+        const roundMetaPtr = await roundImplementation.roundMetaPtr();
+        expect(roundMetaPtr.protocol).equals( newRoundMetapointer.protocol);
+        expect(roundMetaPtr.pointer).equals( newRoundMetapointer.pointer);
+
+        expect(await roundImplementation.roundFeeAddress()).equals(
+          newRoundFeeAddress
+        );
+
+      });
+    })  
+
     describe("test: setApplicationStatuses", () => {
       let _currentBlockTimestamp: number;
       beforeEach(async () => {
