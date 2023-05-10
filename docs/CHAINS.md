@@ -98,12 +98,12 @@ These are contracts that are created/deployed once for goerli
 | ProgramFactory                        | 0x79Ba35cb31620db1b5b101A9A13A1b0A82B5BC9e |
 | ProgramImplementation                 | 0xe0281a20dFaCb0E179E6581c33542bC533DdC4AB |
 | QuadraticFundingVotingStrategyFactory | 0x06A6Cc566c5A88E77B1353Cdc3110C2e6c828e38 |
-| QFVotingStrategyImplementation        | 0x030B873c822778F112F131410e054DC5E580802C |
+| QFVotingStrategyImplementation        | 0x6391D8315EDEe9Ce6F2A18c7D52D31EF1cD429BD |
 | MerklePayoutStrategyFactory           | 0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe |
-| MerklePayouStrategyImplementation     | 0x3e7f72DFeDF6ba1BcBFE77A94a752C529Bb4429E |
+| MerklePayouStrategyImplementation     | 0xC808c9Ea4020E0F6Ec20715EEA0642fA6870B5Cc |
 | AlloSettings                          | 0x2330b7ABA1DbC159E14113C0Ec56F273e2134F2c |    
 | RoundFactory                          | 0x24F9EBFAdf095e0afe3d98635ee83CD72e49B5B0 |
-| RoundImplementation                   | 0x1c582D2c6Abdc3E53cB6c5747C7c3bb96663Ab77 |
+| RoundImplementation                   | 0xb3767a07bB1b97a55B4d0BB4fB3135a945A32426 |
 | ProjectRegistry                       | 0xa71864fAd36439C50924359ECfF23Bb185FFDf21 |
 
 
