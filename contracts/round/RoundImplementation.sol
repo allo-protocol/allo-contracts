@@ -10,6 +10,8 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 
 import "../settings/AlloSettings.sol";
+import "../votingStrategy/IVotingStrategyFactory.sol";
+import "../payoutStrategy/IPayoutStrategyFactory.sol";
 import "../votingStrategy/IVotingStrategy.sol";
 import "../payoutStrategy/IPayoutStrategy.sol";
 
@@ -93,11 +95,17 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   /// @notice Allo Config Contract Address
   AlloSettings public alloSettings;
 
-  /// @notice Voting Strategy Contract Address
-  IVotingStrategy public votingStrategy;
+  /// @notice Voting Strategy Factory Contract Address
+  IVotingStrategyFactory public votingStrategyFactory;
+
+  /// @notice Payout Strategy Factory Contract Address
+  IPayoutStrategyFactory public payoutStrategyFactory;
+
+    /// @notice Voting Strategy Contract Address
+  address public votingStrategy;
 
   /// @notice Payout Strategy Contract Address
-  IPayoutStrategy public payoutStrategy;
+  address payable public payoutStrategy;
 
   /// @notice Unix timestamp from when round can accept applications
   uint256 public applicationsStartTime;
@@ -132,8 +140,8 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   // --- Struct ---
 
   struct InitAddress {
-    IVotingStrategy votingStrategy; // Deployed voting strategy contract
-    IPayoutStrategy payoutStrategy; // Deployed payout strategy contract
+    IVotingStrategyFactory votingStrategyFactory; // Deployed voting strategy factory contract
+    IPayoutStrategyFactory payoutStrategyFactory; // Deployed payout strategy factory contract
   }
 
   struct InitRoundTime {
@@ -244,19 +252,26 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
 
     alloSettings = AlloSettings(_alloSettings);
 
-    votingStrategy = _initAddress.votingStrategy;
-    payoutStrategy = _initAddress.payoutStrategy;
+    votingStrategyFactory = _initAddress.votingStrategyFactory;
+    payoutStrategyFactory = _initAddress.payoutStrategyFactory;
     applicationsStartTime = _initRoundTime.applicationsStartTime;
     applicationsEndTime = _initRoundTime.applicationsEndTime;
     roundStartTime = _initRoundTime.roundStartTime;
     roundEndTime = _initRoundTime.roundEndTime;
     token = _token;
 
+
+    // deploy voting contract
+    votingStrategy = votingStrategyFactory.create();
+
     // Invoke init on voting contract
-    votingStrategy.init();
+    IVotingStrategy(votingStrategy).init();
+
+    // deploy payout contract
+    payoutStrategy = payable(payoutStrategyFactory.create());
 
     // Invoke init on payout contract
-    payoutStrategy.init();
+    IPayoutStrategy(payoutStrategy).init();
 
     matchAmount = _matchAmount;
     roundFeePercentage = _roundFeePercentage;
@@ -438,7 +453,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
       "Round: Round is not active"
     );
 
-    votingStrategy.vote{value: msg.value}(encodedVotes, msg.sender);
+    IVotingStrategy(votingStrategy).vote{value: msg.value}(encodedVotes, msg.sender);
   }
 
 
@@ -471,10 +486,10 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
 
     // transfer funds to payout contract
     if (token == address(0)) {
-      payoutStrategy.setReadyForPayout{value: fundsInContract}();
+      IPayoutStrategy(payoutStrategy).setReadyForPayout{value: fundsInContract}();
     } else {
       IERC20(token).safeTransfer(address(payoutStrategy), fundsInContract);
-      payoutStrategy.setReadyForPayout();
+      IPayoutStrategy(payoutStrategy).setReadyForPayout();
     }
 
     emit PayFeeAndEscrowFundsToPayoutContract(fundsInContract, protocolFeeAmount, roundFeeAmount);

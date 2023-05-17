@@ -5,9 +5,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../../utils/MetaPtr.sol";
 
+import "../IVotingStrategyFactory.sol";
 import "./QuadraticFundingVotingStrategyImplementation.sol";
 
-contract QuadraticFundingVotingStrategyFactory is OwnableUpgradeable {
+contract QuadraticFundingVotingStrategyFactory is IVotingStrategyFactory, OwnableUpgradeable {
  
   address public votingContract;
 
