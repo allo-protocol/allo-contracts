@@ -36,9 +36,6 @@ abstract contract IPayoutStrategy {
 
   // --- Event ---
 
-  /// @notice Emitted when funds are withdrawn from the payout contract
-  event FundsWithdrawn(address indexed tokenAddress, uint256 amount, address withdrawAddress);
-
   /// @notice Emitted when contract is ready for payout
   event ReadyForPayout();
 

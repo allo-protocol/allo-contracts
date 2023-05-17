@@ -34,6 +34,9 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
 
   // --- Events ---
 
+  /// @notice Emitted when funds are withdrawn from the payout contract
+  event FundsWithdrawn(address indexed tokenAddress, uint256 amount, address withdrawAddress);
+
   /// @notice Emitted when the distribution is updated
   event DistributionUpdated(bytes32 merkleRoot, MetaPtr distributionMetaPtr);
 

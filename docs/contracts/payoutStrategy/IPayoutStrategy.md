@@ -104,24 +104,6 @@ Token address
 
 ## Events
 
-### FundsWithdrawn
-
-```solidity
-event FundsWithdrawn(address indexed tokenAddress, uint256 amount, address withdrawAddress)
-```
-
-Emitted when funds are withdrawn from the payout contract
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenAddress `indexed` | address | undefined |
-| amount  | uint256 | undefined |
-| withdrawAddress  | address | undefined |
-
 ### ReadyForPayout
 
 ```solidity
