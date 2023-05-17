@@ -453,7 +453,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
       "Round: Round is not active"
     );
 
-    IVotingStrategy(votingStrategy).vote{value: msg.value}(encodedVotes, msg.sender);
+    IVotingStrategy(votingStrategy).vote{value: msg.value}(encodedVotes, tx.origin);
   }
 
 
