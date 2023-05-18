@@ -103,13 +103,13 @@ event Initialized(uint8 version)
 |---|---|---|
 | version  | uint8 | undefined |
 
-### Voted
+### VotesCast
 
 ```solidity
-event Voted(address token, uint256 amount, address indexed voter, address grantAddress, bytes32 indexed projectId, uint256 applicationIndex, address indexed roundAddress)
+event VotesCast(bytes[] encodedVotes, address indexed voterAddress)
 ```
 
-Emitted when a new vote is sent
+Emitted when votes are sent
 
 
 
@@ -117,13 +117,8 @@ Emitted when a new vote is sent
 
 | Name | Type | Description |
 |---|---|---|
-| token  | address | undefined |
-| amount  | uint256 | undefined |
-| voter `indexed` | address | undefined |
-| grantAddress  | address | undefined |
-| projectId `indexed` | bytes32 | undefined |
-| applicationIndex  | uint256 | undefined |
-| roundAddress `indexed` | address | undefined |
+| encodedVotes  | bytes[] | undefined |
+| voterAddress `indexed` | address | undefined |
 
 
 

@@ -272,11 +272,11 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           expect(afterVotingGrant2Balance).to.equal(grant2TokenTransferAmount);
         });
 
-        it("SHOULD emit 2 Vote events", async () => {
+        it("SHOULD emit VotesCast event with 2 votes", async () => {
           // Invoke init
           await quadraticFundingVotingStrategy.init();
 
-          let votedEvents: Event[] = [];
+          let votesCastEvents: Event[] = [];
 
           const approveTx = await mockERC20.approve(
             quadraticFundingVotingStrategy.address,
@@ -290,34 +290,18 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           );
           txn.wait();
 
-          // check if vote for first grant fired
-          expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
-            mockERC20.address,
-            grant1TokenTransferAmount,
-            user.address,
-            grant1.address,
-            formatBytes32String("grant1"),
-            0, // note: this is the application index
-            user.address // note: this would be the round contract
-          );
-
-          // check if vote for second grant fired
-          expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
-            mockERC20.address,
-            grant2TokenTransferAmount,
-            user.address,
-            grant2.address,
-            formatBytes32String("grant2"),
-            1, // note: this is the application index
+          // check votes cast event is fired
+          expect(txn).to.emit(quadraticFundingVotingStrategy, "VotesCast").withArgs(
+            encodedVotes,
             user.address // note: this would be the round contract
           );
 
           const receipt = await txn.wait();
           if (receipt.events) {
-            votedEvents = receipt.events.filter((e) => e.event === "Voted");
+            votesCastEvents = receipt.events.filter((e) => e.event === "VotesCast");
           }
 
-          expect(votedEvents.length).to.equal(2);
+          expect(votesCastEvents.length).to.equal(1);
         });
       });
 
@@ -418,8 +402,8 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           );
         });
 
-        it("SHOULD emit 2 Vote events", async () => {
-          let votedEvents: Event[] = [];
+        it("SHOULD emit VotesCast event", async () => {
+          let votesCastedEvents: Event[] = [];
 
           // Invoke init
           await quadraticFundingVotingStrategy.init();
@@ -431,33 +415,17 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           );
 
           // check if vote for first grant fired
-          expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
-            nativeTokenAddress,
-            grant1NativeTokenTransferAmount,
-            user.address,
-            grant1.address,
-            formatBytes32String("grant1"),
-            BigNumber.from("99"),
-            user.address // note: this would be the round contract
-          );
-
-          // check if vote for second grant fired
-          expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
-            nativeTokenAddress,
-            grant2NativeTokenTransferAmount,
-            user.address,
-            grant2.address,
-            formatBytes32String("grant2"),
-            BigNumber.from("99"),
+          expect(txn).to.emit(quadraticFundingVotingStrategy, "VotesCast").withArgs(
+            encodedVotesInNativeToken,
             user.address // note: this would be the round contract
           );
 
           const receipt = await txn.wait();
           if (receipt.events) {
-            votedEvents = receipt.events.filter((e) => e.event === "Voted");
+            votesCastedEvents = receipt.events.filter((e) => e.event === "VotesCast");
           }
 
-          expect(votedEvents.length).to.equal(2);
+          expect(votesCastedEvents.length).to.equal(1);
         });
 
         it("SHOULD revert if receiver cannot receive native tokens", async () => {
@@ -527,7 +495,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
               user.address,
               { value: "99900000000000000000" }
             )
-          ).to.revertedWith("msg.value does not match vote amount");
+          ).to.revertedWith("Invalid match amount");
         });
 
       });
@@ -627,7 +595,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
         });
 
         it("SHOULD emit 2 Vote events", async () => {
-          let votedEvents: Event[] = [];
+          let votesCastedEvents: Event[] = [];
 
           // Invoke init
           await quadraticFundingVotingStrategy.init();
@@ -645,33 +613,17 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           );
 
           // check if vote for first grant fired
-          expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
-            nativeTokenAddress,
-            grant1NativeTokenTransferAmount,
-            user.address,
-            grant1.address,
-            formatBytes32String("grant1"),
-            BigNumber.from("99"),
-            user.address // note: this would be the round contract
-          );
-
-          // check if vote for second grant fired
-          expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
-            mockERC20.address,
-            grant2TokenTransferAmount,
-            user.address,
-            grant2.address,
-            formatBytes32String("grant2"),
-            BigNumber.from("99"),
+          expect(txn).to.emit(quadraticFundingVotingStrategy, "VotesCast").withArgs(
+            encodedVotes,
             user.address // note: this would be the round contract
           );
 
           const receipt = await txn.wait();
           if (receipt.events) {
-            votedEvents = receipt.events.filter((e) => e.event === "Voted");
+            votesCastedEvents = receipt.events.filter((e) => e.event === "VotesCast");
           }
 
-          expect(votedEvents.length).to.equal(2);
+          expect(votesCastedEvents.length).to.equal(1);
         });
       });
     });

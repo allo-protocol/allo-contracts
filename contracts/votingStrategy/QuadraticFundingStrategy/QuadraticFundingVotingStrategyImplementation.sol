@@ -23,15 +23,10 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
 
   // --- Event ---
 
-  /// @notice Emitted when a new vote is sent
-  event Voted(
-    address token,                    // voting token
-    uint256 amount,                   // voting amount
-    address indexed voter,            // voter address
-    address grantAddress,             // grant address
-    bytes32 indexed projectId,        // project id
-    uint256 applicationIndex,         // application index
-    address indexed roundAddress      // round address
+  /// @notice Emitted when votes are sent
+  event VotesCast(
+    bytes[] encodedVotes,         // encoded list of votes
+    address indexed voterAddress  // voter address
   );
 
   // --- Core methods ---
@@ -62,8 +57,8 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
         address _token,
         uint256 _amount,
         address _grantAddress,
-        bytes32 _projectId,
-        uint256 _applicationIndex
+        , // bytes32 _projectId
+          // uint256 _applicationIndex
       ) = abi.decode(encodedVotes[i], (
         address,
         uint256,
@@ -87,19 +82,11 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
           _amount
         );
       }
-
-      /// @dev emit event for transfer
-      emit Voted(
-        _token,
-        _amount,
-        voterAddress,
-        _grantAddress,
-        _projectId,
-        _applicationIndex,
-        msg.sender
-      );
     }
 
-    require(msgValue == msg.value, "msg.value does not match vote amount");
+    /// @dev emit event for transfer
+    emit VotesCast(encodedVotes, voterAddress);
+
+    require(msgValue == msg.value, "Invalid match amount");
   }
 }
