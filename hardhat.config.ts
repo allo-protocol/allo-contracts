@@ -132,7 +132,7 @@ const config: HardhatUserConfig = {
       "fantom-testnet",
       "https://rpc.testnet.fantom.network/"
     ),
-    localhost: createTestnetConfig("localhost", "http://localhost:8545"),
+    localhost: createTestnetConfig("localhost", "http://127.0.0.1:8545"),
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

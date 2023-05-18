@@ -397,6 +397,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   /// @param statuses new statuses
   function setApplicationStatuses(ApplicationStatus[] memory statuses) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
     for (uint256 i = 0; i < statuses.length;) {
+
       uint256 rowIndex = statuses[i].index;
       uint256 fullRow = statuses[i].statusRow;
 

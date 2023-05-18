@@ -1104,7 +1104,7 @@ describe("RoundImplementation", function () {
         ];
 
         const newState = buildStatusRow(0n, statuses);
-
+        console.log(newState);
         const applicationStatus = {
           index: 0,
           statusRow: newState,
@@ -1423,7 +1423,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           expect(Number(payoutContractBalance)).to.be.equal(0);
 
@@ -1540,7 +1540,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
@@ -1638,7 +1638,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
@@ -1741,7 +1741,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();

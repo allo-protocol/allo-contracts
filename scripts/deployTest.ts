@@ -1,27 +1,8 @@
 import hre, {ethers, upgrades} from "hardhat";
 import {encodeProgramParameters, encodeRoundParameters} from "./utils";
 import {AddressZero} from "@ethersproject/constants";
-
-const STATUS = {
-    PENDING: 0,
-    ACCEPTED: 1,
-    REJECTED: 2,
-    CANCELED: 3,
-};
-
-const buildNewState = (current: bigint, indexes: number[], statusArray: number[]) => {
-    let newState: bigint = current;
-
-    for (let i = 0; i < indexes.length; i++) {
-        const index = indexes[i];
-        const position = (index % 32) * 2;
-        const mask = BigInt(~(BigInt(3) << BigInt(position)));
-        newState =
-            (newState & mask) | (BigInt(statusArray[i]) << BigInt(position));
-    }
-
-    return newState.toString();
-};
+import StatusesBitmap from 'statuses-bitmap';
+import {ApplicationStatus, buildStatusRow} from "../utils/applicationStatus";
 
 async function deployEverything() {
     async function getCurrentBlock() {
@@ -31,7 +12,7 @@ async function deployEverything() {
         // Extract the block number and timestamp
         const timestamp = block.timestamp;
 
-        // Log the block number, timestamp, and human-readable UTC date
+        // Log the block number, timestamp
         console.log(`Block Number: ${block.number}`);
         console.log(`Timestamp: ${timestamp}`);
         return block.timestamp;
@@ -277,7 +258,28 @@ async function deployEverything() {
     }
     console.log(`Created a Round at ${roundAddress}`);
 
-    const round = await ethers.getContractAt("RoundImplementation", roundAddress);
+    // const round = await ethers.getContractAt("RoundImplementation", roundAddress);
+
+    const round = roundImplContract;
+    let applicationsStartTime = await round.applicationsStartTime();
+
+    /* Wait until round starts */
+    if (networkName === 'localhost') {
+        /* Set block-timestamp */
+        await ethers.provider.send("evm_setNextBlockTimestamp", [applicationsStartTime.toNumber() + 1])
+        await ethers.provider.send("evm_mine", []);
+    } else {
+        /* testnet, can't directly mine blocks, need to listen for blocks and wait until our time comes */
+        await new Promise((resolve) => {
+            ethers.provider.on('block', async (blockNumber) => {
+                let block = await ethers.provider.getBlock(blockNumber);
+                if (block.timestamp >= applicationsStartTime.toNumber()) {
+                    /* Continue */
+                    resolve(null);
+                }
+            });
+        })
+    }
 
     /* Apply to round */
     for (const project of projects) {
@@ -286,24 +288,26 @@ async function deployEverything() {
             ethers.utils.hexZeroPad(project.project, 32),
             project.metaPtr
         );
+        console.log(`Applied to Round with project ${project.project}`);
     }
 
-    const indexes: number[] = [0, 1, 2, 3];
-    const statusArray: number[] = [
-        STATUS.PENDING,
-        STATUS.ACCEPTED,
-        STATUS.REJECTED,
-        STATUS.CANCELED,
+    const statuses = [
+        {index: 0, status: ApplicationStatus.PENDING},
+        {index: 1, status: ApplicationStatus.ACCEPTED},
+        {index: 2, status: ApplicationStatus.REJECTED},
+        {index: 3, status: ApplicationStatus.CANCELED},
     ];
 
-    const newState = buildNewState(BigInt(0), indexes, statusArray);
+    const newState = buildStatusRow(0n, statuses);
+    console.log(newState);
 
     const applicationStatus = {
-        index: 0,
+        index: 1,
         statusRow: newState,
     }
+
     await round.setApplicationStatuses([applicationStatus]);
-    console.log('set application statuses:', statusArray);
+    console.log('Set application statuses:', statuses);
 
     let roundStartTime = await round.roundStartTime();
     /* Wait until round starts */
@@ -400,6 +404,8 @@ const generateAndEncodeRoundParam = async (
         _currentTimestamp + SECONDS_PER_SLOT * 6, // roundStartTime
         _currentTimestamp + SECONDS_PER_SLOT * 8, // roundEndTime
     ];
+
+    console.log(initRoundTime);
 
     const initMetaPtr = [roundMetaPtr, applicationMetaPtr];
 
