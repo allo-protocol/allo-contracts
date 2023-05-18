@@ -1,31 +1,22 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "../utils/MetaPtr.sol";
-
 import "../round/RoundImplementation.sol";
 
 /**
  * @notice Defines the abstract contract for payout strategies
  * for a round. Any new payout strategy would be expected to
  * extend this abstract contract.
+ *
  * Every PayoutStrategyImplementation contract would be unique to RoundImplementation
  * and would be deployed before creating a round.
- *
- * Functions that are marked as `virtual` are expected to be overridden
- * by the implementation contract.
- *
- * - updateDistribution
- * - payout
  *
  * @dev
  *  - Deployed before creating a round
  *  - Funds are transferred to the payout contract from round only during payout
  */
 abstract contract IPayoutStrategy {
-
-  using SafeERC20Upgradeable for IERC20Upgradeable;
 
   // --- Constants ---
 
@@ -40,16 +31,10 @@ abstract contract IPayoutStrategy {
   /// @notice Token address
   address public tokenAddress;
 
-  /// MetaPtr containing the distribution
-  MetaPtr public distributionMetaPtr;
-
   // @notice
   bool public isReadyForPayout;
 
   // --- Event ---
-
-  /// @notice Emitted when funds are withdrawn from the payout contract
-  event FundsWithdrawn(address indexed tokenAddress, uint256 amount, address withdrawAddress);
 
   /// @notice Emitted when contract is ready for payout
   event ReadyForPayout();
@@ -79,14 +64,13 @@ abstract contract IPayoutStrategy {
     _;
   }
 
-  // --- Core methods ---
+  // --- Core Methods ---
 
   /**
    * @notice Invoked by RoundImplementation on creation to
    * set the round for which the payout strategy is to be used
-   *
    */
-  function init() external {
+  function init() external virtual {
     require(roundAddress == address(0x0), "roundAddress already set");
     roundAddress = payable(msg.sender);
 
@@ -96,71 +80,13 @@ abstract contract IPayoutStrategy {
     isReadyForPayout = false;
   }
 
-  /**s
-   * @notice Invoked by RoundImplementation to upload distribution to the
-   * payout strategy
-   *
-   * @dev
-   * - ideally IPayoutStrategy implementation should emit events after
-   *   distribution is updated
-   * - would be invoked at the end of the round
-   *
-   * Modifiers:
-   *  - isRoundOperator
-   *  - roundHasEnded
-   *
-   * @param _encodedDistribution encoded distribution
-   */
-  function updateDistribution(bytes calldata _encodedDistribution) external virtual;
-
-  /// @notice checks that distribution is set before setReadyForPayout
-  function isDistributionSet() public virtual view returns (bool);
-
   /// @notice Invoked by RoundImplementation to set isReadyForPayout
-  function setReadyForPayout() external payable isRoundContract roundHasEnded {
+  /// @dev Can only be called once and (by default) cannot be changed once called
+  function setReadyForPayout() virtual external payable isRoundContract roundHasEnded {
     require(isReadyForPayout == false, "isReadyForPayout already set");
-    require(isDistributionSet(), "distribution not set");
 
     isReadyForPayout = true;
     emit ReadyForPayout();
-  }
-
-  /**
-   * @notice Invoked by RoundImplementation to withdraw funds to
-   * withdrawAddress from the payout contract
-   *
-   * @param withdrawAddress withdraw funds address
-   */
-  function withdrawFunds(address payable withdrawAddress) external payable virtual isRoundOperator roundHasEnded {
-
-    uint balance = _getTokenBalance();
-
-    if (tokenAddress == address(0)) {
-      /// @dev native token
-      AddressUpgradeable.sendValue(
-        withdrawAddress,
-        balance
-      );
-    } else {
-      /// @dev ERC20 token
-      IERC20Upgradeable(tokenAddress).safeTransfer(
-        withdrawAddress,
-        balance
-      );
-    }
-
-    emit FundsWithdrawn(tokenAddress, balance, withdrawAddress);
-  }
-
-  /**
-   * Util function to get token balance in the contract
-   */
-  function _getTokenBalance() internal view returns (uint) {
-    if (tokenAddress == address(0)) {
-      return address(this).balance;
-    } else {
-      return IERC20Upgradeable(tokenAddress).balanceOf(address(this));
-    }
   }
 
   receive() external payable {}

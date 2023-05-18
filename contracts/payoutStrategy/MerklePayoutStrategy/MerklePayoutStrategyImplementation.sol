@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
@@ -14,6 +15,8 @@ import "../IPayoutStrategy.sol";
  */
 contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
 
+  using SafeERC20Upgradeable for IERC20Upgradeable;
+
   string public constant VERSION = "0.2.0";
 
   using SafeERC20 for IERC20;
@@ -26,7 +29,13 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
   /// @notice packed array of booleans to keep track of claims
   mapping(uint256 => uint256) private distributedBitMap;
 
+  /// MetaPtr containing the distribution
+  MetaPtr public distributionMetaPtr;
+
   // --- Events ---
+
+  /// @notice Emitted when funds are withdrawn from the payout contract
+  event FundsWithdrawn(address indexed tokenAddress, uint256 amount, address withdrawAddress);
 
   /// @notice Emitted when the distribution is updated
   event DistributionUpdated(bytes32 merkleRoot, MetaPtr distributionMetaPtr);
@@ -51,6 +60,7 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
     bytes32 projectId;
   }
 
+  // @NOTE: we need this because we're inheriting from Initializable.sol
   function initialize() external initializer {
     // empty initializer
   }
@@ -59,7 +69,7 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
 
   /// @notice Invoked by round operator to update the merkle root and distribution MetaPtr
   /// @param encodedDistribution encoded distribution
-  function updateDistribution(bytes calldata encodedDistribution) external override roundHasEnded isRoundOperator {
+  function updateDistribution(bytes calldata encodedDistribution) external roundHasEnded isRoundOperator {
 
     require(isReadyForPayout == false, "Payout: Already ready for payout");
 
@@ -75,8 +85,17 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
   }
 
   /// @notice function to check if distribution is set
-  function isDistributionSet() public view override returns (bool) {
+  function isDistributionSet() public view returns (bool) {
     return merkleRoot != "";
+  }
+
+  /// @notice Invoked by RoundImplementation to set isReadyForPayout
+  function setReadyForPayout() override external payable isRoundContract roundHasEnded {
+    require(isReadyForPayout == false, "isReadyForPayout already set");
+    require(isDistributionSet(), "distribution not set");
+
+    isReadyForPayout = true;
+    emit ReadyForPayout();
   }
 
   /// @notice Util function to check if distribution is done
@@ -91,11 +110,37 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
     return distributedWord & mask == mask;
   }
 
+  /**
+   * @notice Invoked by RoundImplementation to withdraw funds to
+   * withdrawAddress from the payout contract
+   *
+   * @param withdrawAddress withdraw funds address
+   */
+  function withdrawFunds(address payable withdrawAddress) external payable isRoundOperator roundHasEnded {
+
+    uint balance = _getTokenBalance();
+
+    if (tokenAddress == address(0)) {
+      /// @dev native token
+      AddressUpgradeable.sendValue(
+        withdrawAddress,
+        balance
+      );
+    } else {
+      /// @dev ERC20 token
+      IERC20Upgradeable(tokenAddress).safeTransfer(
+        withdrawAddress,
+        balance
+      );
+    }
+
+    emit FundsWithdrawn(tokenAddress, balance, withdrawAddress);
+  }
 
   /// @notice function to distribute funds to recipient
   /// @dev can be invoked only by round operator
   /// @param _distributions encoded distribution
-  function payout(Distribution[] calldata _distributions) external virtual payable isRoundOperator {
+  function payout(Distribution[] calldata _distributions) external payable isRoundOperator {
     require(isReadyForPayout == true, "Payout: Not ready for payout");
 
     for (uint256 i = 0; i < _distributions.length; ++i) {
@@ -149,6 +194,17 @@ contract MerklePayoutStrategyImplementation is IPayoutStrategy, Initializable {
       Address.sendValue(_recipient, _amount);
     } else {
       IERC20(tokenAddress).safeTransfer(_recipient, _amount);
+    }
+  }
+
+  /**
+   * Util function to get token balance in the contract
+   */
+  function _getTokenBalance() internal view returns (uint) {
+    if (tokenAddress == address(0)) {
+      return address(this).balance;
+    } else {
+      return IERC20Upgradeable(tokenAddress).balanceOf(address(this));
     }
   }
 }
