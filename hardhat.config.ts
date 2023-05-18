@@ -135,8 +135,13 @@ const config: HardhatUserConfig = {
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
   },
   gasReporter: {
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
+    excludeContracts: [
+      "contracts/mocks",
+      "contracts/dummy"
+    ],
   },
   etherscan: {
     apiKey: {
