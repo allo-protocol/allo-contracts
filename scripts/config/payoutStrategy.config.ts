@@ -20,7 +20,7 @@ export const MerklePayoutParams: DeployParams = {
   },
   "optimism-mainnet": {
     factory: "0xB5365543cdDa2C795AD104F4cB784EF3DB1CD383",
-    implementation: "0xF347ce7a0678afE4e7498172E5aaC76C5aEdB7de",
+    implementation: "0x0C1B55f485dF69cc10527995c48883438aD3fC4A",
     contract: "",
   },
   "fantom-mainnet": {

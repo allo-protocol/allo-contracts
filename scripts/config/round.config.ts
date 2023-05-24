@@ -22,7 +22,7 @@ export const roundParams: DeployParams = {
   },
   "optimism-mainnet": {
     roundFactoryContract: '0x04E753cFB8c8D1D7f776f7d7A033740961b6AEC2',
-    roundImplementationContract: '0x4bE4B959Ee75226C517E1ABe5d9FEAD275583b2A',
+    roundImplementationContract: '0x9cB0679806225080BfC3A9A72b09a71B95756a84',
     roundContract: ''
   },
   "fantom-mainnet": {

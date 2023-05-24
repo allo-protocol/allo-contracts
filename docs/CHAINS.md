@@ -39,12 +39,12 @@ These are contracts that are created/deployed once for optimism mainnet
 | ProgramFactory                        | 0xd5Fb00093Ebd30011d932cB69bb6313c550aB05f |
 | ProgramImplementation                 | 0xBA4999bd9Cea79a76442F1E1Fb0E5E448867E3bE |
 | QuadraticFundingVotingStrategyFactory | 0x838C5e10dcc1e54d62761d994722367BA167AC22 |
-| QFVotingStrategyImplementation        | 0x268ef1E2c19c4D10CDb24A1C8D95b7FcA1bAdD01 |
+| QFVotingStrategyImplementation        | 0x9Bb7eE67b688E4a5E9D24CF9604996c8DFA1C9ab |
 | RoundFactory                          | 0x04E753cFB8c8D1D7f776f7d7A033740961b6AEC2 |
-| RoundImplementation                   | 0x4bE4B959Ee75226C517E1ABe5d9FEAD275583b2A |
+| RoundImplementation                   | 0x9cB0679806225080BfC3A9A72b09a71B95756a84 |
 | ProjectRegistry                       | 0x8e1bD5Da87C14dd8e08F7ecc2aBf9D1d558ea174 |
 | MerklePayoutStrategyFactory           | 0xB5365543cdDa2C795AD104F4cB784EF3DB1CD383 |
-| MerklePayouStrategyImplementation     | 0xF347ce7a0678afE4e7498172E5aaC76C5aEdB7de |
+| MerklePayouStrategyImplementation     | 0x0C1B55f485dF69cc10527995c48883438aD3fC4A |
 | AlloSettings                          | 0xD092e383478Bc565655331f0B88f758eeFa2eEB7 |
 
 
