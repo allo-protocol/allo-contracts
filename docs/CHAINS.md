@@ -11,12 +11,12 @@ These are contracts that are created/deployed once for ethereum mainnet
 | ProgramFactory                        | 0x56296242CA408bA36393f3981879fF9692F193cC |
 | ProgramImplementation                 | 0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8 |
 | QuadraticFundingVotingStrategyFactory | 0x4a850F463D1C4842937c5Bc9540dBc803D744c9F |
-| QFVotingStrategyImplementation        | 0xB3Ee4800c93cBec7eD2a31050161240e4663Ff5E |
+| QFVotingStrategyImplementation        | 0xDdC143f736f912Ae6AAF2fceF2C78b267745B0f2 |
 | RoundFactory                          | 0x9Cb7f434aD3250d1656854A9eC7A71EceC6eE1EF |
-| RoundImplementation                   | 0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C |
+| RoundImplementation                   | 0xbB614e55cf43842B3Ee96CfD7410E9487c627EFe |
 | ProjectRegistry                       | 0x03506eD3f57892C85DB20C36846e9c808aFe9ef4 |
 | MerklePayoutStrategyFactory           | 0x8F8d78f119Aa722453d33d6881f4D400D67D054F |
-| MerklePayouStrategyImplementation     | 0xfF94fAfC740Be8D2010304108266E7b90ed232fc |
+| MerklePayouStrategyImplementation     | 0xf166786c1b49395F0300e52E8479712B0089FA65 |
 | AlloSettings                          | 0x9fcC854b145Bd3640a01c49Aa2Cfa725Ed0B4210 |
 
 **Sample contracts unique to a round **
