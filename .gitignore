@@ -18,3 +18,4 @@ cache-zk
 # Foundry files
 cache_forge
 out
+lib
