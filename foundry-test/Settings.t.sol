@@ -1,19 +1,44 @@
+// SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
-import "forge-std/Test.sol";
+import "ds-test/test.sol";
+import "../contracts/settings/AlloSettings.sol";
 
-contract ContractBTest is Test {
-    uint256 public testNumber;
+contract AlloSettingsTest is DSTest {
+  AlloSettings public alloSettings;
+  address payable newProtocolTreasury;
 
-    function setUp() public {
-        testNumber = 42;
-    }
+  function setUp() public {
+    alloSettings = new AlloSettings();
+    alloSettings.initialize();
+    newProtocolTreasury = payable(address(0x123));
+  }
 
-    function testNumberIs42() public {
-        assertEq(testNumber, 42);
-    }
+  function testUpdateProtocolFeePercentage() public {
+    uint24 newProtocolFeePercentage = 50000; // 50%
+    alloSettings.updateProtocolFeePercentage(newProtocolFeePercentage);
 
-    function testFailSubtract43() public {
-        testNumber -= 43;
-    }
+    uint24 updatedProtocolFeePercentage = alloSettings.protocolFeePercentage();
+    assertEq(
+      updatedProtocolFeePercentage,
+      newProtocolFeePercentage,
+      "The updated protocol fee percentage does not match the new value"
+    );
+  }
+
+  function testUpdateProtocolTreasury() public {
+    alloSettings.updateProtocolTreasury(newProtocolTreasury);
+
+    address updatedProtocolTreasury = alloSettings.protocolTreasury();
+    assertEq(
+      updatedProtocolTreasury,
+      newProtocolTreasury,
+      "The updated protocol treasury address does not match the new address"
+    );
+  }
+
+  function testFailUpdateProtocolFeePercentageOverLimit() public {
+    uint24 newProtocolFeePercentage = 150000; // 150%, should fail as it exceeds 100%
+    alloSettings.updateProtocolFeePercentage(newProtocolFeePercentage);
+  }
 }
