@@ -103,8 +103,9 @@ const abiExporter = [
 ];
 
 const dodoc = {
-  outputDir: "./docs/contracts",
+  outputDir: "./docs/generated",
   exclude: ["contracts/dummy", "contracts/mocks"],
+  template: "markdown",
 };
 
 const config: HardhatUserConfig = {
