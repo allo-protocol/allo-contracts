@@ -118,6 +118,9 @@ const config: HardhatUserConfig = {
     },
     // @ts-ignore
   },
+  paths: {
+    tests: "./hardhat-test",
+  },
   networks: {
     // Main Networks
     mainnet: createMainnetConfig("mainnet"),
