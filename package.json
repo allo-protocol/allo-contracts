@@ -54,6 +54,7 @@
   },
   "devDependencies": {
     "@ethersproject/constants": "^5.7.0",
+    "@nomicfoundation/hardhat-foundry": "^1.0.1",
     "@nomiclabs/hardhat-ethers": "^2.2.2",
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
     "@nomiclabs/hardhat-solhint": "^2.0.1",

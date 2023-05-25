@@ -11,5 +11,10 @@ cache
 artifacts
 abis/
 
+# ZK files
 artifacts-zk
 cache-zk
+
+# Foundry files
+cache_forge
+out
