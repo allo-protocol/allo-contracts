@@ -43,6 +43,28 @@ function createProject(MetaPtr metadata) external nonpayable
 |---|---|---|
 | metadata | MetaPtr | undefined |
 
+### getProject
+
+```solidity
+function getProject(uint256 projectID) external view returns (struct ProjectRegistry.Project)
+```
+
+Returns a project
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | uint256 | the project id to retrieve |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | ProjectRegistry.Project | undefined |
+
 ### getProjectOwners
 
 ```solidity
