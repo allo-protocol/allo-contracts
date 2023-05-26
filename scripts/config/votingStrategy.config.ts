@@ -10,7 +10,7 @@ type DeployParams = Record<string, QFVotingParams>;
 export const QFVotingParams: DeployParams = {
   "mainnet": {
     factory: '0x4a850F463D1C4842937c5Bc9540dBc803D744c9F',
-    implementation: '0xB3Ee4800c93cBec7eD2a31050161240e4663Ff5E',
+    implementation: '0xDdC143f736f912Ae6AAF2fceF2C78b267745B0f2',
     contract: ''
   },
   "goerli": {
@@ -20,7 +20,7 @@ export const QFVotingParams: DeployParams = {
   },
   "optimism-mainnet": {
     factory: '0x838C5e10dcc1e54d62761d994722367BA167AC22',
-    implementation: '0x268ef1E2c19c4D10CDb24A1C8D95b7FcA1bAdD01',
+    implementation: '0x9Bb7eE67b688E4a5E9D24CF9604996c8DFA1C9ab',
     contract: ''
   },
   "fantom-mainnet": {

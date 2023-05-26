@@ -11,12 +11,12 @@ These are contracts that are created/deployed once for ethereum mainnet
 | ProgramFactory                        | 0x56296242CA408bA36393f3981879fF9692F193cC |
 | ProgramImplementation                 | 0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8 |
 | QuadraticFundingVotingStrategyFactory | 0x4a850F463D1C4842937c5Bc9540dBc803D744c9F |
-| QFVotingStrategyImplementation        | 0xB3Ee4800c93cBec7eD2a31050161240e4663Ff5E |
+| QFVotingStrategyImplementation        | 0xDdC143f736f912Ae6AAF2fceF2C78b267745B0f2 |
 | RoundFactory                          | 0x9Cb7f434aD3250d1656854A9eC7A71EceC6eE1EF |
-| RoundImplementation                   | 0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C |
+| RoundImplementation                   | 0xbB614e55cf43842B3Ee96CfD7410E9487c627EFe |
 | ProjectRegistry                       | 0x03506eD3f57892C85DB20C36846e9c808aFe9ef4 |
 | MerklePayoutStrategyFactory           | 0x8F8d78f119Aa722453d33d6881f4D400D67D054F |
-| MerklePayouStrategyImplementation     | 0xfF94fAfC740Be8D2010304108266E7b90ed232fc |
+| MerklePayouStrategyImplementation     | 0xf166786c1b49395F0300e52E8479712B0089FA65 |
 | AlloSettings                          | 0x9fcC854b145Bd3640a01c49Aa2Cfa725Ed0B4210 |
 
 **Sample contracts unique to a round **
@@ -39,12 +39,12 @@ These are contracts that are created/deployed once for optimism mainnet
 | ProgramFactory                        | 0xd5Fb00093Ebd30011d932cB69bb6313c550aB05f |
 | ProgramImplementation                 | 0xBA4999bd9Cea79a76442F1E1Fb0E5E448867E3bE |
 | QuadraticFundingVotingStrategyFactory | 0x838C5e10dcc1e54d62761d994722367BA167AC22 |
-| QFVotingStrategyImplementation        | 0x268ef1E2c19c4D10CDb24A1C8D95b7FcA1bAdD01 |
+| QFVotingStrategyImplementation        | 0x9Bb7eE67b688E4a5E9D24CF9604996c8DFA1C9ab |
 | RoundFactory                          | 0x04E753cFB8c8D1D7f776f7d7A033740961b6AEC2 |
-| RoundImplementation                   | 0x4bE4B959Ee75226C517E1ABe5d9FEAD275583b2A |
+| RoundImplementation                   | 0x9cB0679806225080BfC3A9A72b09a71B95756a84 |
 | ProjectRegistry                       | 0x8e1bD5Da87C14dd8e08F7ecc2aBf9D1d558ea174 |
 | MerklePayoutStrategyFactory           | 0xB5365543cdDa2C795AD104F4cB784EF3DB1CD383 |
-| MerklePayouStrategyImplementation     | 0xF347ce7a0678afE4e7498172E5aaC76C5aEdB7de |
+| MerklePayouStrategyImplementation     | 0x0C1B55f485dF69cc10527995c48883438aD3fC4A |
 | AlloSettings                          | 0xD092e383478Bc565655331f0B88f758eeFa2eEB7 |
 
 
