@@ -7,9 +7,11 @@
   },
   "scripts": {
     "compile": "pnpm hardhat compile",
+    "compile:forge": "forge build",
     "build": "pnpm compile",
     "clean": "pnpm hardhat clean",
     "test": "pnpm hardhat test",
+    "test:forge": "forge test",
     "coverage": "pnpm hardhat coverage",
     "export-abi": "pnpm hardhat export-abi",
     "clear-abi": "pnpm hardhat clear-abi",

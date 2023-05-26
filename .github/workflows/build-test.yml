@@ -30,13 +30,13 @@ jobs:
         run: |
           pnpm install
 
-      - name: Compile contract
+      - name: Build contracts
         run: |
-          pnpm compile
+          pnpm compile:forge
 
-      - name: Test contract
+      - name: Test contracts
         run: |
-          pnpm test
+          pnpm test:forge
 
 #  slither:
 #    runs-on: ubuntu-latest
