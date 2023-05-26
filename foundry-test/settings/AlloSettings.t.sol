@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
-import "ds-test/test.sol";
-import "../contracts/settings/AlloSettings.sol";
+import { Test } from "forge-std/Test.sol";
+import { AlloSettings } from "../../contracts/settings/AlloSettings.sol";
 
-contract AlloSettingsTest is DSTest {
+contract AlloSettingsTest is Test {
   AlloSettings public alloSettings;
-  address payable newProtocolTreasury;
+  address payable public newProtocolTreasury;
 
   function setUp() public {
     alloSettings = new AlloSettings();

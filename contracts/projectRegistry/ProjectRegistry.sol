@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "../utils/MetaPtr.sol";
+import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import { MetaPtr } from "../utils/MetaPtr.sol";
+
+error Unauthorized();
 
 /**
  * @title ProjectRegistry
@@ -67,6 +69,7 @@ contract ProjectRegistry is Initializable {
      * @dev In future deploys of the implementation, an higher version should be passed to reinitializer
      */
     function initialize() public reinitializer(1) {
+        // solhint-disable-previous-line no-empty-blocks
     }
 
     // External functions
@@ -86,6 +89,14 @@ contract ProjectRegistry is Initializable {
 
         emit ProjectCreated(projectID, msg.sender);
         emit MetadataUpdated(projectID, metadata);
+    }
+
+    /**
+     * @notice Returns a project
+     * @param projectID the project id to retrieve
+     */
+    function getProject(uint256 projectID) external view returns (Project memory) {
+        return projects[projectID];
     }
 
     /**
