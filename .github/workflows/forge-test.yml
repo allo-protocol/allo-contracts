@@ -30,6 +30,9 @@ jobs:
         run: |
           pnpm install
 
+      - name: Install foundry
+        uses: foundry-rs/foundry-toolchain@v1.0.9
+
       - name: Compile contracts
         run: |
           pnpm compile:forge
