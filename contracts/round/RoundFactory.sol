@@ -90,12 +90,8 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
    * @notice Clones RoundImplementation a new round and emits event
    *
    * @param encodedParameters Encoded parameters for creating a round
-   * @param ownedBy Program which created the contract
    */
-  function create(
-    bytes calldata encodedParameters,
-    address ownedBy
-  ) external returns (address) {
+  function create(bytes calldata encodedParameters) external returns (address) {
 
     nonce++;
 
@@ -105,7 +101,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
     bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
     address clone = ClonesUpgradeable.cloneDeterministic(roundImplementation, salt);
 
-    emit RoundCreated(clone, ownedBy, payable(roundImplementation));
+    emit RoundCreated(clone, msg.sender, payable(roundImplementation));
 
     IRoundImplementation(payable(clone)).initialize(
       encodedParameters,

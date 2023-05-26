@@ -7,9 +7,15 @@ import "../utils/MetaPtr.sol";
 
 import "./ProgramImplementation.sol";
 
+import "../interfaces/IRoundFactory.sol";
+
 contract ProgramFactory is OwnableUpgradeable {
+
+  string public constant VERSION = "0.0.1";
  
   address public programContract;
+
+  IRoundFactory public roundFactory;
 
   // --- Event ---
 
@@ -19,6 +25,8 @@ contract ProgramFactory is OwnableUpgradeable {
   /// @notice Emitted when a new Program is created
   event ProgramCreated(address indexed programContractAddress, address indexed programImplementation);
 
+  /// @notice Emitted when a RoundFactory is updated
+  event RoundFactoryUpdated(address roundFactory);
 
   /// @notice constructor function which ensure deployer is set as owner
   function initialize() external initializer {
@@ -42,6 +50,19 @@ contract ProgramFactory is OwnableUpgradeable {
   }
 
   /**
+   * @notice Allows the owner to update the RoundFactory.
+   * This provides us the flexibility to upgrade RoundFactory
+   * contract while relying on the same ProgramFactory to get the list of
+   * programs.
+   */
+  function updateRoundFactory(address newRoundFactory) external onlyOwner {
+    // slither-disable-next-line missing-zero-check
+    roundFactory = IRoundFactory(newRoundFactory);
+
+    emit RoundFactoryUpdated(newRoundFactory);
+  }
+
+  /**
    * @notice Clones ProgramImplmentation and deployed a program and emits an event
    *
    * @param encodedParameters Encoded parameters for creating a program
@@ -52,7 +73,7 @@ contract ProgramFactory is OwnableUpgradeable {
 
     address clone = ClonesUpgradeable.clone(programContract);
     emit ProgramCreated(clone, programContract);
-    ProgramImplementation(clone).initialize(encodedParameters);
+    ProgramImplementation(clone).initialize(encodedParameters, roundFactory);
 
     return clone;
   }

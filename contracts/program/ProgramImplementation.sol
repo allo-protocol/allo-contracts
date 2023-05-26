@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
+import "../interfaces/IRoundFactory.sol";
+
 import "../utils/MetaPtr.sol";
 
 
@@ -27,11 +29,16 @@ contract ProgramImplementation is AccessControlEnumerable, Initializable {
   /// @notice Emitted when a team metadata pointer is updated
   event MetaPtrUpdated(MetaPtr oldMetaPtr, MetaPtr newMetaPtr);
 
+  /// @notice Emitted when a new round is created
+  event RoundCreated(address indexed roundAddress, address programOperator);
+
   // --- Data ---
 
   /// @notice URL pointing for program metadata (for off-chain use)
   MetaPtr public metaPtr;
 
+  /// @notice RoundFactory contract
+  IRoundFactory public roundFactory;
 
   // --- Core methods ---
 
@@ -44,7 +51,8 @@ contract ProgramImplementation is AccessControlEnumerable, Initializable {
    *  - _programOperators Addresses to be granted PROGRAM_OPERATOR_ROLE
    */
   function initialize(
-    bytes calldata encodedParameters
+    bytes calldata encodedParameters,
+    IRoundFactory _roundFactory
   ) external initializer {
   
     // Decode _encodedParameters
@@ -58,6 +66,9 @@ contract ProgramImplementation is AccessControlEnumerable, Initializable {
       address[],
       address[]
     ));
+
+    // Assigning round factory
+    roundFactory = _roundFactory;
 
     // Emit MetaPtrUpdated event for indexing
     emit MetaPtrUpdated(metaPtr, _metaPtr);
@@ -74,10 +85,17 @@ contract ProgramImplementation is AccessControlEnumerable, Initializable {
     }
   }
 
-  // @notice Update metaPtr (only by PROGRAM_OPERATOR_ROLE)
+  /// @notice Update metaPtr (only by PROGRAM_OPERATOR_ROLE)
   /// @param newMetaPtr new metaPtr
   function updateMetaPtr(MetaPtr memory newMetaPtr) external onlyRole(PROGRAM_OPERATOR_ROLE) {
     emit MetaPtrUpdated(metaPtr, newMetaPtr);
     metaPtr = newMetaPtr;
+  }
+
+  /// @notice Create a new round (only by PROGRAM_OPERATOR_ROLE)
+  /// @param encodedParameters Encoded parameters for round creation
+  function createRound(bytes calldata encodedParameters) external onlyRole(PROGRAM_OPERATOR_ROLE) {
+    address round = IRoundFactory.create(encodedParameters);
+    emit RoundCreated(round, msg.sender);
   }
 }
