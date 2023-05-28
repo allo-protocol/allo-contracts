@@ -50,7 +50,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
   /// @notice Emitted when a new Round is created
   event RoundCreated(
     address indexed roundAddress,
-    uint256 indexed projectId,
+    uint256 indexed projectID,
     address indexed roundImplementation,
     address registry
   );
@@ -94,13 +94,13 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
   /**
    * @notice Clones RoundImplementation a new round and emits event
    *
+   * @param projectID Project for which round is being created
    * @param encodedParameters Encoded parameters for creating a round
-   * @param ownedBy Program which created the contract
    */
   function create(
-    bytes calldata encodedParameters,
-    uint256 projectId
-  ) external returns (address) onlyRole(REGISTRY_ROLE) {
+    uint256 projectID,
+    bytes calldata encodedParameters
+  ) external onlyRole(REGISTRY_ROLE) returns (address) {
 
     nonce++;
 
@@ -110,7 +110,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
     bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
     address clone = ClonesUpgradeable.cloneDeterministic(roundImplementation, salt);
 
-    emit RoundCreated(clone, projectId, msg.sender, payable(roundImplementation));
+    emit RoundCreated(clone, projectID, msg.sender, payable(roundImplementation));
 
     IRoundImplementation(payable(clone)).initialize(
       encodedParameters,

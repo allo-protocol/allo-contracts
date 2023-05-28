@@ -11,7 +11,7 @@ interface IRoundFactory {
     ) external;
 
     function create(
-        bytes calldata encodedParameters,
-        address ownedBy
+        uint256 projectId,
+        bytes calldata encodedParameters
     ) external returns (address);
 }

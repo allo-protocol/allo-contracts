@@ -213,18 +213,20 @@ contract ProjectRegistry is Initializable {
 
     /**
      * @notice Create a new round for a project
+     * @param projectID project creating the round
      * @param encodedParameters Encoded parameters for round creation
      */
-    function createRound(bytes calldata encodedParameters)
-        external onlyProjectOwner(projectID)
-        returns(IRound)
-    {
-        /// @dev Check that the project has a project
+    function createRound(
+        IRoundFactory roundFactory,
+        uint256 projectID,
+        bytes calldata encodedParameters
+    ) external onlyProjectOwner(projectID) returns(address) {
+        /// @dev Check that the project has programMetadata
         require(
             projects[projectID].programMetadata.protocol != 0 &&
-            projects[projectID].programMetadata.pointer != "",
+            keccak256(bytes(projects[projectID].programMetadata.pointer)) != keccak256(""),
             "PR005"
         );
-        return IRoundFactory.create(encodedParameters);
+        return roundFactory.create(projectID, encodedParameters);
     }
 }
