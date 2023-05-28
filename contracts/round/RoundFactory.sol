@@ -5,6 +5,8 @@ import "./IRoundFactory.sol";
 import "./IRoundImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+
 
 import "../utils/MetaPtr.sol";
 
@@ -21,8 +23,10 @@ import "../utils/MetaPtr.sol";
  * @dev This contract is Ownable thus supports ownership transfership
  *
  */
-contract RoundFactory is IRoundFactory, OwnableUpgradeable {
+contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumerableUpgradeable {
   string public constant VERSION = "0.2.0";
+
+  bytes32 public constant REGISTRY_ROLE = keccak256("REGISTRY");
 
   // --- Data ---
 
@@ -46,8 +50,9 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
   /// @notice Emitted when a new Round is created
   event RoundCreated(
     address indexed roundAddress,
-    address indexed ownedBy,
-    address indexed roundImplementation
+    uint256 indexed projectId,
+    address indexed roundImplementation,
+    address registry
   );
 
   /// @notice constructor function which ensure deployer is set as owner
@@ -94,8 +99,8 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
    */
   function create(
     bytes calldata encodedParameters,
-    address ownedBy
-  ) external returns (address) {
+    uint256 projectId
+  ) external returns (address) onlyRole(REGISTRY_ROLE) {
 
     nonce++;
 
@@ -105,7 +110,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
     bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
     address clone = ClonesUpgradeable.cloneDeterministic(roundImplementation, salt);
 
-    emit RoundCreated(clone, ownedBy, payable(roundImplementation));
+    emit RoundCreated(clone, projectId, msg.sender, payable(roundImplementation));
 
     IRoundImplementation(payable(clone)).initialize(
       encodedParameters,

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "../round/IRoundFactory.sol";
 import "../utils/MetaPtr.sol";
 
 /**
@@ -198,6 +199,14 @@ contract ProjectRegistry is Initializable {
         owners.count = 1;
     }
 
-    // Private functions
-    // ...
+    /**
+     * @notice Create a new round for a project
+     * @param encodedParameters Encoded parameters for round creation
+     */
+    function createRound(bytes calldata encodedParameters)
+        external onlyProjectOwner(projectID)
+        returns(IRound)
+    {
+        return IRoundFactory.create(encodedParameters);
+    }
 }
