@@ -15,6 +15,7 @@ contract ProjectRegistry is Initializable {
     struct Project {
         uint256 id;
         MetaPtr metadata;
+        MetaPtr programMetadata;
     }
 
     // A linked list of owners of a project
@@ -53,6 +54,7 @@ contract ProjectRegistry is Initializable {
 
     event ProjectCreated(uint256 indexed projectID, address indexed owner);
     event MetadataUpdated(uint256 indexed projectID, MetaPtr metaPtr);
+    event ProgramMetadataUpdated(uint256 indexed projectID, MetaPtr programMetadata);
     event OwnerAdded(uint256 indexed projectID, address indexed owner);
     event OwnerRemoved(uint256 indexed projectID, address indexed owner);
 
@@ -101,11 +103,21 @@ contract ProjectRegistry is Initializable {
     /**
      * @notice Updates Metadata for singe project
      * @param projectID ID of previously created project
-     * @param metadata Updated pointer to external metadata
+     * @param metadata Updated pointer to project metadata
      */
     function updateProjectMetadata(uint256 projectID, MetaPtr calldata metadata) external onlyProjectOwner(projectID) {
         projects[projectID].metadata = metadata;
         emit MetadataUpdated(projectID, metadata);
+    }
+
+    /**
+     * @notice Updates Metadata for singe project
+     * @param projectID ID of previously created project
+     * @param programMetadata Updated pointer to project programMetadata
+     */
+    function updateProgramMetadata(uint256 projectID, MetaPtr calldata programMetadata) external onlyProjectOwner(projectID) {
+        projects[projectID].programMetadata = programMetadata;
+        emit ProgramMetadataUpdated(projectID, programMetadata);
     }
 
     /**
@@ -207,6 +219,12 @@ contract ProjectRegistry is Initializable {
         external onlyProjectOwner(projectID)
         returns(IRound)
     {
+        /// @dev Check that the project has a project
+        require(
+            projects[projectID].programMetadata.protocol != 0 &&
+            projects[projectID].programMetadata.pointer != "",
+            "PR005"
+        );
         return IRoundFactory.create(encodedParameters);
     }
 }
