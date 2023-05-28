@@ -4,19 +4,6 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 /**
- * Encodes the parameters for the ProgramFactory.create() function.
- *
- * @param params
- * @returns {string}
- */
-export const encodeProgramParameters = (params: any[]): string => {
-  return ethers.utils.defaultAbiCoder.encode(
-    ["tuple(uint256 protocol, string pointer)", "address[]", "address[]"],
-    params
-  );
-}
-
-/**
  * Encodes the parameters for the RoundFactory.create() function.
  *
  * @param params

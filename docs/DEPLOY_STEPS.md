@@ -32,47 +32,6 @@ pnpm run deploy-builder goerli
 ```
 
 
-### Program Setup
-
-The section here shows how to set up the program for the first time on a given network. Ideally these steps would be done once per chain. In this example , we would be deploying on goerli
-
-0. Create an `.env` file
-```sh
-cp ../.env.example ../.env
-```
-
-1. Create an `.env` file and fill out
-    - `INFURA_ID`               : Infura ID for deploying contract
-    - `DEPLOYER_PRIVATE_KEY`    : address which deploys the contract
-    - `ETHERSCAN_API_KEY`       : API key for etherscan verification
-
-2. Deploy the `ProgramFactory` contract
-```shell
-pnpm run deploy-program-factory goerli
-```
-
-3. Deploy the `ProgramImplementation` contract
-```shell
-pnpm run deploy-program-implementation goerli
-```
-
-4. Update `program.config.ts` with deployed contracts based on your network
-```javascript
-export const params: DeployParams = {
-  goerli: {
-    programImplementationContract: 'DEPLOYED_PROGRAM_IMPLEMENTATION_CONTRACT',
-    programFactoryContract: 'DEPLOYED_PROGRAM_FACTORY_CONTRACT',
-    ...
-  },
-};
-```
-
-5. Update `ProgramFactory` to reference the `ProgramImplementation` contract.
-```shell
-pnpm run link-program-implementation goerli
-```
-
-
 ### VotingStrategy Setup
 
 The section here shows how to set up voting strategy for the first time on a given network. Ideally these steps would be done once per chain. In this example ,we would be deploying the QuadraticFundingVotingStrategyImplementation contract on goerli
@@ -199,11 +158,6 @@ pnpm hardhat verify --network goerli <CONTRACT_ADDRESS>
 ##### Helper Deploy Script
 
 ```shell
-
-# Program
-pnpm run deploy-program-factory goerli
-pnpm run deploy-program-implementation goerli
-pnpm run link-program-implementation goerli
 
 # QF
 pnpm run deploy-qf-factory goerli
