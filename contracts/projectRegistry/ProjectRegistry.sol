@@ -72,6 +72,15 @@ contract ProjectRegistry is Initializable {
     // External functions
 
     /**
+     * @notice Check if an address is an owner of a project
+     * @param projectID ID of previously created project
+     * @param owner address to check
+     */
+    function isProjectOwner(uint256 projectID, address owner) public view returns (bool) {
+        return projectsOwners[projectID].list[owner] != address(0);
+    }
+
+    /**
      * @notice Creates a new project with a metadata pointer
      * @param metadata the metadata pointer
      */
@@ -142,7 +151,7 @@ contract ProjectRegistry is Initializable {
 
     /**
      * @notice Retrieve count of existing project owners
-     * @param projectID ID of project 
+     * @param projectID ID of project
      * @return Count of owners for given project
      */
     function projectOwnersCount(uint256 projectID) external view returns(uint256) {
@@ -150,8 +159,8 @@ contract ProjectRegistry is Initializable {
     }
 
     /**
-     * @notice Retrieve list of project owners 
-     * @param projectID ID of project 
+     * @notice Retrieve list of project owners
+     * @param projectID ID of project
      * @return List of current owners of given project
      */
     function getProjectOwners(uint256 projectID) external view returns(address[] memory) {

@@ -170,4 +170,20 @@ describe("ProjectRegistry", function () {
       this.contract.connect(this.accounts[1]).removeProjectOwner(projectID, OWNERS_LIST_SENTINEL, this.accounts[1].address)
     ).to.be.revertedWith("PR004");
   });
+
+  it("returns TRUE if address is owner of project", async function() {
+    const projectID = 0;
+    const currentOwners = await this.contract.getProjectOwners(projectID);
+    const result = await this.contract.isProjectOwner(projectID, currentOwners[0]);
+
+    expect(result).to.be.true;
+  });
+
+  it("returns FALSE if address is not owner of project", async function() {
+    const projectID = 0;
+    const randomAddress = "0x0000000000000000000000000000000000000003";
+    const result = await this.contract.isProjectOwner(projectID, randomAddress);
+
+    expect(result).to.be.false;
+  });
 });
