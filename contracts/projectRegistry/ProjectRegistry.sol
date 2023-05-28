@@ -5,6 +5,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "../round/IRoundFactory.sol";
 import "../utils/MetaPtr.sol";
 
+import "hardhat/console.sol";
+
+
 /**
  * @title ProjectRegistry
  */
@@ -86,18 +89,27 @@ contract ProjectRegistry is Initializable {
     /**
      * @notice Creates a new project with a metadata pointer
      * @param metadata the metadata pointer
+     * @param programMetadata the program metadata pointer
      */
-    function createProject(MetaPtr calldata metadata) external {
+    function createProject(MetaPtr calldata metadata, MetaPtr calldata programMetadata) external {
         uint256 projectID = projectsCount++;
 
         Project storage project = projects[projectID];
         project.id = projectID;
-        project.metadata = metadata;
 
         initProjectOwners(projectID);
 
+        if (metadata.protocol != 0) {
+            project.metadata = metadata;
+            emit MetadataUpdated(projectID, metadata);
+        }
+
+        if (programMetadata.protocol != 0) {
+            project.programMetadata = programMetadata;
+            emit ProgramMetadataUpdated(projectID, programMetadata);
+        }
+
         emit ProjectCreated(projectID, msg.sender);
-        emit MetadataUpdated(projectID, metadata);
     }
 
     /**
@@ -221,12 +233,7 @@ contract ProjectRegistry is Initializable {
         uint256 projectID,
         bytes calldata encodedParameters
     ) external onlyProjectOwner(projectID) returns(address) {
-        /// @dev Check that the project has programMetadata
-        require(
-            projects[projectID].programMetadata.protocol != 0 &&
-            keccak256(bytes(projects[projectID].programMetadata.pointer)) != keccak256(""),
-            "PR005"
-        );
+        require(projects[projectID].programMetadata.protocol != 0, "PR005");
         return roundFactory.create(projectID, encodedParameters);
     }
 }

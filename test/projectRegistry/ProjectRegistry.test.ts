@@ -4,6 +4,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 const testMetadata = { protocol: 1, pointer: "test-metadata" };
+const programTestMetadata = { protocol: 1, pointer: "test-program-metadata" };
 const updatedMetadata = { protocol: 1, pointer: "updated-metadata" };
 
 const OWNERS_LIST_SENTINEL = "0x0000000000000000000000000000000000000001";
@@ -28,16 +29,20 @@ describe("ProjectRegistry", function () {
   it("creates a new project and adds it to the projects list", async function () {
     expect(await this.contract.projectsCount()).to.equal("0");
 
-    await this.contract.createProject(testMetadata);
+    await this.contract.createProject(testMetadata, programTestMetadata);
 
     expect(await this.contract.projectsCount()).to.equal("1");
 
-    const project = await this.contract.projects(0);
+    const project = await this.contract.projects(0);    
     expect(project.id).to.equal("0");
 
     const [protocol, pointer] = project.metadata;
     expect(protocol).to.equal(testMetadata.protocol);
     expect(pointer).to.equal(testMetadata.pointer);
+
+    const [programProtocol, programPointer] = project.programMetadata;
+    expect(programProtocol).to.equal(programTestMetadata.protocol);
+    expect(programPointer).to.equal(programTestMetadata.pointer);
 
     const owners = await this.contract.getProjectOwners(project.id);
     expect(owners.length).to.equal(1);
@@ -54,6 +59,15 @@ describe("ProjectRegistry", function () {
     await this.contract.connect(this.owner).updateProjectMetadata(project.id, updatedMetadata);
     const updatedProject = await this.contract.projects(0);
     const [protocol, pointer] = updatedProject.metadata;
+    expect(protocol).to.equal(updatedMetadata.protocol);
+    expect(pointer).to.equal(updatedMetadata.pointer);
+  });
+
+  it("updates project programMetadata", async function () {
+    const project = await this.contract.projects(0);
+    await this.contract.connect(this.owner).updateProgramMetadata(project.id, updatedMetadata);
+    const updatedProject = await this.contract.projects(0);
+    const [protocol, pointer] = updatedProject.programMetadata;
     expect(protocol).to.equal(updatedMetadata.protocol);
     expect(pointer).to.equal(updatedMetadata.pointer);
   });
