@@ -1,5 +1,51 @@
 # Allo Contract Release Process
 
+         +-------------------+
+         |    Main Branch    |
+         +-------------------+
+                   |
+                   | (1) Create version branch
+                   |
+                   V
+         +-------------------+
+         |   Version Branch  |
+         +-------------------+
+                   |
+                   | (2) Contract changes linked to AIP
+                   | (3) Test Contracts
+                   | (4) Submit for audit
+                   |
+                   V
+      +-----------------------+
+      |  Implement Audit      |
+      |  Changes on Version   |
+      |       Branch          |
+      +-----------------------+
+                   |
+                   | (5) Pull Request
+                   |
+                   V
+         +-------------------+
+         |    Main Branch    |
+         +-------------------+
+                   |
+                   | (6) Update Change Log
+                   | (7) Release Version
+                   |
+                   V
+         +-------------------+
+         |     Published     |
+         |   Release Version |
+         +-------------------+
+                   |
+                   | (9) Delete Version Branch
+                   |
+                   V
+         +-------------------+
+         |    Main Branch    |
+         +-------------------+
+
+
 This document provides an overview of the deployment process for the Allo contract, including version control, auditing, testing, and release management.
 
 ## Repository Structure
