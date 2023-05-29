@@ -293,12 +293,12 @@ contract Registry is Initializable {
     ) external onlyProjectOwner(projectID) returns (address) {
         require(projects[projectID].programMetadata.protocol != 0, "PR005");
         return
-            roundFactory.create(createProjectIdentifier(projectID), encodedParameters);
+            roundFactory.create(projectID, createProjectIdentifier(projectID), encodedParameters);
     }
 
     /**
      * @dev Creates a unique project identifier based on the registry, chainId and projectID.
-     * @param projectId ID of project
+     * @param projectID ID of project
      * @return The computed unique identifier (bytes32).
      */
     function createProjectIdentifier(

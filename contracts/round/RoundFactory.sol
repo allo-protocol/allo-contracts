@@ -4,7 +4,6 @@ pragma solidity 0.8.17;
 import "./IRoundFactory.sol";
 import "./IRoundImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 
@@ -20,10 +19,10 @@ import "../utils/MetaPtr.sol";
  * a reference to the deployed RoundImplementation.
  * @dev RoundFactory uses openzeppelin Clones to reduce deploy
  * costs and also allows upgrading RoundImplementationUpdated.
- * @dev This contract is Ownable thus supports ownership transfership
+ * @dev This contract supports Access Control via AccessControlEnumerableUpgradeable
  *
  */
-contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumerableUpgradeable {
+contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
   string public constant VERSION = "0.2.0";
 
   bytes32 public constant REGISTRY_ROLE = keccak256("REGISTRY");
