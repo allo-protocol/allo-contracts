@@ -238,6 +238,9 @@ describe("RoundFactory", function () {
           projectID,
           encodeRoundParameters(params)
         );
+        await roundFactory.grantRole(REGISTRY_ROLE, user.address);
+
+        const txn = roundFactory.create(1, encodeRoundParameters(params));
 
         await expect(txn).to.revertedWith("roundImplementation is 0x");
       });
@@ -262,6 +265,8 @@ describe("RoundFactory", function () {
           encodeRoundParameters(params)
         );
 
+        const txn = roundFactory.create(1, encodeRoundParameters(params));
+
         await expect(txn).to.revertedWith("alloSettings is 0x");
       });
 
@@ -276,6 +281,8 @@ describe("RoundFactory", function () {
           projectID,
           encodeRoundParameters(params)
         );
+
+        const txn = await roundFactory.create(1, encodeRoundParameters(params));
 
         const receipt = await txn.wait();
 
@@ -295,6 +302,8 @@ describe("RoundFactory", function () {
           encodeRoundParameters(params)
         );
 
+        const txn = await roundFactory.create(1, encodeRoundParameters(params));
+
         let roundAddress;
         let _projectID;
         let _projectIdentifier;
@@ -307,6 +316,7 @@ describe("RoundFactory", function () {
           if (event && event.args) {
             _projectID = event.args.projectID;
             roundAddress = event.args.roundAddress;
+            projectID = event.args.projectID;
             _roundImplementation = event.args.roundImplementation;
             registry = event.args.registry;
           }
