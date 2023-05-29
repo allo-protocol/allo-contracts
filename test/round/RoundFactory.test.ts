@@ -94,7 +94,9 @@ describe("RoundFactory", function () {
         const tx = roundFactory
           .connect(notOwnerWallet)
           .updateRoundImplementation(roundImplementation.address);
-        await expect(tx).to.revertedWith("Ownable: caller is not the owner");
+        await expect(tx).to.revertedWith(
+          `AccessControl: account ${notOwnerWallet.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
+        );
       });
 
       it("SHOULD REVERT if roundImplementation is 0x", async () => {
@@ -229,7 +231,10 @@ describe("RoundFactory", function () {
         );
         await roundFactory.grantRole(REGISTRY_ROLE, user.address);
 
-        const txn = roundFactory.create(projectID, encodeRoundParameters(params));
+        const txn = roundFactory.create(
+          projectID,
+          encodeRoundParameters(params)
+        );
 
         await expect(txn).to.revertedWith("roundImplementation is 0x");
       });
@@ -249,7 +254,10 @@ describe("RoundFactory", function () {
           roundImplementation.address
         );
 
-        const txn = roundFactory.create(projectID, encodeRoundParameters(params));
+        const txn = roundFactory.create(
+          projectID,
+          encodeRoundParameters(params)
+        );
 
         await expect(txn).to.revertedWith("alloSettings is 0x");
       });
@@ -261,7 +269,10 @@ describe("RoundFactory", function () {
           roundImplementation.address
         );
 
-        const txn = await roundFactory.create(projectID, encodeRoundParameters(params));
+        const txn = await roundFactory.create(
+          projectID,
+          encodeRoundParameters(params)
+        );
 
         const receipt = await txn.wait();
 
@@ -276,7 +287,10 @@ describe("RoundFactory", function () {
           roundImplementation.address
         );
 
-        const txn = await roundFactory.create(projectID, encodeRoundParameters(params));
+        const txn = await roundFactory.create(
+          projectID,
+          encodeRoundParameters(params)
+        );
 
         let roundAddress;
         let _projectID;

@@ -58,7 +58,6 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
   /// @notice constructor function which ensure deployer is set as owner
   function initialize() external initializer {
     __Context_init_unchained();
-    __Ownable_init_unchained();
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
@@ -69,7 +68,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
    *
    * @param newAlloSettings New allo settings contract address
    */
-  function updateAlloSettings(address newAlloSettings) external onlyOwner {
+  function updateAlloSettings(address newAlloSettings) external onlyRole(DEFAULT_ADMIN_ROLE) {
     alloSettings = newAlloSettings;
 
     emit AlloSettingsUpdated(alloSettings);
@@ -83,7 +82,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
    *
    * @param newRoundImplementation New RoundImplementation contract address
    */
-  function updateRoundImplementation(address payable newRoundImplementation) external onlyOwner {
+  function updateRoundImplementation(address payable newRoundImplementation) external onlyRole(DEFAULT_ADMIN_ROLE) {
 
     require(newRoundImplementation != address(0), "roundImplementation is 0x");
 
