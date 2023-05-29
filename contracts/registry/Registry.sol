@@ -283,7 +283,7 @@ contract Registry is Initializable {
 
     /**
      * @notice Create a new round for a project
-     * @param projectID project creating the round
+     * @param projectID ID of project creating the round
      * @param encodedParameters Encoded parameters for round creation
      */
     function createRound(
@@ -293,20 +293,20 @@ contract Registry is Initializable {
     ) external onlyProjectOwner(projectID) returns (address) {
         require(projects[projectID].programMetadata.protocol != 0, "PR005");
         return
-            roundFactory.create(createProjectId(projectID), encodedParameters);
+            roundFactory.create(createProjectIdentifier(projectID), encodedParameters);
     }
 
     /**
-     * @dev Creates a unique identifier for a project.
-     * @param projectId The ID of the project.
+     * @dev Creates a unique project identifier based on the registry, chainId and projectID.
+     * @param projectId ID of project
      * @return The computed unique identifier (bytes32).
      */
-    function createProjectId(
-        uint256 projectId
+    function createProjectIdentifier(
+        uint256 projectID
     ) internal view returns (bytes32) {
         return
             keccak256(
-                abi.encodePacked(block.chainid, address(this), projectId)
+                abi.encodePacked(block.chainid, address(this), projectID)
             );
     }
 }
