@@ -96,7 +96,8 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
    * @param encodedParameters Encoded parameters for creating a round
    */
   function create(
-    bytes32 projectID,
+    uint256 projectID,
+    bytes32 projectIdentifier,
     bytes calldata encodedParameters
   ) external returns (address) {
 
