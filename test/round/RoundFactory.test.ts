@@ -240,7 +240,10 @@ describe("RoundFactory", function () {
         );
         await roundFactory.grantRole(REGISTRY_ROLE, user.address);
 
-        const txn = roundFactory.create(projectID, encodeRoundParameters(params));
+        const txn = roundFactory.create(
+          projectID,
+          encodeRoundParameters(params)
+        );
 
         await expect(txn).to.revertedWith("roundImplementation is 0x");
       });
