@@ -76,7 +76,8 @@ contract Registry is Initializable {
      * @notice Initializes the contract after an upgrade
      * @dev In future deploys of the implementation, an higher version should be passed to reinitializer
      */
-    function initialize() public reinitializer(1) {}
+    function initialize() public reinitializer(1) {   
+    }
 
     // External functions
 

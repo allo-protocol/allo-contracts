@@ -9,12 +9,12 @@ const updatedMetadata = { protocol: 1, pointer: "updated-metadata" };
 
 const OWNERS_LIST_SENTINEL = "0x0000000000000000000000000000000000000001";
 
-describe("ProjectRegistry", function () {
+describe("Registry", function () {
   before(async function () {
     [this.owner, this.nonOwner, ...this.accounts] = await ethers.getSigners();
 
-    const ProjectRegistry = await hre.ethers.getContractFactory("ProjectRegistry", this.owner);
-    this.contract = await ProjectRegistry.deploy();
+    const Registry = await hre.ethers.getContractFactory("Registry", this.owner);
+    this.contract = await Registry.deploy();
     await this.contract.deployed();
   });
 
@@ -36,7 +36,7 @@ describe("ProjectRegistry", function () {
     const project = await this.contract.projects(0);    
     expect(project.id).to.equal("0");
 
-    const [protocol, pointer] = project.metadata;
+    const [protocol, pointer] = project.projectMetadata;
     expect(protocol).to.equal(testMetadata.protocol);
     expect(pointer).to.equal(testMetadata.pointer);
 
@@ -58,7 +58,7 @@ describe("ProjectRegistry", function () {
     const project = await this.contract.projects(0);
     await this.contract.connect(this.owner).updateProjectMetadata(project.id, updatedMetadata);
     const updatedProject = await this.contract.projects(0);
-    const [protocol, pointer] = updatedProject.metadata;
+    const [protocol, pointer] = updatedProject.projectMetadata;
     expect(protocol).to.equal(updatedMetadata.protocol);
     expect(pointer).to.equal(updatedMetadata.pointer);
   });
