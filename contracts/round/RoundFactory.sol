@@ -50,7 +50,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
   /// @notice Emitted when a new Round is created
   event RoundCreated(
     address indexed roundAddress,
-    uint256 indexed projectID,
+    bytes32 indexed projectID,
     address indexed roundImplementation,
     address registry
   );
@@ -99,7 +99,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable, AccessControlEnumera
    * @param encodedParameters Encoded parameters for creating a round
    */
   function create(
-    uint256 projectID,
+    bytes32 projectID,
     bytes calldata encodedParameters
   ) external onlyRole(REGISTRY_ROLE) returns (address) {
 

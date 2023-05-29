@@ -76,8 +76,7 @@ contract Registry is Initializable {
      * @notice Initializes the contract after an upgrade
      * @dev In future deploys of the implementation, an higher version should be passed to reinitializer
      */
-    function initialize() public reinitializer(1) {   
-    }
+    function initialize() public reinitializer(1) {}
 
     // External functions
 
@@ -268,6 +267,16 @@ contract Registry is Initializable {
         bytes calldata encodedParameters
     ) external onlyProjectOwner(projectID) returns (address) {
         require(projects[projectID].programMetadata.protocol != 0, "PR005");
-        return roundFactory.create(projectID, encodedParameters);
+        return
+            roundFactory.create(createProjectId(projectID), encodedParameters);
+    }
+
+    function createProjectId(
+        uint256 projectId
+    ) internal view returns (bytes32) {
+        return
+            keccak256(
+                abi.encodePacked(block.chainid, address(this), projectId)
+            );
     }
 }

@@ -16,6 +16,7 @@ import {
   RoundImplementation,
 } from "../../typechain/";
 import { encodeRoundParameters } from "../../scripts/utils";
+import { createProjectId } from "../../utils/createProjectId";
 
 const REGISTRY_ROLE =
   "0x647f7c286926fbfa90ab890a66b66522dad9feca7ced0af9cf45c613acf13616";
@@ -139,8 +140,16 @@ describe("RoundFactory", function () {
 
       let params: any = [];
 
+      let projectID: string;
+
       beforeEach(async () => {
         [user] = await ethers.getSigners();
+
+        projectID = createProjectId(
+          1, // chain id
+          user.address, // registry address
+          1 // project number
+        );
 
         _currentBlockTimestamp = (
           await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
@@ -220,7 +229,7 @@ describe("RoundFactory", function () {
         );
         await roundFactory.grantRole(REGISTRY_ROLE, user.address);
 
-        const txn = roundFactory.create(1, encodeRoundParameters(params));
+        const txn = roundFactory.create(projectID, encodeRoundParameters(params));
 
         await expect(txn).to.revertedWith("roundImplementation is 0x");
       });
@@ -240,7 +249,7 @@ describe("RoundFactory", function () {
           roundImplementation.address
         );
 
-        const txn = roundFactory.create(1, encodeRoundParameters(params));
+        const txn = roundFactory.create(projectID, encodeRoundParameters(params));
 
         await expect(txn).to.revertedWith("alloSettings is 0x");
       });
@@ -252,7 +261,7 @@ describe("RoundFactory", function () {
           roundImplementation.address
         );
 
-        const txn = await roundFactory.create(1, encodeRoundParameters(params));
+        const txn = await roundFactory.create(projectID, encodeRoundParameters(params));
 
         const receipt = await txn.wait();
 
@@ -267,10 +276,10 @@ describe("RoundFactory", function () {
           roundImplementation.address
         );
 
-        const txn = await roundFactory.create(1, encodeRoundParameters(params));
+        const txn = await roundFactory.create(projectID, encodeRoundParameters(params));
 
         let roundAddress;
-        let projectID;
+        let _projectID;
         let _roundImplementation;
         let registry;
 
@@ -279,7 +288,7 @@ describe("RoundFactory", function () {
           const event = receipt.events.find((e) => e.event === "RoundCreated");
           if (event && event.args) {
             roundAddress = event.args.roundAddress;
-            projectID = event.args.projectID;
+            _projectID = event.args.projectID;
             _roundImplementation = event.args.roundImplementation;
             registry = event.args.registry;
           }
@@ -287,10 +296,10 @@ describe("RoundFactory", function () {
 
         expect(txn)
           .to.emit(roundFactory, "RoundCreated")
-          .withArgs(roundAddress, projectID, _roundImplementation, registry);
+          .withArgs(roundAddress, _projectID, _roundImplementation, registry);
 
         expect(isAddress(roundAddress)).to.be.true;
-        expect(projectID).to.be.equal(1);
+        expect(_projectID).to.be.equal(projectID);
         expect(isAddress(_roundImplementation)).to.be.true;
         expect(isAddress(registry)).to.be.true;
       });
