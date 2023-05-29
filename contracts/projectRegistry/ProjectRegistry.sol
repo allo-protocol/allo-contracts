@@ -88,7 +88,7 @@ contract Registry is Initializable {
     function isProjectOwner(
         uint256 projectID,
         address owner
-    ) public view returns (bool) {
+    ) external view returns (bool) {
         return projectsOwners[projectID].list[owner] != address(0);
     }
 
@@ -252,7 +252,7 @@ contract Registry is Initializable {
         owners.list[OWNERS_LIST_SENTINEL] = msg.sender;
         owners.list[msg.sender] = OWNERS_LIST_SENTINEL;
         owners.count = 1;
-        
+
         emit OwnerAdded(projectID, msg.sender);
     }
 
