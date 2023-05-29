@@ -5,13 +5,10 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "../round/IRoundFactory.sol";
 import "../utils/MetaPtr.sol";
 
-import "hardhat/console.sol";
-
-
 /**
- * @title ProjectRegistry
+ * @title Registry
  */
-contract ProjectRegistry is Initializable {
+contract Registry is Initializable {
     // Types
 
     // The project structs contains the minimal data we need for a project
@@ -56,8 +53,8 @@ contract ProjectRegistry is Initializable {
     // Events
 
     event ProjectCreated(uint256 indexed projectID, address indexed owner);
-    event MetadataUpdated(uint256 indexed projectID, MetaPtr metaPtr);
-    event ProgramMetadataUpdated(uint256 indexed projectID, MetaPtr programMetadata);
+    // metadataType: 0 - projectMetadata, 1 - programMetadata
+    event MetadataUpdated(uint256 indexed projectID, MetaPtr metadata, uint8 metadataType);
     event OwnerAdded(uint256 indexed projectID, address indexed owner);
     event OwnerRemoved(uint256 indexed projectID, address indexed owner);
 
@@ -101,12 +98,12 @@ contract ProjectRegistry is Initializable {
 
         if (projectMetadata.protocol != 0) {
             project.projectMetadata = projectMetadata;
-            emit MetadataUpdated(projectID, projectMetadata);
+            emit MetadataUpdated(projectID, projectMetadata, 0);
         }
 
         if (programMetadata.protocol != 0) {
             project.programMetadata = programMetadata;
-            emit ProgramMetadataUpdated(projectID, programMetadata);
+            emit MetadataUpdated(projectID, programMetadata, 1);
         }
 
         emit ProjectCreated(projectID, msg.sender);
@@ -119,7 +116,7 @@ contract ProjectRegistry is Initializable {
      */
     function updateProjectMetadata(uint256 projectID, MetaPtr calldata projectMetadata) external onlyProjectOwner(projectID) {
         projects[projectID].projectMetadata = projectMetadata;
-        emit MetadataUpdated(projectID, projectMetadata);
+        emit MetadataUpdated(projectID, projectMetadata, 0);
     }
 
     /**
@@ -129,7 +126,7 @@ contract ProjectRegistry is Initializable {
      */
     function updateProgramMetadata(uint256 projectID, MetaPtr calldata programMetadata) external onlyProjectOwner(projectID) {
         projects[projectID].programMetadata = programMetadata;
-        emit ProgramMetadataUpdated(projectID, programMetadata);
+        emit MetadataUpdated(projectID, programMetadata, 1);
     }
 
     /**
