@@ -240,7 +240,7 @@ describe("RoundFactory", function () {
         );
         await roundFactory.grantRole(REGISTRY_ROLE, user.address);
 
-        const txn = roundFactory.create(1, encodeRoundParameters(params));
+        const txn = roundFactory.create(projectID, encodeRoundParameters(params));
 
         await expect(txn).to.revertedWith("roundImplementation is 0x");
       });
@@ -316,7 +316,7 @@ describe("RoundFactory", function () {
           if (event && event.args) {
             _projectID = event.args.projectID;
             roundAddress = event.args.roundAddress;
-            projectID = event.args.projectID;
+            _projectID = event.args.projectID;
             _roundImplementation = event.args.roundImplementation;
             registry = event.args.registry;
           }
