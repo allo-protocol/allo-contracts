@@ -242,6 +242,7 @@ describe("RoundFactory", function () {
 
         const txn = roundFactory.create(
           projectID,
+          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -265,6 +266,7 @@ describe("RoundFactory", function () {
 
         const txn = roundFactory.create(
           projectID,
+          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -282,6 +284,7 @@ describe("RoundFactory", function () {
 
         const txn = await roundFactory.create(
           projectID,
+          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -302,6 +305,7 @@ describe("RoundFactory", function () {
 
         const txn = await roundFactory.create(
           projectID,
+          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -319,7 +323,6 @@ describe("RoundFactory", function () {
           if (event && event.args) {
             _projectID = event.args.projectID;
             roundAddress = event.args.roundAddress;
-            _projectID = event.args.projectID;
             _roundImplementation = event.args.roundImplementation;
             registry = event.args.registry;
           }
@@ -330,7 +333,8 @@ describe("RoundFactory", function () {
           .withArgs(_projectID, roundAddress, _roundImplementation, registry);
 
         expect(isAddress(roundAddress)).to.be.true;
-        expect(_projectID).to.be.equal(projectID);
+        expect(_projectID).to.be.equal(_projectID);
+        expect(_projectIdentifier).to.be.equal(projectIdentifier);
         expect(isAddress(_roundImplementation)).to.be.true;
         expect(isAddress(registry)).to.be.true;
       });
