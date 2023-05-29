@@ -7,7 +7,6 @@ import "../utils/MetaPtr.sol";
 
 import "hardhat/console.sol";
 
-
 /**
  * @title Registry
  */
@@ -55,14 +54,37 @@ contract Registry is Initializable {
 
     // Events
 
+    /**
+     * @dev Emitted when a project is created.
+     * @param projectID The ID of the project.
+     * @param owner The address of the owner of the project.
+     */
     event ProjectCreated(uint256 indexed projectID, address indexed owner);
-    // metadataType: 0 - projectMetadata, 1 - programMetadata
+
+    /**
+     * @dev Emitted when metadata is updated for a project or program.
+     * @param projectID The ID of the project or program.
+     * @param metadata The metadata pointer.
+     * @param metadataType The type of metadata: 0 for projectMetadata, 1 for programMetadata.
+     */
     event MetadataUpdated(
         uint256 indexed projectID,
         MetaPtr metadata,
         uint8 metadataType
     );
+
+    /**
+     * @dev Emitted when an owner is added to a project.
+     * @param projectID The ID of the project.
+     * @param owner The address of the owner added.
+     */
     event OwnerAdded(uint256 indexed projectID, address indexed owner);
+
+    /**
+     * @dev Emitted when an owner is removed from a project.
+     * @param projectID The ID of the project.
+     * @param owner The address of the owner removed.
+     */
     event OwnerRemoved(uint256 indexed projectID, address indexed owner);
 
     // Modifiers
@@ -103,7 +125,7 @@ contract Registry is Initializable {
     function createProject(
         MetaPtr calldata projectMetadata,
         MetaPtr calldata programMetadata
-    ) external returns (uint256 projectID){
+    ) external returns (uint256 projectID) {
         projectID = projectsCount++;
 
         Project storage project = projects[projectID];
@@ -274,6 +296,11 @@ contract Registry is Initializable {
             roundFactory.create(createProjectId(projectID), encodedParameters);
     }
 
+    /**
+     * @dev Creates a unique identifier for a project.
+     * @param projectId The ID of the project.
+     * @return The computed unique identifier (bytes32).
+     */
     function createProjectId(
         uint256 projectId
     ) internal view returns (bytes32) {
