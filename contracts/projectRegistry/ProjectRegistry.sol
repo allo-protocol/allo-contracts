@@ -17,7 +17,7 @@ contract ProjectRegistry is Initializable {
     // The project structs contains the minimal data we need for a project
     struct Project {
         uint256 id;
-        MetaPtr metadata;
+        MetaPtr projectMetadata;
         MetaPtr programMetadata;
     }
 
@@ -88,10 +88,10 @@ contract ProjectRegistry is Initializable {
 
     /**
      * @notice Creates a new project with a metadata pointer
-     * @param metadata the metadata pointer
+     * @param projectMetadata the metadata pointer
      * @param programMetadata the program metadata pointer
      */
-    function createProject(MetaPtr calldata metadata, MetaPtr calldata programMetadata) external {
+    function createProject(MetaPtr calldata projectMetadata, MetaPtr calldata programMetadata) external {
         uint256 projectID = projectsCount++;
 
         Project storage project = projects[projectID];
@@ -99,9 +99,9 @@ contract ProjectRegistry is Initializable {
 
         initProjectOwners(projectID);
 
-        if (metadata.protocol != 0) {
-            project.metadata = metadata;
-            emit MetadataUpdated(projectID, metadata);
+        if (projectMetadata.protocol != 0) {
+            project.projectMetadata = projectMetadata;
+            emit MetadataUpdated(projectID, projectMetadata);
         }
 
         if (programMetadata.protocol != 0) {
@@ -115,11 +115,11 @@ contract ProjectRegistry is Initializable {
     /**
      * @notice Updates Metadata for singe project
      * @param projectID ID of previously created project
-     * @param metadata Updated pointer to project metadata
+     * @param projectMetadata Updated pointer to project metadata
      */
-    function updateProjectMetadata(uint256 projectID, MetaPtr calldata metadata) external onlyProjectOwner(projectID) {
-        projects[projectID].metadata = metadata;
-        emit MetadataUpdated(projectID, metadata);
+    function updateProjectMetadata(uint256 projectID, MetaPtr calldata projectMetadata) external onlyProjectOwner(projectID) {
+        projects[projectID].projectMetadata = projectMetadata;
+        emit MetadataUpdated(projectID, projectMetadata);
     }
 
     /**
