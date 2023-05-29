@@ -103,8 +103,8 @@ contract Registry is Initializable {
     function createProject(
         MetaPtr calldata projectMetadata,
         MetaPtr calldata programMetadata
-    ) external {
-        uint256 projectID = projectsCount++;
+    ) external returns (uint256 projectID){
+        projectID = projectsCount++;
 
         Project storage project = projects[projectID];
         project.id = projectID;
