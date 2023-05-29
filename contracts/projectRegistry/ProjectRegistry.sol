@@ -54,14 +54,21 @@ contract Registry is Initializable {
 
     event ProjectCreated(uint256 indexed projectID, address indexed owner);
     // metadataType: 0 - projectMetadata, 1 - programMetadata
-    event MetadataUpdated(uint256 indexed projectID, MetaPtr metadata, uint8 metadataType);
+    event MetadataUpdated(
+        uint256 indexed projectID,
+        MetaPtr metadata,
+        uint8 metadataType
+    );
     event OwnerAdded(uint256 indexed projectID, address indexed owner);
     event OwnerRemoved(uint256 indexed projectID, address indexed owner);
 
     // Modifiers
 
     modifier onlyProjectOwner(uint256 projectID) {
-        require(projectsOwners[projectID].list[msg.sender] != address(0), "PR000");
+        require(
+            projectsOwners[projectID].list[msg.sender] != address(0),
+            "PR000"
+        );
         _;
     }
 
@@ -69,8 +76,7 @@ contract Registry is Initializable {
      * @notice Initializes the contract after an upgrade
      * @dev In future deploys of the implementation, an higher version should be passed to reinitializer
      */
-    function initialize() public reinitializer(1) {
-    }
+    function initialize() public reinitializer(1) {}
 
     // External functions
 
@@ -79,7 +85,10 @@ contract Registry is Initializable {
      * @param projectID ID of previously created project
      * @param owner address to check
      */
-    function isProjectOwner(uint256 projectID, address owner) public view returns (bool) {
+    function isProjectOwner(
+        uint256 projectID,
+        address owner
+    ) public view returns (bool) {
         return projectsOwners[projectID].list[owner] != address(0);
     }
 
@@ -88,7 +97,10 @@ contract Registry is Initializable {
      * @param projectMetadata the metadata pointer
      * @param programMetadata the program metadata pointer
      */
-    function createProject(MetaPtr calldata projectMetadata, MetaPtr calldata programMetadata) external {
+    function createProject(
+        MetaPtr calldata projectMetadata,
+        MetaPtr calldata programMetadata
+    ) external {
         uint256 projectID = projectsCount++;
 
         Project storage project = projects[projectID];
@@ -114,7 +126,10 @@ contract Registry is Initializable {
      * @param projectID ID of previously created project
      * @param projectMetadata Updated pointer to project metadata
      */
-    function updateProjectMetadata(uint256 projectID, MetaPtr calldata projectMetadata) external onlyProjectOwner(projectID) {
+    function updateProjectMetadata(
+        uint256 projectID,
+        MetaPtr calldata projectMetadata
+    ) external onlyProjectOwner(projectID) {
         projects[projectID].projectMetadata = projectMetadata;
         emit MetadataUpdated(projectID, projectMetadata, 0);
     }
@@ -124,7 +139,10 @@ contract Registry is Initializable {
      * @param projectID ID of previously created project
      * @param programMetadata Updated pointer to project programMetadata
      */
-    function updateProgramMetadata(uint256 projectID, MetaPtr calldata programMetadata) external onlyProjectOwner(projectID) {
+    function updateProgramMetadata(
+        uint256 projectID,
+        MetaPtr calldata programMetadata
+    ) external onlyProjectOwner(projectID) {
         projects[projectID].programMetadata = programMetadata;
         emit MetadataUpdated(projectID, programMetadata, 1);
     }
@@ -134,8 +152,16 @@ contract Registry is Initializable {
      * @param projectID ID of previously created project
      * @param newOwner address of new project owner
      */
-    function addProjectOwner(uint256 projectID, address newOwner) external onlyProjectOwner(projectID) {
-        require(newOwner != address(0) && newOwner != OWNERS_LIST_SENTINEL && newOwner != address(this), "PR001");
+    function addProjectOwner(
+        uint256 projectID,
+        address newOwner
+    ) external onlyProjectOwner(projectID) {
+        require(
+            newOwner != address(0) &&
+                newOwner != OWNERS_LIST_SENTINEL &&
+                newOwner != address(this),
+            "PR001"
+        );
 
         OwnerList storage owners = projectsOwners[projectID];
 
@@ -154,7 +180,11 @@ contract Registry is Initializable {
      * @param prevOwner Address of previous owner in OwnerList
      * @param owner Address of new Owner
      */
-    function removeProjectOwner(uint256 projectID, address prevOwner, address owner) external onlyProjectOwner(projectID) {
+    function removeProjectOwner(
+        uint256 projectID,
+        address prevOwner,
+        address owner
+    ) external onlyProjectOwner(projectID) {
         require(owner != address(0) && owner != OWNERS_LIST_SENTINEL, "PR001");
 
         OwnerList storage owners = projectsOwners[projectID];
@@ -176,7 +206,9 @@ contract Registry is Initializable {
      * @param projectID ID of project
      * @return Count of owners for given project
      */
-    function projectOwnersCount(uint256 projectID) external view returns(uint256) {
+    function projectOwnersCount(
+        uint256 projectID
+    ) external view returns (uint256) {
         return projectsOwners[projectID].count;
     }
 
@@ -185,7 +217,9 @@ contract Registry is Initializable {
      * @param projectID ID of project
      * @return List of current owners of given project
      */
-    function getProjectOwners(uint256 projectID) external view returns(address[] memory) {
+    function getProjectOwners(
+        uint256 projectID
+    ) external view returns (address[] memory) {
         OwnerList storage owners = projectsOwners[projectID];
 
         address[] memory list = new address[](owners.count);
@@ -218,6 +252,8 @@ contract Registry is Initializable {
         owners.list[OWNERS_LIST_SENTINEL] = msg.sender;
         owners.list[msg.sender] = OWNERS_LIST_SENTINEL;
         owners.count = 1;
+        
+        emit OwnerAdded(projectID, msg.sender);
     }
 
     /**
@@ -229,7 +265,7 @@ contract Registry is Initializable {
         IRoundFactory roundFactory,
         uint256 projectID,
         bytes calldata encodedParameters
-    ) external onlyProjectOwner(projectID) returns(address) {
+    ) external onlyProjectOwner(projectID) returns (address) {
         require(projects[projectID].programMetadata.protocol != 0, "PR005");
         return roundFactory.create(projectID, encodedParameters);
     }
