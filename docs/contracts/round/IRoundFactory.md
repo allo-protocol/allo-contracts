@@ -13,7 +13,7 @@
 ### create
 
 ```solidity
-function create(bytes encodedParameters, address ownedBy) external nonpayable returns (address)
+function create(uint256 projectID, bytes32 projectIdentifier, bytes encodedParameters) external nonpayable returns (address)
 ```
 
 
@@ -24,8 +24,9 @@ function create(bytes encodedParameters, address ownedBy) external nonpayable re
 
 | Name | Type | Description |
 |---|---|---|
+| projectID | uint256 | undefined |
+| projectIdentifier | bytes32 | undefined |
 | encodedParameters | bytes | undefined |
-| ownedBy | address | undefined |
 
 #### Returns
 
@@ -47,7 +48,7 @@ function initialize() external nonpayable
 ### updateAlloSettings
 
 ```solidity
-function updateAlloSettings(address newAlloSettings) external nonpayable
+function updateAlloSettings(contract IAlloSettings newAlloSettings) external nonpayable
 ```
 
 
@@ -58,7 +59,7 @@ function updateAlloSettings(address newAlloSettings) external nonpayable
 
 | Name | Type | Description |
 |---|---|---|
-| newAlloSettings | address | undefined |
+| newAlloSettings | contract IAlloSettings | undefined |
 
 ### updateRoundImplementation
 

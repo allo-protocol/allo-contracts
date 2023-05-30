@@ -1,4 +1,4 @@
-# AlloSettings
+# AccessControlEnumerableUpgradeable
 
 
 
@@ -6,7 +6,7 @@
 
 
 
-
+*Extension of {AccessControl} that allows enumerating the members of each role.*
 
 ## Methods
 
@@ -26,108 +26,6 @@ function DEFAULT_ADMIN_ROLE() external view returns (bytes32)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bytes32 | undefined |
-
-### DENOMINATOR
-
-```solidity
-function DENOMINATOR() external view returns (uint24)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint24 | undefined |
-
-### TRUSTED_REGISTRY_ROLE
-
-```solidity
-function TRUSTED_REGISTRY_ROLE() external view returns (bytes32)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bytes32 | undefined |
-
-### VERSION
-
-```solidity
-function VERSION() external view returns (string)
-```
-
-
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | string | undefined |
-
-### getDenominator
-
-```solidity
-function getDenominator() external pure returns (uint24)
-```
-
-Getter for DENOMINATOR
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint24 | undefined |
-
-### getProtocolFeePercentage
-
-```solidity
-function getProtocolFeePercentage() external view returns (uint24)
-```
-
-Getter for protocolFeePercentage
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint24 | undefined |
-
-### getProtocolTreasury
-
-```solidity
-function getProtocolTreasury() external view returns (address payable)
-```
-
-Getter for protocolTreasury
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
 
 ### getRoleAdmin
 
@@ -236,73 +134,6 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### initialize
-
-```solidity
-function initialize() external nonpayable
-```
-
-constructor function which ensure deployer is set as owner
-
-
-
-
-### isTrustedRegistry
-
-```solidity
-function isTrustedRegistry(address _registry) external view returns (bool)
-```
-
-Check if a registry has TRUSTED_REGISTRY_ROLE
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _registry | address | The registry address |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
-
-### protocolFeePercentage
-
-```solidity
-function protocolFeePercentage() external view returns (uint24)
-```
-
-Protocol fee percentage 100% = 100_000 | 10% = 10_000 | 1% = 1_000 | 0.1% = 100 | 0.01% = 10
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint24 | undefined |
-
-### protocolTreasury
-
-```solidity
-function protocolTreasury() external view returns (address payable)
-```
-
-Address of the protocol treasury
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
-
 ### renounceRole
 
 ```solidity
@@ -359,38 +190,6 @@ function supportsInterface(bytes4 interfaceId) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### updateProtocolFeePercentage
-
-```solidity
-function updateProtocolFeePercentage(uint24 _protocolFeePercentage) external nonpayable
-```
-
-Set the protocol fee percentage
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _protocolFeePercentage | uint24 | The new protocol fee percentage |
-
-### updateProtocolTreasury
-
-```solidity
-function updateProtocolTreasury(address payable _protocolTreasury) external nonpayable
-```
-
-Set the protocol treasury address
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _protocolTreasury | address payable | The new protocol treasury address |
-
 
 
 ## Events
@@ -410,38 +209,6 @@ event Initialized(uint8 version)
 | Name | Type | Description |
 |---|---|---|
 | version  | uint8 | undefined |
-
-### ProtocolFeePercentageUpdated
-
-```solidity
-event ProtocolFeePercentageUpdated(uint24 protocolFeePercentage)
-```
-
-Emitted when protocol fee percentage is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| protocolFeePercentage  | uint24 | undefined |
-
-### ProtocolTreasuryUpdated
-
-```solidity
-event ProtocolTreasuryUpdated(address protocolTreasuryAddress)
-```
-
-Emitted when a protocol wallet address is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| protocolTreasuryAddress  | address | undefined |
 
 ### RoleAdminChanged
 

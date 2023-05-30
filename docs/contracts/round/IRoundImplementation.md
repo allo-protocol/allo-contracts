@@ -74,7 +74,7 @@ function getApplicationStatus(uint256 applicationIndex) external view returns (u
 ### initialize
 
 ```solidity
-function initialize(bytes encodedParameters, address _alloSettings) external nonpayable
+function initialize(bytes encodedParameters, contract IAlloSettings _alloSettings) external nonpayable
 ```
 
 
@@ -86,7 +86,7 @@ function initialize(bytes encodedParameters, address _alloSettings) external non
 | Name | Type | Description |
 |---|---|---|
 | encodedParameters | bytes | undefined |
-| _alloSettings | address | undefined |
+| _alloSettings | contract IAlloSettings | undefined |
 
 ### setApplicationStatuses
 
