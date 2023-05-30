@@ -18,8 +18,9 @@ import {
 import { encodeRoundParameters } from "../../scripts/utils";
 import { createProjectId } from "../../utils/createProjectId";
 
-const REGISTRY_ROLE =
-  "0x647f7c286926fbfa90ab890a66b66522dad9feca7ced0af9cf45c613acf13616";
+const TRUSTED_REGISTRY_ROLE = ethers.utils.keccak256(
+  ethers.utils.toUtf8Bytes("TRUSTED_REGISTRY")
+);
 
 describe("RoundFactory", function () {
   let user: SignerWithAddress;
@@ -181,7 +182,7 @@ describe("RoundFactory", function () {
           await upgrades.deployProxy(roundContractFactory)
         );
 
-        await roundFactory.grantRole(REGISTRY_ROLE, user.address);
+        await alloSettings.grantRole(TRUSTED_REGISTRY_ROLE, user.address);
         // Creating a Round
         const initAddress = [
           votingStrategyFactory.address, // votingStrategyFactory
@@ -231,7 +232,7 @@ describe("RoundFactory", function () {
         roundFactory = <RoundFactory>(
           await upgrades.deployProxy(roundContractFactory)
         );
-        await roundFactory.grantRole(REGISTRY_ROLE, user.address);
+        await roundFactory.grantRole(TRUSTED_REGISTRY_ROLE, user.address);
 
         const txn = roundFactory.create(
           projectID,
@@ -250,7 +251,7 @@ describe("RoundFactory", function () {
         let roundFactory = <RoundFactory>(
           await upgrades.deployProxy(roundContractFactory)
         );
-        await roundFactory.grantRole(REGISTRY_ROLE, user.address);
+        await roundFactory.grantRole(TRUSTED_REGISTRY_ROLE, user.address);
 
         // Set the init values
         await roundFactory.updateRoundImplementation(

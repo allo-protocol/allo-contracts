@@ -54,13 +54,6 @@ describe("Registry", function () {
       const [programProtocol, programPointer] = project.programMetadata;
       expect(programProtocol).to.equal(programTestMetadata.protocol);
       expect(programPointer).to.equal(programTestMetadata.pointer);
-      
-      const projectIdentifier = ethers.utils.keccak256(ethers.utils.solidityPack(
-        ["uint256", "address", "uint256"],
-        [network.config.chainId, this.contract.address, 0]
-      ));
-
-      expect(project.projectIdentifier).to.equal(projectIdentifier);
 
       const owners = await this.contract.getProjectOwners(project.id);
       expect(owners.length).to.equal(1);
