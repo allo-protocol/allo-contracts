@@ -1,10 +1,10 @@
-# QuadraticFundingVotingStrategyImplementation
+# SimpleStrategy
 
 
 
 
 
-Allows voters to cast multiple weighted votes to grants with one transaction This is inspired from BulkCheckout documented over at: https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BulkCheckout.sol Emits event upon every transfer.
+
 
 
 
@@ -27,32 +27,26 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### init
+### initialize
 
 ```solidity
-function init() external nonpayable
+function initialize(bytes _encodedParams) external nonpayable
 ```
 
 Invoked by RoundImplementation on creation to set the round for which the voting contracts is to be used
 
 
 
+#### Parameters
 
-### initialize
-
-```solidity
-function initialize() external nonpayable
-```
-
-
-
-
-
+| Name | Type | Description |
+|---|---|---|
+| _encodedParams | bytes | undefined |
 
 ### roundAddress
 
 ```solidity
-function roundAddress() external view returns (address)
+function roundAddress() external view returns (address payable)
 ```
 
 Round address
@@ -64,7 +58,24 @@ Round address
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | address | undefined |
+| _0 | address payable | undefined |
+
+### version
+
+```solidity
+function version() external pure returns (string)
+```
+
+Returns the version of the contract
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | undefined |
 
 ### vote
 

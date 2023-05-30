@@ -13,7 +13,7 @@
 ### create
 
 ```solidity
-function create(uint256 projectID, bytes32 projectIdentifier, bytes encodedParameters) external nonpayable returns (address)
+function create(bytes32 projectID, address strategyImplementation, bytes encodedRoundParameters, bytes encodedStrategyParameters) external nonpayable returns (address)
 ```
 
 
@@ -24,9 +24,10 @@ function create(uint256 projectID, bytes32 projectIdentifier, bytes encodedParam
 
 | Name | Type | Description |
 |---|---|---|
-| projectID | uint256 | undefined |
-| projectIdentifier | bytes32 | undefined |
-| encodedParameters | bytes | undefined |
+| projectID | bytes32 | undefined |
+| strategyImplementation | address | undefined |
+| encodedRoundParameters | bytes | undefined |
+| encodedStrategyParameters | bytes | undefined |
 
 #### Returns
 

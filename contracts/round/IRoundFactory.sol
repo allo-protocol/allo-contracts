@@ -12,6 +12,8 @@ interface IRoundFactory {
 
     function create(
         bytes32 projectID,
-        bytes calldata encodedParameters
+        address strategyImplementation,
+        bytes calldata encodedRoundParameters,
+        bytes calldata encodedStrategyParameters
     ) external returns (address);
 }

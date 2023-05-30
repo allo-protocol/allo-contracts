@@ -3,6 +3,7 @@ pragma solidity 0.8.17;
 
 import "../settings/IAlloSettings.sol";
 import "../utils/MetaPtr.sol";
+import "../strategies/BaseStrategy.sol";
 
 interface IRoundImplementation {
     struct ApplicationStatus {
@@ -11,15 +12,11 @@ interface IRoundImplementation {
     }
 
     function initialize(
-        bytes calldata encodedParameters,
-        IAlloSettings _alloSettings
+        bytes calldata _encodedRoundParameters,
+        bytes calldata _encodedStrategyParameters,
+        IAlloSettings _alloSettings,
+        address _strategy
     ) external;
-
-    function updateMatchAmount(uint256 newAmount) external;
-
-    function updateRoundFeePercentage(uint32 newFeePercentage) external;
-
-    function updateRoundFeeAddress(address payable newFeeAddress) external;
 
     function updateRoundMetaPtr(MetaPtr memory newRoundMetaPtr) external;
 
@@ -53,7 +50,7 @@ interface IRoundImplementation {
 
     function vote(bytes[] memory encodedVotes) external payable;
 
-    function setReadyForPayout() external payable;
-
     function withdraw(address tokenAddress, address payable recipent) external;
+
+    function isRoundOperator(address operator) external view returns (bool);
 }

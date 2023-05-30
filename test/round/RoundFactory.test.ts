@@ -8,12 +8,9 @@ import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import {
   AlloSettings,
-  MerklePayoutStrategyFactory,
-  MerklePayoutStrategyImplementation,
-  QuadraticFundingVotingStrategyFactory,
-  QuadraticFundingVotingStrategyImplementation,
   RoundFactory,
   RoundImplementation,
+  SimpleStrategy,
 } from "../../typechain/";
 import { encodeRoundParameters } from "../../scripts/utils";
 import { createProjectId } from "../../utils/createProjectId";
@@ -38,13 +35,9 @@ describe("RoundFactory", function () {
   let roundImplementation: RoundImplementation;
   let roundImplementationArtifact: Artifact;
 
-  // Voting Strategy Factory
-  let votingStrategyFactory: QuadraticFundingVotingStrategyFactory;
-  let votingStrategyFactoryArtifact: Artifact;
+  let strategyFactory: ContractFactory;
+  let strategy: SimpleStrategy;
 
-  // Payout Strategy Factory
-  let payoutStrategyFactory: MerklePayoutStrategyFactory;
-  let payoutStrategyFactoryArtifact: Artifact;
 
   let protocolTreasury = Wallet.createRandom();
 
@@ -79,6 +72,11 @@ describe("RoundFactory", function () {
       roundContractFactory = await ethers.getContractFactory("RoundFactory");
       roundFactory = <RoundFactory>(
         await upgrades.deployProxy(roundContractFactory)
+      );
+
+      strategyFactory = await ethers.getContractFactory("SimpleStrategy");
+      strategy = <SimpleStrategy>(
+        await strategyFactory.deploy()
       );
 
       // Deploy RoundImplementation contract
@@ -133,12 +131,6 @@ describe("RoundFactory", function () {
     });
 
     describe("test: create", async () => {
-      const matchAmount = 1000;
-      const token = Wallet.createRandom().address;
-      const programAddress = Wallet.createRandom().address;
-      const roundFeePercentage = 10;
-      const roundFeeAddress = Wallet.createRandom().address;
-
       let _currentBlockTimestamp: number;
 
       let params: any = [];
@@ -160,22 +152,6 @@ describe("RoundFactory", function () {
           await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
         ).timestamp;
 
-        // Deploy VotingStrategyFactory contract
-        votingStrategyFactoryArtifact = await artifacts.readArtifact(
-          "QuadraticFundingVotingStrategyFactory"
-        );
-        votingStrategyFactory = <QuadraticFundingVotingStrategyFactory>(
-          await deployContract(user, votingStrategyFactoryArtifact, [])
-        );
-
-        // Deploy PayoutStrategyFactory contract
-        payoutStrategyFactoryArtifact = await artifacts.readArtifact(
-          "MerklePayoutStrategyFactory"
-        );
-        payoutStrategyFactory = <MerklePayoutStrategyFactory>(
-          await deployContract(user, payoutStrategyFactoryArtifact, [])
-        );
-
         // Deploy RoundFactory contract
         roundContractFactory = await ethers.getContractFactory("RoundFactory");
         roundFactory = <RoundFactory>(
@@ -183,11 +159,6 @@ describe("RoundFactory", function () {
         );
 
         await alloSettings.grantRole(TRUSTED_REGISTRY_ROLE, user.address);
-        // Creating a Round
-        const initAddress = [
-          votingStrategyFactory.address, // votingStrategyFactory
-          payoutStrategyFactory.address, // payoutStrategyFactory
-        ];
 
         const initRoundTime = [
           _currentBlockTimestamp + 100, // applicationsStartTime
@@ -215,12 +186,7 @@ describe("RoundFactory", function () {
         ];
 
         params = [
-          initAddress,
           initRoundTime,
-          matchAmount,
-          token,
-          roundFeePercentage,
-          roundFeeAddress,
           initMetaPtr,
           initRoles,
         ];
@@ -236,14 +202,9 @@ describe("RoundFactory", function () {
 
         const txn = roundFactory.create(
           projectID,
-          encodeRoundParameters(params)
-        );
-        await roundFactory.grantRole(REGISTRY_ROLE, user.address);
-
-        const txn = roundFactory.create(
-          projectID,
-          projectIdentifier,
-          encodeRoundParameters(params)
+          strategy.address,
+          encodeRoundParameters(params),
+          "0x"
         );
 
         await expect(txn).to.revertedWith("roundImplementation is 0x");
@@ -266,11 +227,10 @@ describe("RoundFactory", function () {
 
         const txn = roundFactory.create(
           projectID,
-          projectIdentifier,
-          encodeRoundParameters(params)
+          strategy.address,
+          encodeRoundParameters(params),
+          "0x"
         );
-
-        const txn = roundFactory.create(1, encodeRoundParameters(params));
 
         await expect(txn).to.revertedWith("alloSettings is 0x");
       });
@@ -284,11 +244,10 @@ describe("RoundFactory", function () {
 
         const txn = await roundFactory.create(
           projectID,
-          projectIdentifier,
-          encodeRoundParameters(params)
+          strategy.address,
+          encodeRoundParameters(params),
+          "0x"
         );
-
-        const txn = await roundFactory.create(1, encodeRoundParameters(params));
 
         const receipt = await txn.wait();
 
@@ -305,15 +264,13 @@ describe("RoundFactory", function () {
 
         const txn = await roundFactory.create(
           projectID,
-          projectIdentifier,
-          encodeRoundParameters(params)
+          strategy.address,
+          encodeRoundParameters(params),
+          "0x"
         );
-
-        const txn = await roundFactory.create(1, encodeRoundParameters(params));
 
         let roundAddress;
         let _projectID;
-        let _projectIdentifier;
         let _roundImplementation;
         let registry;
 
@@ -333,8 +290,7 @@ describe("RoundFactory", function () {
           .withArgs(_projectID, roundAddress, _roundImplementation, registry);
 
         expect(isAddress(roundAddress)).to.be.true;
-        expect(_projectID).to.be.equal(_projectID);
-        expect(_projectIdentifier).to.be.equal(projectIdentifier);
+        expect(_projectID).to.be.equal(projectID);
         expect(isAddress(_roundImplementation)).to.be.true;
         expect(isAddress(registry)).to.be.true;
       });

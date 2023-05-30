@@ -370,36 +370,43 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(bytes encodedParameters, contract IAlloSettings _alloSettings) external nonpayable
+function initialize(bytes _encodedRoundParameters, bytes _encodedStrategyParameters, contract IAlloSettings _alloSettings, address _votingStrategy) external nonpayable
 ```
 
 Instantiates a new round
 
-*encodedParameters  - _initAddress Related contract / wallet addresses  - _initRoundTime Round timestamps  - _feePercentage Fee percentage  - _matchAmount Amount of tokens in the matching pool  - _token Address of the ERC20/native token for accepting matching pool contributions  - _initMetaPtr Round metaPtrs  - _initRoles Round roles*
+*encodedParameters  - _initAddress Related contract / wallet addresses  - _initRoundTime Round timestamps  - _initMetaPtr Round metaPtrs  - _initRoles Round roles*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| encodedParameters | bytes | Encoded parameters for program creation |
-| _alloSettings | contract IAlloSettings | undefined |
+| _encodedRoundParameters | bytes | Encoded parameters for program creation |
+| _encodedStrategyParameters | bytes | Encoded parameters for strategy creation |
+| _alloSettings | contract IAlloSettings | AlloSettings contract address |
+| _votingStrategy | address | Voting strategy contract address |
 
-### matchAmount
+### isRoundOperator
 
 ```solidity
-function matchAmount() external view returns (uint256)
+function isRoundOperator(address account) external view returns (bool)
 ```
 
-Match Amount (excluding protocol fee &amp; round fee)
 
 
 
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| account | address | undefined |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | bool | undefined |
 
 ### multicall
 
@@ -439,40 +446,6 @@ function nextApplicationIndex() external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
-
-### payoutStrategy
-
-```solidity
-function payoutStrategy() external view returns (address payable)
-```
-
-Payout Strategy Contract Address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
-
-### payoutStrategyFactory
-
-```solidity
-function payoutStrategyFactory() external view returns (contract IPayoutStrategyFactory)
-```
-
-Payout Strategy Factory Contract Address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | contract IPayoutStrategyFactory | undefined |
 
 ### renounceRole
 
@@ -525,40 +498,6 @@ Unix timestamp of the end of the round
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### roundFeeAddress
-
-```solidity
-function roundFeeAddress() external view returns (address payable)
-```
-
-Round fee address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
-
-### roundFeePercentage
-
-```solidity
-function roundFeePercentage() external view returns (uint32)
-```
-
-Round fee percentage
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint32 | undefined |
-
 ### roundMetaPtr
 
 ```solidity
@@ -610,17 +549,6 @@ function setApplicationStatuses(IRoundImplementation.ApplicationStatus[] statuse
 |---|---|---|
 | statuses | IRoundImplementation.ApplicationStatus[] | undefined |
 
-### setReadyForPayout
-
-```solidity
-function setReadyForPayout() external payable
-```
-
-Pay Protocol &amp; Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
-
-
-
-
 ### supportsInterface
 
 ```solidity
@@ -643,23 +571,6 @@ function supportsInterface(bytes4 interfaceId) external view returns (bool)
 |---|---|---|
 | _0 | bool | undefined |
 
-### token
-
-```solidity
-function token() external view returns (address)
-```
-
-Token used to payout match amounts at the end of a round
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### updateApplicationMetaPtr
 
 ```solidity
@@ -675,54 +586,6 @@ function updateApplicationMetaPtr(MetaPtr newApplicationMetaPtr) external nonpay
 | Name | Type | Description |
 |---|---|---|
 | newApplicationMetaPtr | MetaPtr | undefined |
-
-### updateMatchAmount
-
-```solidity
-function updateMatchAmount(uint256 newAmount) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newAmount | uint256 | new Amount |
-
-### updateRoundFeeAddress
-
-```solidity
-function updateRoundFeeAddress(address payable newFeeAddress) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newFeeAddress | address payable | new fee address |
-
-### updateRoundFeePercentage
-
-```solidity
-function updateRoundFeePercentage(uint32 newFeePercentage) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newFeePercentage | uint32 | new fee percentage |
 
 ### updateRoundMetaPtr
 
@@ -778,24 +641,7 @@ Invoked by voter to cast votes
 ### votingStrategy
 
 ```solidity
-function votingStrategy() external view returns (address)
-```
-
-Voting Strategy Contract Address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
-### votingStrategyFactory
-
-```solidity
-function votingStrategyFactory() external view returns (contract IVotingStrategyFactory)
+function votingStrategy() external view returns (contract BaseStrategy)
 ```
 
 Voting Strategy Factory Contract Address
@@ -807,7 +653,7 @@ Voting Strategy Factory Contract Address
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract IVotingStrategyFactory | undefined |
+| _0 | contract BaseStrategy | undefined |
 
 ### withdraw
 
@@ -833,7 +679,7 @@ Withdraw funds from the contract (only by ROUND_OPERATOR_ROLE)
 ### ApplicationMetaPtrUpdated
 
 ```solidity
-event ApplicationMetaPtrUpdated(MetaPtr oldMetaPtr, MetaPtr newMetaPtr)
+event ApplicationMetaPtrUpdated(MetaPtr newMetaPtr)
 ```
 
 Emitted when the application form metaPtr is updated
@@ -844,7 +690,6 @@ Emitted when the application form metaPtr is updated
 
 | Name | Type | Description |
 |---|---|---|
-| oldMetaPtr  | MetaPtr | undefined |
 | newMetaPtr  | MetaPtr | undefined |
 
 ### ApplicationStatusesUpdated
@@ -867,7 +712,7 @@ event ApplicationStatusesUpdated(uint256 indexed index, uint256 indexed status)
 ### ApplicationsEndTimeUpdated
 
 ```solidity
-event ApplicationsEndTimeUpdated(uint256 oldTime, uint256 newTime)
+event ApplicationsEndTimeUpdated(uint256 newTime)
 ```
 
 Emitted when application end time is updated
@@ -878,13 +723,12 @@ Emitted when application end time is updated
 
 | Name | Type | Description |
 |---|---|---|
-| oldTime  | uint256 | undefined |
 | newTime  | uint256 | undefined |
 
 ### ApplicationsStartTimeUpdated
 
 ```solidity
-event ApplicationsStartTimeUpdated(uint256 oldTime, uint256 newTime)
+event ApplicationsStartTimeUpdated(uint256 newTime)
 ```
 
 Emitted when application start time is updated
@@ -895,7 +739,6 @@ Emitted when application start time is updated
 
 | Name | Type | Description |
 |---|---|---|
-| oldTime  | uint256 | undefined |
 | newTime  | uint256 | undefined |
 
 ### Initialized
@@ -914,22 +757,6 @@ event Initialized(uint8 version)
 |---|---|---|
 | version  | uint8 | undefined |
 
-### MatchAmountUpdated
-
-```solidity
-event MatchAmountUpdated(uint256 newAmount)
-```
-
-Emitted when match amount is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newAmount  | uint256 | undefined |
-
 ### NewProjectApplication
 
 ```solidity
@@ -947,41 +774,6 @@ Emitted when a project has applied to the round
 | projectID `indexed` | bytes32 | undefined |
 | applicationIndex  | uint256 | undefined |
 | applicationMetaPtr  | MetaPtr | undefined |
-
-### PayFeeAndEscrowFundsToPayoutContract
-
-```solidity
-event PayFeeAndEscrowFundsToPayoutContract(uint256 matchAmountAfterFees, uint256 protocolFeeAmount, uint256 roundFeeAmount)
-```
-
-Emitted when protocol &amp; round fees are paid
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| matchAmountAfterFees  | uint256 | undefined |
-| protocolFeeAmount  | uint256 | undefined |
-| roundFeeAmount  | uint256 | undefined |
-
-### ProjectsMetaPtrUpdated
-
-```solidity
-event ProjectsMetaPtrUpdated(MetaPtr oldMetaPtr, MetaPtr newMetaPtr)
-```
-
-Emitted when projects metaPtr is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| oldMetaPtr  | MetaPtr | undefined |
-| newMetaPtr  | MetaPtr | undefined |
 
 ### RoleAdminChanged
 
@@ -1040,7 +832,7 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 ### RoundEndTimeUpdated
 
 ```solidity
-event RoundEndTimeUpdated(uint256 oldTime, uint256 newTime)
+event RoundEndTimeUpdated(uint256 newTime)
 ```
 
 Emitted when a round end time is updated
@@ -1051,45 +843,12 @@ Emitted when a round end time is updated
 
 | Name | Type | Description |
 |---|---|---|
-| oldTime  | uint256 | undefined |
 | newTime  | uint256 | undefined |
-
-### RoundFeeAddressUpdated
-
-```solidity
-event RoundFeeAddressUpdated(address roundFeeAddress)
-```
-
-Emitted when a Round wallet address is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| roundFeeAddress  | address | undefined |
-
-### RoundFeePercentageUpdated
-
-```solidity
-event RoundFeePercentageUpdated(uint32 roundFeePercentage)
-```
-
-Emitted when a Round fee percentage is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| roundFeePercentage  | uint32 | undefined |
 
 ### RoundMetaPtrUpdated
 
 ```solidity
-event RoundMetaPtrUpdated(MetaPtr oldMetaPtr, MetaPtr newMetaPtr)
+event RoundMetaPtrUpdated(MetaPtr newMetaPtr)
 ```
 
 Emitted when the round metaPtr is updated
@@ -1100,13 +859,12 @@ Emitted when the round metaPtr is updated
 
 | Name | Type | Description |
 |---|---|---|
-| oldMetaPtr  | MetaPtr | undefined |
 | newMetaPtr  | MetaPtr | undefined |
 
 ### RoundStartTimeUpdated
 
 ```solidity
-event RoundStartTimeUpdated(uint256 oldTime, uint256 newTime)
+event RoundStartTimeUpdated(uint256 newTime)
 ```
 
 Emitted when a round start time is updated
@@ -1117,7 +875,6 @@ Emitted when a round start time is updated
 
 | Name | Type | Description |
 |---|---|---|
-| oldTime  | uint256 | undefined |
 | newTime  | uint256 | undefined |
 
 
