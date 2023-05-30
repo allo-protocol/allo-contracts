@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
-contract AlloSettings is OwnableUpgradeable {
+contract AlloSettings is AccessControlEnumerableUpgradeable {
 
   string public constant VERSION = "1.0.0";
+
+  bytes32 public constant TRUSTED_REGISTRY_ROLE = keccak256("TRUSTED_REGISTRY");
 
   // 1000 * 100
   uint24 public constant DENOMINATOR = 100000;
@@ -30,14 +32,14 @@ contract AlloSettings is OwnableUpgradeable {
   /// @notice constructor function which ensure deployer is set as owner
   function initialize() external initializer {
     __Context_init_unchained();
-    __Ownable_init_unchained();
+    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
   // --- Core methods ---
 
   /// @notice Set the protocol fee percentage
   /// @param _protocolFeePercentage The new protocol fee percentage
-  function updateProtocolFeePercentage(uint24 _protocolFeePercentage) external onlyOwner {
+  function updateProtocolFeePercentage(uint24 _protocolFeePercentage) external onlyRole(DEFAULT_ADMIN_ROLE) {
 
     require(_protocolFeePercentage <= DENOMINATOR , "value exceeds 100%");
 
@@ -47,7 +49,7 @@ contract AlloSettings is OwnableUpgradeable {
 
   /// @notice Set the protocol treasury address
   /// @param _protocolTreasury The new protocol treasury address
-  function updateProtocolTreasury(address payable _protocolTreasury) external onlyOwner {
+  function updateProtocolTreasury(address payable _protocolTreasury) external onlyRole(DEFAULT_ADMIN_ROLE) {
     protocolTreasury = _protocolTreasury;
     emit ProtocolTreasuryUpdated(protocolTreasury);
   }
