@@ -25,7 +25,6 @@ import "../utils/MetaPtr.sol";
 contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
   string public constant VERSION = "0.2.0";
 
-  bytes32 public constant REGISTRY_ROLE = keccak256("REGISTRY");
 
   // --- Data ---
 
@@ -33,7 +32,7 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
   address public roundImplementation;
 
   /// @notice Address of the Allo settings contract
-  address public alloSettings;
+  IAlloSettings public alloSettings;
 
   /// @notice Nonce used to generate deterministic salt for Clones
   uint256 public nonce;
@@ -41,7 +40,7 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
   // --- Event ---
 
   /// @notice Emitted when allo settings contract is updated
-  event AlloSettingsUpdated(address alloSettings);
+  event AlloSettingsUpdated(IAlloSettings alloSettings);
 
   /// @notice Emitted when a Round implementation contract is updated
   event RoundImplementationUpdated(address roundImplementation);
@@ -68,7 +67,7 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
    *
    * @param newAlloSettings New allo settings contract address
    */
-  function updateAlloSettings(address newAlloSettings) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function updateAlloSettings(IAlloSettings newAlloSettings) external onlyRole(DEFAULT_ADMIN_ROLE) {
     alloSettings = newAlloSettings;
 
     emit AlloSettingsUpdated(alloSettings);
@@ -102,12 +101,13 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
     uint256 projectID,
     bytes32 projectIdentifier,
     bytes calldata encodedParameters
-  ) external onlyRole(REGISTRY_ROLE) returns (address) {
+  ) external returns (address) {
 
     nonce++;
 
     require(roundImplementation != address(0), "roundImplementation is 0x");
-    require(alloSettings != address(0), "alloSettings is 0x");
+    require(address(alloSettings) != address(0), "alloSettings is 0x");
+    require(alloSettings.isTrustedRegistry(msg.sender), "not trusted registry");
 
     bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
     address clone = ClonesUpgradeable.cloneDeterministic(roundImplementation, salt);

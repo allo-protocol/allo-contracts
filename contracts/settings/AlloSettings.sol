@@ -37,6 +37,21 @@ contract AlloSettings is AccessControlEnumerableUpgradeable {
 
   // --- Core methods ---
 
+  /// @notice Getter for DENOMINATOR
+  function getDenominator() external pure returns(uint24) {
+    return DENOMINATOR;
+  }
+
+  /// @notice Getter for protocolFeePercentage
+  function getProtocolFeePercentage() external view returns(uint24) {
+    return protocolFeePercentage;
+  }
+
+  /// @notice Getter for protocolTreasury
+  function getProtocolTreasury() external view returns(address payable) {
+    return protocolTreasury;
+  }
+
   /// @notice Set the protocol fee percentage
   /// @param _protocolFeePercentage The new protocol fee percentage
   function updateProtocolFeePercentage(uint24 _protocolFeePercentage) external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -52,6 +67,12 @@ contract AlloSettings is AccessControlEnumerableUpgradeable {
   function updateProtocolTreasury(address payable _protocolTreasury) external onlyRole(DEFAULT_ADMIN_ROLE) {
     protocolTreasury = _protocolTreasury;
     emit ProtocolTreasuryUpdated(protocolTreasury);
+  }
+
+  /// @notice Check if a registry has TRUSTED_REGISTRY_ROLE
+  /// @param _registry The registry address
+  function isTrustedRegistry(address _registry) external view returns(bool) {
+    return hasRole(TRUSTED_REGISTRY_ROLE, _registry);
   }
 
 }
