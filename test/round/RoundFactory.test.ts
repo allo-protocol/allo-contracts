@@ -144,16 +144,16 @@ describe("RoundFactory", function () {
       let params: any = [];
 
       let chainId = 1;
-      let projectID = 1;
-      let projectIdentifier: string;
+      let projectNumber = 1;
+      let projectID: string;
 
       beforeEach(async () => {
         [user] = await ethers.getSigners();
 
-        projectIdentifier = createProjectId(
+        projectID = createProjectId(
           chainId,
           user.address, // registry address
-          projectID
+          projectNumber
         );
 
         _currentBlockTimestamp = (
@@ -236,7 +236,6 @@ describe("RoundFactory", function () {
 
         const txn = roundFactory.create(
           projectID,
-          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -260,7 +259,6 @@ describe("RoundFactory", function () {
 
         const txn = roundFactory.create(
           projectID,
-          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -276,7 +274,6 @@ describe("RoundFactory", function () {
 
         const txn = await roundFactory.create(
           projectID,
-          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -295,7 +292,6 @@ describe("RoundFactory", function () {
 
         const txn = await roundFactory.create(
           projectID,
-          projectIdentifier,
           encodeRoundParameters(params)
         );
 
@@ -310,7 +306,6 @@ describe("RoundFactory", function () {
           const event = receipt.events.find((e) => e.event === "RoundCreated");
           if (event && event.args) {
             _projectID = event.args.projectID;
-            _projectIdentifier = event.args.projectIdentifier;
             roundAddress = event.args.roundAddress;
             _roundImplementation = event.args.roundImplementation;
             registry = event.args.registry;
@@ -319,11 +314,10 @@ describe("RoundFactory", function () {
 
         expect(txn)
           .to.emit(roundFactory, "RoundCreated")
-          .withArgs(_projectID, _projectIdentifier, roundAddress, _roundImplementation, registry);
+          .withArgs(_projectID, roundAddress, _roundImplementation, registry);
 
         expect(isAddress(roundAddress)).to.be.true;
-        expect(_projectID).to.be.equal(_projectID);
-        expect(_projectIdentifier).to.be.equal(projectIdentifier);
+        expect(_projectID).to.be.equal(projectID);
         expect(isAddress(_roundImplementation)).to.be.true;
         expect(isAddress(registry)).to.be.true;
       });

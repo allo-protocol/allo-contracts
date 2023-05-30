@@ -47,8 +47,7 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
 
   /// @notice Emitted when a new Round is created
   event RoundCreated(
-    uint256 projectID,
-    bytes32 indexed projectIdentifier,
+    bytes32 indexed projectID,
     address indexed roundAddress,
     address indexed roundImplementation,
     address registry
@@ -94,12 +93,10 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
    * @notice Clones RoundImplementation a new round and emits event
    *
    * @param projectID ID of project on the registry creating the round
-   * @param projectIdentifier Unique identifier of project on the registry, chainId and projectID
    * @param encodedParameters Encoded parameters for creating a round
    */
   function create(
-    uint256 projectID,
-    bytes32 projectIdentifier,
+    bytes32 projectID,
     bytes calldata encodedParameters
   ) external returns (address) {
 
@@ -114,7 +111,6 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
 
     emit RoundCreated(
       projectID,
-      projectIdentifier,
       clone,
       payable(roundImplementation),
       msg.sender

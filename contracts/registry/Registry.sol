@@ -2,54 +2,40 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+
 import "../round/IRoundFactory.sol";
 import "../utils/MetaPtr.sol";
-
 
 /**
  * @title Registry
  */
-contract Registry is Initializable {
+contract Registry is Initializable, AccessControlEnumerableUpgradeable {
     // Types
 
     // The project structs contains the minimal data we need for a project
     struct Project {
-        uint256 id;
+        bytes32 projectID;
         MetaPtr projectMetadata;
         MetaPtr programMetadata;
     }
 
-    // A linked list of owners of a project
-    // The use of a linked list allows us to easily add and remove owners,
-    // access them directly in O(1), and loop through them.
-    //
-    // {
-    //     count: 3,
-    //     list: {
-    //         OWNERS_LIST_SENTINEL => owner1Address,
-    //         owner1Address => owner2Address,
-    //         owner2Address => owner3Address,
-    //         owner3Address => OWNERS_LIST_SENTINEL
-    //     }
-    // }
-    struct OwnerList {
-        uint256 count;
-        mapping(address => address) list;
+    enum MetadataType {
+        ProjectMetadata,
+        ProgramMetadata
     }
 
     // State variables
 
-    // Used as sentinel value in the owners linked list.
-    address constant OWNERS_LIST_SENTINEL = address(0x1);
-
-    // The number of projects created, used to give an incremental id to each one
+    // The number of projects in the registry
     uint256 public projectsCount;
 
-    // The mapping of projects, from projectID to Project
-    mapping(uint256 => Project) public projects;
+    // The mapping from projectID to Project
+    mapping(bytes32 => Project) public projects;
 
-    // The mapping projects owners, from projectID to OwnerList
-    mapping(uint256 => OwnerList) public projectsOwners;
+    // Errors
+
+    error ProgramMetadataIsEmpty();
 
     // Events
 
@@ -58,7 +44,7 @@ contract Registry is Initializable {
      * @param projectID The ID of the project.
      * @param owner The address of the owner of the project.
      */
-    event ProjectCreated(uint256 indexed projectID, address indexed owner);
+    event ProjectCreated(bytes32 indexed projectID, address indexed owner);
 
     /**
      * @dev Emitted when metadata is updated for a project or program.
@@ -67,34 +53,10 @@ contract Registry is Initializable {
      * @param metadataType The type of metadata: 0 for projectMetadata, 1 for programMetadata.
      */
     event MetadataUpdated(
-        uint256 indexed projectID,
+        bytes32 indexed projectID,
         MetaPtr metadata,
-        uint8 metadataType
+        MetadataType metadataType
     );
-
-    /**
-     * @dev Emitted when an owner is added to a project.
-     * @param projectID The ID of the project.
-     * @param owner The address of the owner added.
-     */
-    event OwnerAdded(uint256 indexed projectID, address indexed owner);
-
-    /**
-     * @dev Emitted when an owner is removed from a project.
-     * @param projectID The ID of the project.
-     * @param owner The address of the owner removed.
-     */
-    event OwnerRemoved(uint256 indexed projectID, address indexed owner);
-
-    // Modifiers
-
-    modifier onlyProjectOwner(uint256 projectID) {
-        require(
-            projectsOwners[projectID].list[msg.sender] != address(0),
-            "PR000"
-        );
-        _;
-    }
 
     /**
      * @notice Initializes the contract after an upgrade
@@ -105,207 +67,118 @@ contract Registry is Initializable {
     // External functions
 
     /**
-     * @notice Check if an address is an owner of a project
-     * @param projectID ID of previously created project
-     * @param owner address to check
-     */
-    function isProjectOwner(
-        uint256 projectID,
-        address owner
-    ) external view returns (bool) {
-        return projectsOwners[projectID].list[owner] != address(0);
-    }
-
-    /**
      * @notice Creates a new project with a metadata pointer
+     * @param projectOwners the owners of the project
      * @param projectMetadata the metadata pointer
      * @param programMetadata the program metadata pointer
      */
     function createProject(
+        address[] memory projectOwners,
         MetaPtr calldata projectMetadata,
         MetaPtr calldata programMetadata
-    ) external returns (uint256 projectID) {
-        projectID = projectsCount++;
+    ) external returns (bytes32 projectID) {
+
+        projectID = createProjectIdentifier();
 
         Project storage project = projects[projectID];
-        project.id = projectID;
 
-        initProjectOwners(projectID);
+        project.projectID = projectID;
+
+        // Initialize project owners
+        _grantRole(projectID, msg.sender);
+        for (uint256 i = 0; i < projectOwners.length; i++) {
+            _grantRole(projectID, projectOwners[i]);
+        }
 
         if (projectMetadata.protocol != 0) {
             project.projectMetadata = projectMetadata;
-            emit MetadataUpdated(projectID, projectMetadata, 0);
+            emit MetadataUpdated(projectID, projectMetadata, MetadataType.ProjectMetadata);
         }
 
         if (programMetadata.protocol != 0) {
             project.programMetadata = programMetadata;
-            emit MetadataUpdated(projectID, programMetadata, 1);
+            emit MetadataUpdated(projectID, programMetadata, MetadataType.ProgramMetadata);
         }
 
         emit ProjectCreated(projectID, msg.sender);
     }
 
     /**
-     * @notice Updates Metadata for singe project
-     * @param projectID ID of previously created project
+     * @notice Updates Metadata for project
+     * @param projectID ID of project
      * @param projectMetadata Updated pointer to project metadata
      */
     function updateProjectMetadata(
-        uint256 projectID,
+        bytes32 projectID,
         MetaPtr calldata projectMetadata
-    ) external onlyProjectOwner(projectID) {
+    ) external onlyRole(projectID) {
         projects[projectID].projectMetadata = projectMetadata;
-        emit MetadataUpdated(projectID, projectMetadata, 0);
+        emit MetadataUpdated(projectID, projectMetadata, MetadataType.ProjectMetadata);
     }
 
     /**
      * @notice Updates Metadata for singe project
-     * @param projectID ID of previously created project
+     * @param projectID ID of project
      * @param programMetadata Updated pointer to project programMetadata
      */
     function updateProgramMetadata(
-        uint256 projectID,
+        bytes32 projectID,
         MetaPtr calldata programMetadata
-    ) external onlyProjectOwner(projectID) {
+    ) external onlyRole(projectID) {
         projects[projectID].programMetadata = programMetadata;
-        emit MetadataUpdated(projectID, programMetadata, 1);
+        emit MetadataUpdated(projectID, programMetadata, MetadataType.ProgramMetadata);
     }
 
     /**
-     * @notice Associate a new owner with a project
-     * @param projectID ID of previously created project
-     * @param newOwner address of new project owner
+     * @notice Adds Owner to Project
+     * @param projectID ID of project
+     * @param owner new owner
      */
-    function addProjectOwner(
-        uint256 projectID,
-        address newOwner
-    ) external onlyProjectOwner(projectID) {
-        require(
-            newOwner != address(0) &&
-                newOwner != OWNERS_LIST_SENTINEL &&
-                newOwner != address(this),
-            "PR001"
-        );
-
-        OwnerList storage owners = projectsOwners[projectID];
-
-        require(owners.list[newOwner] == address(0), "PR002");
-
-        owners.list[newOwner] = owners.list[OWNERS_LIST_SENTINEL];
-        owners.list[OWNERS_LIST_SENTINEL] = newOwner;
-        owners.count++;
-
-        emit OwnerAdded(projectID, newOwner);
-    }
-
-    /**
-     * @notice Disassociate an existing owner from a project
-     * @param projectID ID of previously created project
-     * @param prevOwner Address of previous owner in OwnerList
-     * @param owner Address of new Owner
-     */
-    function removeProjectOwner(
-        uint256 projectID,
-        address prevOwner,
+    function addOwner(
+        bytes32 projectID,
         address owner
-    ) external onlyProjectOwner(projectID) {
-        require(owner != address(0) && owner != OWNERS_LIST_SENTINEL, "PR001");
-
-        OwnerList storage owners = projectsOwners[projectID];
-
-        require(owners.list[prevOwner] == owner, "PR003");
-        require(owners.count > 1, "PR004");
-
-        owners.list[prevOwner] = owners.list[owner];
-        delete owners.list[owner];
-        owners.count--;
-
-        emit OwnerRemoved(projectID, owner);
-    }
-
-    // Public functions
-
-    /**
-     * @notice Retrieve count of existing project owners
-     * @param projectID ID of project
-     * @return Count of owners for given project
-     */
-    function projectOwnersCount(
-        uint256 projectID
-    ) external view returns (uint256) {
-        return projectsOwners[projectID].count;
+    ) external onlyRole(projectID) {
+        _grantRole(projectID, owner);
     }
 
     /**
-     * @notice Retrieve list of project owners
+     * @notice Remove owner from Project
      * @param projectID ID of project
-     * @return List of current owners of given project
+     * @param owner owner to be removed
      */
-    function getProjectOwners(
-        uint256 projectID
-    ) external view returns (address[] memory) {
-        OwnerList storage owners = projectsOwners[projectID];
-
-        address[] memory list = new address[](owners.count);
-
-        uint256 index = 0;
-        address current = owners.list[OWNERS_LIST_SENTINEL];
-
-        if (current == address(0x0)) {
-            return list;
-        }
-
-        while (current != OWNERS_LIST_SENTINEL) {
-            list[index] = current;
-            current = owners.list[current];
-            index++;
-        }
-
-        return list;
-    }
-
-    // Internal functions
-
-    /**
-     * @notice Create initial OwnerList for passed project
-     * @param projectID ID of project
-     */
-    function initProjectOwners(uint256 projectID) internal {
-        OwnerList storage owners = projectsOwners[projectID];
-
-        owners.list[OWNERS_LIST_SENTINEL] = msg.sender;
-        owners.list[msg.sender] = OWNERS_LIST_SENTINEL;
-        owners.count = 1;
-
-        emit OwnerAdded(projectID, msg.sender);
+    function removeOwner(
+        bytes32 projectID,
+        address owner
+    ) external onlyRole(projectID) {
+        _revokeRole(projectID, owner);
     }
 
     /**
      * @notice Create a new round for a project
+     * @param roundFactory Address of round factory
      * @param projectID ID of project creating the round
      * @param encodedParameters Encoded parameters for round creation
      */
     function createRound(
         IRoundFactory roundFactory,
-        uint256 projectID,
+        bytes32 projectID,
         bytes calldata encodedParameters
-    ) external onlyProjectOwner(projectID) returns (address) {
-        require(projects[projectID].programMetadata.protocol != 0, "PR005");
-        return
-            roundFactory.create(projectID, createProjectIdentifier(projectID), encodedParameters);
+    ) external onlyRole(projectID) returns (address) {
+        if (projects[projectID].programMetadata.protocol == 0) {
+            revert ProgramMetadataIsEmpty();
+        }
+
+        return roundFactory.create(projectID, encodedParameters);
     }
 
     /**
      * @dev Creates a unique project identifier based on the registry, chainId and projectID.
-     * @param projectID ID of project
      * @return The computed unique identifier (bytes32).
      */
-    function createProjectIdentifier(
-        uint256 projectID
-    ) internal view returns (bytes32) {
+    function createProjectIdentifier() internal returns (bytes32) {
         return
             keccak256(
-                abi.encodePacked(block.chainid, address(this), projectID)
+                abi.encodePacked(block.chainid, address(this), projectsCount++)
             );
     }
 }
