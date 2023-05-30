@@ -15,7 +15,6 @@ contract Registry is Initializable {
     // The project structs contains the minimal data we need for a project
     struct Project {
         uint256 id;
-        bytes32 projectIdentifier;
         MetaPtr projectMetadata;
         MetaPtr programMetadata;
     }
@@ -130,7 +129,6 @@ contract Registry is Initializable {
 
         Project storage project = projects[projectID];
         project.id = projectID;
-        project.projectIdentifier = createProjectIdentifier(projectID);
 
         initProjectOwners(projectID);
 
@@ -294,7 +292,7 @@ contract Registry is Initializable {
     ) external onlyProjectOwner(projectID) returns (address) {
         require(projects[projectID].programMetadata.protocol != 0, "PR005");
         return
-            roundFactory.create(projectID, projects[projectID].projectIdentifier, encodedParameters);
+            roundFactory.create(projectID, createProjectIdentifier(projectID), encodedParameters);
     }
 
     /**
