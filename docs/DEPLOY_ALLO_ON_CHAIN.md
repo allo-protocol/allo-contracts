@@ -104,3 +104,7 @@ The deployment process typically takes approximately two weeks to allow ample ti
 After the contracts are successfully deployed, client applications, such as Grants Stack, need to make the necessary changes to support the new networks. This may include updating network configurations, adjusting contract interaction logic, and ensuring compatibility with the deployed Allo contracts on the new chain.
 
 By following this deployment process and considering the client integration, the Allo contracts can be effectively deployed on a new chain, enabling wider adoption and usage of the Allo protocol.
+
+## Deploy Steps
+
+The actual steps of deploying Allo onto a new chain can be found [HERE](./DEPLOY_STEPS.md)
