@@ -4,17 +4,21 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { randomBytes } from "crypto";
 import { keccak256 } from "ethers/lib/utils";
+import { BigNumberish } from "ethers";
 
-const emptyMetadata = { protocol: 0, pointer: "" };
-const testMetadata = { protocol: 1, pointer: "test-metadata" };
-const programTestMetadata = { protocol: 1, pointer: "test-program-metadata" };
-const updatedMetadata = { protocol: 1, pointer: "updated-metadata" };
+type MetaPtr = {
+  protocol: BigNumberish;
+  pointer: string;
+};
 
-const OWNERS_LIST_SENTINEL = "0x0000000000000000000000000000000000000001";
+const emptyMetadata: MetaPtr = { protocol: 0, pointer: "" };
+const testMetadata: MetaPtr = { protocol: 1, pointer: "test-metadata" };
+const programTestMetadata: MetaPtr = { protocol: 1, pointer: "test-program-metadata" };
+const updatedMetadata: MetaPtr = { protocol: 1, pointer: "updated-metadata" };
 
 describe("Registry", function () {
   before(async function () {
-    [this.owner, this.nonOwner, ...this.accounts] = await ethers.getSigners();
+    [this.owner, this.anotherOwner, this.nonOwner, ...this.accounts] = await ethers.getSigners();
 
     const Registry = await hre.ethers.getContractFactory(
       "Registry",
@@ -37,15 +41,19 @@ describe("Registry", function () {
   });
 
   describe("test: createProject", async function () {
-    it("creates a new project and adds it to the projects list", async function () {
-      expect(await this.contract.projectsCount()).to.equal("0");
+    it("creates a new project and adds it to the projects list with 1 owner", async function () {
+      const tx = await this.contract.createProject([], testMetadata, programTestMetadata);
+      const receipt = await tx.wait();
 
-      await this.contract.createProject(testMetadata, programTestMetadata);
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      const projectID = event.args.projectID;
 
-      expect(await this.contract.projectsCount()).to.equal("1");
+      expect(await this.contract.getRoleMemberCount(projectID)).to.equal(1);
 
-      const project = await this.contract.projects(0);
-      expect(project.id).to.equal("0");
+      const project = await this.contract.projects(projectID);
+
+      expect(project.projectID).to.equal(projectID);
 
       const [protocol, pointer] = project.projectMetadata;
       expect(protocol).to.equal(testMetadata.protocol);
@@ -55,243 +63,199 @@ describe("Registry", function () {
       expect(programProtocol).to.equal(programTestMetadata.protocol);
       expect(programPointer).to.equal(programTestMetadata.pointer);
 
-      const owners = await this.contract.getProjectOwners(project.id);
-      expect(owners.length).to.equal(1);
-      expect(owners[0]).to.equal(this.owner.address);
+      const ownerCounts = await this.contract.getRoleMemberCount(projectID);
+      expect(ownerCounts).to.equal(1);
+
+      const owner = await this.contract.getRoleMember(projectID, 0);
+      expect(owner).to.equal(this.owner.address);
+
+      it('ensure events are emitted', () => {
+        expect(tx).to.emit(this.contract, 'ProjectCreated').withArgs(projectID, this.owner.address);
+        expect(tx).to.emit(this.contract, 'MetadataUpdated').withArgs(projectID, project.projectMetadata, 0);
+        expect(tx).to.emit(this.contract, 'MetadataUpdated').withArgs(projectID, project.programMetadata, 1);
+      })
+    });
+
+
+    it("creates a new project and adds it to the projects list with 2 owners", async function () {
+
+      const tx = await this.contract.createProject(
+        [this.anotherOwner.address],
+        testMetadata,
+        programTestMetadata
+      );
+      const receipt = await tx.wait();
+
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      const projectID = event.args.projectID
+
+      const ownerCounts = await this.contract.getRoleMemberCount(projectID);
+      expect(ownerCounts).to.equal(2);
+
+      const owner = await this.contract.getRoleMember(projectID, 0);
+      expect(owner).to.equal(this.owner.address);
+
+      const anotherOwner = await this.contract.getRoleMember(projectID, 1);
+      expect(anotherOwner).to.equal(this.anotherOwner.address);
     });
   });
 
   describe("test: updateProjectMetadata", async function () {
+
+    let projectID: any;
+
+    this.beforeAll(async function () {
+      const tx = await this.contract.createProject([], testMetadata, programTestMetadata);
+      const receipt = await tx.wait();
+
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      projectID = event.args.projectID;
+    });
+
     it("SHOULD revert WHEN caller is not owner", async function () {
-      const project = await this.contract.projects(0);
       await expect(
         this.contract
           .connect(this.nonOwner)
-          .updateProjectMetadata(project.id, updatedMetadata)
-      ).to.be.revertedWith("PR000");
+          .updateProjectMetadata(projectID, updatedMetadata)
+      ).to.be.revertedWith(`AccessControl: account ${this.nonOwner.address.toLowerCase()} is missing role ${projectID.toLowerCase()}`);
     });
 
     it("updates project metadata", async function () {
-      const project = await this.contract.projects(0);
-      await this.contract
+      const tx = await this.contract
         .connect(this.owner)
-        .updateProjectMetadata(project.id, updatedMetadata);
-      const updatedProject = await this.contract.projects(0);
+        .updateProjectMetadata(projectID, updatedMetadata);
+
+      const updatedProject = await this.contract.projects(projectID);
       const [protocol, pointer] = updatedProject.projectMetadata;
+
       expect(protocol).to.equal(updatedMetadata.protocol);
       expect(pointer).to.equal(updatedMetadata.pointer);
+
+      expect(tx).to.emit(this.contract, 'MetadataUpdated').withArgs(projectID, updatedProject.projectMetadata, 0);
+    });
+  });
+
+  describe("test: updateProgramMetadata", async function () {
+
+    let projectID: any;
+
+    this.beforeAll(async function () {
+      const tx = await this.contract.createProject([], testMetadata, programTestMetadata);
+      const receipt = await tx.wait();
+
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      projectID = event.args.projectID;
     });
 
-    it("updates project programMetadata", async function () {
-      const project = await this.contract.projects(0);
-      await this.contract
-        .connect(this.owner)
-        .updateProgramMetadata(project.id, updatedMetadata);
-      const updatedProject = await this.contract.projects(0);
-      const [protocol, pointer] = updatedProject.programMetadata;
-      expect(protocol).to.equal(updatedMetadata.protocol);
-      expect(pointer).to.equal(updatedMetadata.pointer);
-    });
-
-    it("does not allow to add an owner if not owner", async function () {
-      const projectID = 0;
+    it("SHOULD revert WHEN caller is not owner", async function () {
       await expect(
         this.contract
           .connect(this.nonOwner)
-          .addProjectOwner(projectID, this.nonOwner.address)
-      ).to.be.revertedWith("PR000");
+          .updateProgramMetadata(projectID, updatedMetadata)
+      ).to.be.revertedWith(
+        `AccessControl: account ${this.nonOwner.address.toLowerCase()} is missing role ${projectID.toLowerCase()}`
+      );
     });
 
-    it("emits AddedOwner and RemovedOwner when OwnerList is modified", async function () {
-      const projectID = 0;
-      const addTx = await this.contract
+    it("updates project metadata", async function () {
+      const tx = await this.contract
         .connect(this.owner)
-        .addProjectOwner(projectID, this.accounts[1].address);
+        .updateProgramMetadata(projectID, updatedMetadata);
 
-      const { events: addEvents } = await addTx.wait();
-      const [emittedProject0, addedOwner] = addEvents[0].args;
+      const updatedProject = await this.contract.projects(projectID);
+      const [protocol, pointer] = updatedProject.programMetadata;
 
-      expect(emittedProject0).to.equal(projectID);
-      expect(addedOwner).to.equal(this.accounts[1].address);
-      expect(addEvents[0].event).to.equal("OwnerAdded");
+      expect(protocol).to.equal(updatedMetadata.protocol);
+      expect(pointer).to.equal(updatedMetadata.pointer);
 
-      const removeTx = await this.contract
-        .connect(this.owner)
-        .removeProjectOwner(
-          projectID,
-          OWNERS_LIST_SENTINEL,
-          this.accounts[1].address
-        );
+      expect(tx).to.emit(this.contract, 'MetadataUpdated').withArgs(projectID, updatedProject.programMetadata, 1);
+    });
+  });
 
-      const { events } = await removeTx.wait();
-      const [emittedProject1, removedOwner] = events[0].args;
-      expect(emittedProject1).to.equal(projectID);
-      expect(removedOwner).to.equal(this.accounts[1].address);
-      expect(events[0].event).to.equal("OwnerRemoved");
+
+  describe("test: addOwner", () => {
+    let projectID: any;
+
+    this.beforeAll(async function () {
+      const tx = await this.contract.createProject([], testMetadata, programTestMetadata);
+      const receipt = await tx.wait();
+
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      projectID = event.args.projectID;
+    });
+
+    it("SHOULD revert WHEN caller is not owner", async function () {
+      await expect(
+        this.contract
+          .connect(this.nonOwner)
+          .addOwner(projectID, this.anotherOwner.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${this.nonOwner.address.toLowerCase()} is missing role ${projectID.toLowerCase()}`
+      );
     });
 
     it("adds owner to project", async function () {
-      const projectID = 0;
 
-      expect(
-        await this.contract.connect(this.owner).projectOwnersCount(projectID)
-      ).to.equal("1");
-      const prevOwners = await this.contract.getProjectOwners(projectID);
-      expect(prevOwners.length).to.equal(1);
-      expect(prevOwners[0]).to.equal(this.owner.address);
+      expect(await this.contract.getRoleMemberCount(projectID)).to.equal(1);
+      expect(await this.contract.hasRole(projectID, this.anotherOwner.address)).to.equal(false);
 
-      for (let i = 0; i < 3; i++) {
-        await this.contract
-          .connect(this.owner)
-          .addProjectOwner(projectID, this.accounts[i].address);
-      }
+      await this.contract
+        .connect(this.owner)
+        .addOwner(projectID, this.anotherOwner.address);
 
-      expect(await this.contract.projectOwnersCount(projectID)).to.equal("4");
-      const owners = await this.contract.getProjectOwners(projectID);
-      expect(owners.length).to.equal(4);
-      expect(owners[0]).to.equal(this.accounts[2].address);
-      expect(owners[1]).to.equal(this.accounts[1].address);
-      expect(owners[2]).to.equal(this.accounts[0].address);
-      expect(owners[3]).to.equal(this.owner.address);
+      expect(await this.contract.getRoleMemberCount(projectID)).to.equal(2);
+      expect(await this.contract.getRoleMember(projectID, 1)).to.equal(this.anotherOwner.address);
+      expect(await this.contract.hasRole(projectID, this.anotherOwner.address)).to.equal(true);
+
     });
   });
 
-  describe("test: removeProjectOwner", async function () {
-    it("does not allow to remove an owner if not owner", async function () {
-      const projectID = 0;
+  describe("test: removeOwner", () => {
+    let projectID: any;
+
+    this.beforeAll(async function () {
+      const tx = await this.contract.createProject(
+        [this.anotherOwner.address], testMetadata, programTestMetadata
+      );
+      const receipt = await tx.wait();
+
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      projectID = event.args.projectID;
+    });
+
+    it("SHOULD revert WHEN caller is not owner", async function () {
       await expect(
         this.contract
           .connect(this.nonOwner)
-          .removeProjectOwner(projectID, this.owner.address, this.owner.address)
-      ).to.be.revertedWith("PR000");
+          .removeOwner(projectID, this.anotherOwner.address)
+      ).to.be.revertedWith(
+        `AccessControl: account ${this.nonOwner.address.toLowerCase()} is missing role ${projectID.toLowerCase()}`
+      );
     });
 
-    it("does not allow to remove owner 0", async function () {
-      const projectID = 0;
-      await expect(
-        this.contract
-          .connect(this.owner)
-          .removeProjectOwner(projectID, this.owner.address, AddressZero)
-      ).to.be.revertedWith("PR001");
-    });
-
-    it("does not allow to remove owner equal to OWNERS_LIST_SENTINEL", async function () {
-      const projectID = 0;
-      await expect(
-        this.contract
-          .connect(this.owner)
-          .removeProjectOwner(
-            projectID,
-            this.owner.address,
-            OWNERS_LIST_SENTINEL
-          )
-      ).to.be.revertedWith("PR001");
-    });
-
-    it("does not allow to remove owner with prevOwner must equal owner", async function () {
-      const projectID = 0;
-      await expect(
-        this.contract
-          .connect(this.owner)
-          .removeProjectOwner(
-            projectID,
-            this.nonOwner.address,
-            this.owner.address
-          )
-      ).to.be.revertedWith("PR003");
-    });
-
-    it("removes owner", async function () {
-      const projectID = 0;
-      const currentOwners = await this.contract.getProjectOwners(projectID);
-
-      expect(await this.contract.projectOwnersCount(projectID)).to.equal("4");
-      const owners = await this.contract.getProjectOwners(projectID);
-      expect(owners.length).to.equal(4);
-      expect(currentOwners[0]).to.equal(this.accounts[2].address);
-      expect(currentOwners[1]).to.equal(this.accounts[1].address);
-      expect(currentOwners[2]).to.equal(this.accounts[0].address);
-      expect(currentOwners[3]).to.equal(this.owner.address);
+    it("removes owner to project", async function () {
+      expect(await this.contract.getRoleMemberCount(projectID)).to.equal(2);
+      expect(await this.contract.hasRole(projectID, this.anotherOwner.address)).to.equal(true);
 
       await this.contract
         .connect(this.owner)
-        .removeProjectOwner(
-          projectID,
-          this.accounts[1].address,
-          this.accounts[0].address
-        );
-      expect(await this.contract.projectOwnersCount(projectID)).to.equal("3");
-      let newOwners = await this.contract.getProjectOwners(projectID);
-      expect(newOwners.length).to.equal(3);
+        .removeOwner(projectID, this.anotherOwner.address);
 
-      await this.contract
-        .connect(this.owner)
-        .removeProjectOwner(
-          projectID,
-          this.accounts[1].address,
-          this.owner.address
-        );
-      expect(await this.contract.projectOwnersCount(projectID)).to.equal("2");
-      newOwners = await this.contract.getProjectOwners(projectID);
-      expect(newOwners.length).to.equal(2);
+      expect(await this.contract.getRoleMemberCount(projectID)).to.equal(1);
+      expect(await this.contract.hasRole(projectID, this.anotherOwner.address)).to.equal(false);
 
-      await this.contract
-        .connect(this.accounts[2])
-        .removeProjectOwner(
-          projectID,
-          OWNERS_LIST_SENTINEL,
-          this.accounts[2].address
-        );
-
-      expect(await this.contract.projectOwnersCount(projectID)).to.equal("1");
-      newOwners = await this.contract.getProjectOwners(projectID);
-      expect(newOwners.length).to.equal(1);
-      expect(newOwners[0]).to.eq(this.accounts[1].address);
-    });
-
-    it("does not allow to remove owner if single owner", async function () {
-      const projectID = 0;
-      expect(await this.contract.projectOwnersCount(projectID)).to.equal("1");
-      const currentOwners = await this.contract.getProjectOwners(projectID);
-      expect(currentOwners[0]).to.eq(this.accounts[1].address);
-
-      await expect(
-        this.contract
-          .connect(this.accounts[1])
-          .removeProjectOwner(
-            projectID,
-            OWNERS_LIST_SENTINEL,
-            this.accounts[1].address
-          )
-      ).to.be.revertedWith("PR004");
-    });
-  });
-
-  describe("test: isProjectOwner", () => {
-    it("returns TRUE if address is owner of project", async function () {
-      const projectID = 0;
-      const currentOwners = await this.contract.getProjectOwners(projectID);
-      const result = await this.contract.isProjectOwner(
-        projectID,
-        currentOwners[0]
-      );
-
-      expect(result).to.be.true;
-    });
-
-    it("returns FALSE if address is not owner of project", async function () {
-      const projectID = 0;
-      const randomAddress = "0x0000000000000000000000000000000000000003";
-      const result = await this.contract.isProjectOwner(
-        projectID,
-        randomAddress
-      );
-
-      expect(result).to.be.false;
     });
   });
 
   describe("test: createRound", () => {
+
+    let projectID: any;
+
     beforeEach(async function () {
       [this.owner, this.nonOwner, ...this.accounts] = await ethers.getSigners();
 
@@ -309,25 +273,40 @@ describe("Registry", function () {
       this.roundFactoryContract = await RoundFactory.deploy();
       await this.roundFactoryContract.deployed();
 
-      await this.contract.createProject(testMetadata, emptyMetadata);
+      const tx = await this.contract.createProject([], testMetadata, programTestMetadata);
+      const receipt = await tx.wait();
+
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      projectID = event.args.projectID;
     });
 
     it("SHOULD revert WHEN caller is not project owner", async function () {
-      const projectID = 0;
       const data = randomBytes(32);
       const tx = this.contract
         .connect(this.nonOwner)
         .createRound(this.roundFactoryContract.address, projectID, data);
-      await expect(tx).to.be.revertedWith("PR000");
+
+      await expect(tx).to.be.revertedWith(
+        `AccessControl: account ${this.nonOwner.address.toLowerCase()} is missing role ${projectID.toLowerCase()}`
+      );
     });
 
     it("SHOULD revert WHEN program metadata is not set", async function () {
-      const projectID = 0;
+
+      const tx = await this.contract.createProject([], testMetadata, emptyMetadata);
+      const receipt = await tx.wait();
+
+      // Access the emitted event
+      const event = receipt.events.find((event: any) => event.event === 'ProjectCreated');
+      const projectID = event.args.projectID;
+
       const data = randomBytes(32);
-      const tx = this.contract
+      const createRoundTx = this.contract
         .connect(this.owner)
         .createRound(this.roundFactoryContract.address, projectID, data);
-      await expect(tx).to.be.revertedWith("PR005");
+
+      await expect(createRoundTx).to.be.revertedWith("ProgramMetadataIsEmpty");
     });
   });
 });
