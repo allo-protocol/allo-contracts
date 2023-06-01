@@ -10,9 +10,6 @@ If you come across any vulnerabilties, do create an issue / raise a PR to help i
 .
 ├── contracts                           # Smart contracts
 ├   ├── utils                           # useful utils
-├   ├── program                         # program contracts
-├   ├   ├── ProgramFactory.sol          # factory contract which deploys program
-├   ├   ├── ProgramImplementation.sol   # program contract
 ├   ├── round                           # round contracts
 ├   ├   ├── RoundFactory.sol            # factory contract which deploys round
 ├   ├   ├── RoundImplementation.sol     # round contract 
@@ -35,10 +32,10 @@ If you come across any vulnerabilties, do create an issue / raise a PR to help i
 
 ## Terminology
 
-- **Program Operators**: wallets that have the permission to create & manage the program
-- **Program**: maintained by Program Operators which together form a team
+- **Project Operators**: wallets that have the permission to create & manage a project
+- **Project**: maintained by Project Operators who can create or apply to a round
 - **Round Operators**: wallets that have the permission to create & manage the round
-- **Round**: created by a Program and deal with everything relating to running a round
+- **Round**: created by a Project and deal with everything relating to running a round
 - **Voter** : wallet who cast a vote to a grant during the round
 
 
@@ -61,25 +58,12 @@ This is built and maintained using [hardhat](https://hardhat.org)
 
 These steps would have to be done per chain but there are intended to be deployed only once
 
-**Program**
-1. Deploy `ProgramFactory`
-2. Deploy `ProgramImplementation`
-3. Link `ProgramImplementation` to ProgramFactory contract 
 
 **Round**
 1. Deploying all voting strategy (contracts under `votingStrategy/`)
 2. Deploy `RoundFactory`
 3. Deploy `RoundImplementation`
 4. Link `RoundImplementation` to `RoundFactory` contract
-
-
-## Program Setup
-
-1. To create a program, you would not deploy a contract but instead, rely on the create function on the `ProgramFactory` to create a clone of the already deployed `ProgramImplementation` contract
-2. Any interaction in terms of updating parameters etc can be performed against the `ProgramImplementation` contract itself
-
-
-The ProgramFactory enables us to have upgradable contracts on ProgramImplementation
 
 
 ## Round Setup

@@ -9,7 +9,6 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 
-import "../settings/AlloSettings.sol";
 import "../votingStrategy/IVotingStrategyFactory.sol";
 import "../payoutStrategy/IPayoutStrategyFactory.sol";
 import "../votingStrategy/IVotingStrategy.sol";
@@ -93,7 +92,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   // --- Data ---
 
   /// @notice Allo Config Contract Address
-  AlloSettings public alloSettings;
+  IAlloSettings public alloSettings;
 
   /// @notice Voting Strategy Factory Contract Address
   IVotingStrategyFactory public votingStrategyFactory;
@@ -204,7 +203,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
    */
   function initialize(
     bytes calldata encodedParameters,
-    address _alloSettings
+    IAlloSettings _alloSettings
   ) external initializer {
     // Decode _encodedParameters
     (
@@ -250,7 +249,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
       "Round: Round start is before app start"
     );
 
-    alloSettings = AlloSettings(_alloSettings);
+    alloSettings = _alloSettings;
 
     votingStrategyFactory = _initAddress.votingStrategyFactory;
     payoutStrategyFactory = _initAddress.payoutStrategyFactory;
@@ -460,9 +459,9 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   /// @notice Pay Protocol & Round Fees and transfer funds to payout contract (only by ROUND_OPERATOR_ROLE)
   function setReadyForPayout() external payable roundHasEnded onlyRole(ROUND_OPERATOR_ROLE) {
     uint256 fundsInContract = _getTokenBalance(token);
-    uint32 denominator = alloSettings.DENOMINATOR();
+    uint32 denominator = alloSettings.getDenominator();
 
-    uint256 protocolFeeAmount = (matchAmount * alloSettings.protocolFeePercentage()) / denominator;
+    uint256 protocolFeeAmount = (matchAmount * alloSettings.getProtocolFeePercentage()) / denominator;
     uint256 roundFeeAmount = (matchAmount * roundFeePercentage) / denominator;
 
     // total funds needed for payout
@@ -472,7 +471,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
 
     // deduct protocol fee
     if (protocolFeeAmount > 0) {
-      address payable protocolTreasury = alloSettings.protocolTreasury();
+      address payable protocolTreasury = alloSettings.getProtocolTreasury();
       _transferAmount(protocolTreasury, protocolFeeAmount, token);
     }
 

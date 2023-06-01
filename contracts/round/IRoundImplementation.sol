@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity 0.8.17;
 
+import "../settings/IAlloSettings.sol";
 import "../utils/MetaPtr.sol";
 
 interface IRoundImplementation {
@@ -11,7 +12,7 @@ interface IRoundImplementation {
 
     function initialize(
         bytes calldata encodedParameters,
-        address _alloSettings
+        IAlloSettings _alloSettings
     ) external;
 
     function updateMatchAmount(uint256 newAmount) external;

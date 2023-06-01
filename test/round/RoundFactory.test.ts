@@ -16,9 +16,13 @@ import {
   RoundImplementation,
 } from "../../typechain/";
 import { encodeRoundParameters } from "../../scripts/utils";
+import { createProjectId } from "../../utils/createProjectId";
+
+const TRUSTED_REGISTRY_ROLE = ethers.utils.keccak256(
+  ethers.utils.toUtf8Bytes("TRUSTED_REGISTRY")
+);
 
 describe("RoundFactory", function () {
-
   let user: SignerWithAddress;
   let notOwnerWallet: SignerWithAddress;
 
@@ -28,7 +32,7 @@ describe("RoundFactory", function () {
 
   // Round Factory
   let roundFactory: RoundFactory;
-  let roundContractFactory: ContractFactory ;
+  let roundContractFactory: ContractFactory;
 
   // Round Implementation
   let roundImplementation: RoundImplementation;
@@ -44,102 +48,141 @@ describe("RoundFactory", function () {
 
   let protocolTreasury = Wallet.createRandom();
 
-
-  describe ('constructor', () => {
-
-    it('RoundFactory SHOULD deploy properly', async () => {
-
+  describe("constructor", () => {
+    it("RoundFactory SHOULD deploy properly", async () => {
       [user] = await ethers.getSigners();
 
-      roundContractFactory = await ethers.getContractFactory('RoundFactory');
-      roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
+      roundContractFactory = await ethers.getContractFactory("RoundFactory");
+      roundFactory = <RoundFactory>(
+        await upgrades.deployProxy(roundContractFactory)
+      );
 
       // Verify deploy
-      expect(isAddress(roundFactory.address), 'Failed to deploy RoundFactory').to.be.true;
+      expect(isAddress(roundFactory.address), "Failed to deploy RoundFactory")
+        .to.be.true;
     });
-  })
+  });
 
-
-  describe('core functions', () => {
-
+  describe("core functions", () => {
     beforeEach(async () => {
       [user, notOwnerWallet] = await ethers.getSigners();
 
       // Deploy AlloSettings contract
-      alloSettingsContractFactory = await ethers.getContractFactory('AlloSettings');
-      alloSettings = <AlloSettings>await upgrades.deployProxy(alloSettingsContractFactory);
+      alloSettingsContractFactory = await ethers.getContractFactory(
+        "AlloSettings"
+      );
+      alloSettings = <AlloSettings>(
+        await upgrades.deployProxy(alloSettingsContractFactory)
+      );
 
       // Deploy RoundFactory contract
-      roundContractFactory = await ethers.getContractFactory('RoundFactory');
-      roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
+      roundContractFactory = await ethers.getContractFactory("RoundFactory");
+      roundFactory = <RoundFactory>(
+        await upgrades.deployProxy(roundContractFactory)
+      );
 
       // Deploy RoundImplementation contract
-      roundImplementationArtifact = await artifacts.readArtifact('RoundImplementation');
-      roundImplementation = <RoundImplementation>await deployContract(user, roundImplementationArtifact, []);
-
+      roundImplementationArtifact = await artifacts.readArtifact(
+        "RoundImplementation"
+      );
+      roundImplementation = <RoundImplementation>(
+        await deployContract(user, roundImplementationArtifact, [])
+      );
     });
 
-    describe('test: updateRoundImplementation', async () => {
-
+    describe("test: updateRoundImplementation", async () => {
       it("SHOULD REVERT if not called by owner", async () => {
-        const tx = roundFactory.connect(notOwnerWallet).updateRoundImplementation(roundImplementation.address);
-        await expect(tx).to.revertedWith('Ownable: caller is not the owner');
+        const tx = roundFactory
+          .connect(notOwnerWallet)
+          .updateRoundImplementation(roundImplementation.address);
+        await expect(tx).to.revertedWith(
+          `AccessControl: account ${notOwnerWallet.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
+        );
       });
 
       it("SHOULD REVERT if roundImplementation is 0x", async () => {
         const tx = roundFactory.updateRoundImplementation(AddressZero);
-        await expect(tx).to.revertedWith('roundImplementation is 0x');
+        await expect(tx).to.revertedWith("roundImplementation is 0x");
       });
 
       it("RoundContract SHOULD have default roundImplementation after deploy ", async () => {
-        expect(await roundFactory.roundImplementation()).to.be.equal(AddressZero);
+        expect(await roundFactory.roundImplementation()).to.be.equal(
+          AddressZero
+        );
       });
 
       it("RoundContract SHOULD emit RoundImplementationUpdated event after invoking updateRoundImplementation", async () => {
-        await expect(roundFactory.updateRoundImplementation(roundImplementation.address))
-          .to.emit(roundFactory, 'RoundImplementationUpdated')
+        await expect(
+          roundFactory.updateRoundImplementation(roundImplementation.address)
+        )
+          .to.emit(roundFactory, "RoundImplementationUpdated")
           .withArgs(roundImplementation.address);
       });
 
       it("RoundContract SHOULD have round address after invoking updateRoundImplementation", async () => {
-        await roundFactory.updateRoundImplementation(roundImplementation.address).then(async () => {
-          const _roundImplementation = await roundFactory.roundImplementation();
-          expect(_roundImplementation).to.be.equal(roundImplementation.address);
-        });
+        await roundFactory
+          .updateRoundImplementation(roundImplementation.address)
+          .then(async () => {
+            const _roundImplementation =
+              await roundFactory.roundImplementation();
+            expect(_roundImplementation).to.be.equal(
+              roundImplementation.address
+            );
+          });
       });
     });
 
-    describe ('test: create', async () => {
-
+    describe("test: create", async () => {
       const matchAmount = 1000;
       const token = Wallet.createRandom().address;
       const programAddress = Wallet.createRandom().address;
       const roundFeePercentage = 10;
       const roundFeeAddress = Wallet.createRandom().address;
 
-      let _currentBlockTimestamp: number
+      let _currentBlockTimestamp: number;
 
       let params: any = [];
+
+      let chainId = 1;
+      let projectID = 1;
+      let projectIdentifier: string;
 
       beforeEach(async () => {
         [user] = await ethers.getSigners();
 
-        _currentBlockTimestamp = (await ethers.provider.getBlock(
-          await ethers.provider.getBlockNumber())
+        projectIdentifier = createProjectId(
+          chainId,
+          user.address, // registry address
+          projectID
+        );
+
+        _currentBlockTimestamp = (
+          await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
         ).timestamp;
 
         // Deploy VotingStrategyFactory contract
-        votingStrategyFactoryArtifact = await artifacts.readArtifact('QuadraticFundingVotingStrategyFactory');
-        votingStrategyFactory = <QuadraticFundingVotingStrategyFactory>await deployContract(user, votingStrategyFactoryArtifact, []);
+        votingStrategyFactoryArtifact = await artifacts.readArtifact(
+          "QuadraticFundingVotingStrategyFactory"
+        );
+        votingStrategyFactory = <QuadraticFundingVotingStrategyFactory>(
+          await deployContract(user, votingStrategyFactoryArtifact, [])
+        );
 
         // Deploy PayoutStrategyFactory contract
-        payoutStrategyFactoryArtifact = await artifacts.readArtifact('MerklePayoutStrategyFactory');
-        payoutStrategyFactory = <MerklePayoutStrategyFactory>await deployContract(user, payoutStrategyFactoryArtifact, []);
+        payoutStrategyFactoryArtifact = await artifacts.readArtifact(
+          "MerklePayoutStrategyFactory"
+        );
+        payoutStrategyFactory = <MerklePayoutStrategyFactory>(
+          await deployContract(user, payoutStrategyFactoryArtifact, [])
+        );
 
         // Deploy RoundFactory contract
-        roundContractFactory = await ethers.getContractFactory('RoundFactory');
-        roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
+        roundContractFactory = await ethers.getContractFactory("RoundFactory");
+        roundFactory = <RoundFactory>(
+          await upgrades.deployProxy(roundContractFactory)
+        );
 
+        await alloSettings.grantRole(TRUSTED_REGISTRY_ROLE, user.address);
         // Creating a Round
         const initAddress = [
           votingStrategyFactory.address, // votingStrategyFactory
@@ -154,13 +197,21 @@ describe("RoundFactory", function () {
         ];
 
         const initMetaPtr = [
-          { protocol: 1, pointer: "bafybeia4khbew3r2mkflyn7nzlvfzcb3qpfeftz5ivpzfwn77ollj47gqi" }, // roundMetaPtr
-          { protocol: 1, pointer: "bafybeiaoakfoxjwi2kwh43djbmomroiryvhv5cetg74fbtzwef7hzzvrnq" }, // applicationMetaPtr
+          {
+            protocol: 1,
+            pointer:
+              "bafybeia4khbew3r2mkflyn7nzlvfzcb3qpfeftz5ivpzfwn77ollj47gqi",
+          }, // roundMetaPtr
+          {
+            protocol: 1,
+            pointer:
+              "bafybeiaoakfoxjwi2kwh43djbmomroiryvhv5cetg74fbtzwef7hzzvrnq",
+          }, // applicationMetaPtr
         ];
 
         const initRoles = [
-          [ Wallet.createRandom().address ], // adminRoles
-          [ Wallet.createRandom().address, Wallet.createRandom().address ] // roundOperators
+          [Wallet.createRandom().address], // adminRoles
+          [Wallet.createRandom().address, Wallet.createRandom().address], // roundOperators
         ];
 
         params = [
@@ -171,19 +222,22 @@ describe("RoundFactory", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles
+          initRoles,
         ];
-
       });
 
       it("SHOULD REVERT if roundImplementation is not set", async () => {
         // Deploy RoundFactory contract
-        roundContractFactory = await ethers.getContractFactory('RoundFactory');
-        roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
+        roundContractFactory = await ethers.getContractFactory("RoundFactory");
+        roundFactory = <RoundFactory>(
+          await upgrades.deployProxy(roundContractFactory)
+        );
+        await roundFactory.grantRole(TRUSTED_REGISTRY_ROLE, user.address);
 
         const txn = roundFactory.create(
-          encodeRoundParameters(params),
-          Wallet.createRandom().address, // _ownedBy (Program)
+          projectID,
+          projectIdentifier,
+          encodeRoundParameters(params)
         );
 
         await expect(txn).to.revertedWith("roundImplementation is 0x");
@@ -191,29 +245,39 @@ describe("RoundFactory", function () {
 
       it("SHOULD REVERT if alloSettings is not set", async () => {
         // Deploy RoundFactory contract
-        let roundContractFactory = await ethers.getContractFactory('RoundFactory');
-        let roundFactory = <RoundFactory>await upgrades.deployProxy(roundContractFactory);
+        let roundContractFactory = await ethers.getContractFactory(
+          "RoundFactory"
+        );
+        let roundFactory = <RoundFactory>(
+          await upgrades.deployProxy(roundContractFactory)
+        );
+        await roundFactory.grantRole(TRUSTED_REGISTRY_ROLE, user.address);
 
         // Set the init values
-        await roundFactory.updateRoundImplementation(roundImplementation.address);
+        await roundFactory.updateRoundImplementation(
+          roundImplementation.address
+        );
 
         const txn = roundFactory.create(
-          encodeRoundParameters(params),
-          programAddress
+          projectID,
+          projectIdentifier,
+          encodeRoundParameters(params)
         );
 
         await expect(txn).to.revertedWith("alloSettings is 0x");
       });
 
-      it("invoking create SHOULD have a successfull transaction", async() => {
-
+      it("invoking create SHOULD have a successfull transaction", async () => {
         // Set the init values
         await roundFactory.updateAlloSettings(alloSettings.address);
-        await roundFactory.updateRoundImplementation(roundImplementation.address);
+        await roundFactory.updateRoundImplementation(
+          roundImplementation.address
+        );
 
         const txn = await roundFactory.create(
-          encodeRoundParameters(params),
-          programAddress
+          projectID,
+          projectIdentifier,
+          encodeRoundParameters(params)
         );
 
         const receipt = await txn.wait();
@@ -223,39 +287,46 @@ describe("RoundFactory", function () {
       });
 
       it("SHOULD emit RoundCreated event after invoking create", async () => {
-
         // Set the init values
         await roundFactory.updateAlloSettings(alloSettings.address);
-        await roundFactory.updateRoundImplementation(roundImplementation.address);
+        await roundFactory.updateRoundImplementation(
+          roundImplementation.address
+        );
 
         const txn = await roundFactory.create(
-          encodeRoundParameters(params),
-          programAddress
+          projectID,
+          projectIdentifier,
+          encodeRoundParameters(params)
         );
 
         let roundAddress;
+        let _projectID;
+        let _projectIdentifier;
         let _roundImplementation;
+        let registry;
 
         const receipt = await txn.wait();
         if (receipt.events) {
-          const event = receipt.events.find(e => e.event === 'RoundCreated');
+          const event = receipt.events.find((e) => e.event === "RoundCreated");
           if (event && event.args) {
+            _projectID = event.args.projectID;
+            _projectIdentifier = event.args.projectIdentifier;
             roundAddress = event.args.roundAddress;
             _roundImplementation = event.args.roundImplementation;
+            registry = event.args.registry;
           }
         }
 
         expect(txn)
-          .to.emit(roundFactory, 'RoundCreated')
-          .withArgs(roundAddress, programAddress, _roundImplementation);
+          .to.emit(roundFactory, "RoundCreated")
+          .withArgs(_projectID, _projectIdentifier, roundAddress, _roundImplementation, registry);
 
         expect(isAddress(roundAddress)).to.be.true;
+        expect(_projectID).to.be.equal(_projectID);
+        expect(_projectIdentifier).to.be.equal(projectIdentifier);
         expect(isAddress(_roundImplementation)).to.be.true;
-
+        expect(isAddress(registry)).to.be.true;
       });
-
     });
-
   });
-
 });

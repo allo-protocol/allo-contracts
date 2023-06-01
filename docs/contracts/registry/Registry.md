@@ -1,8 +1,8 @@
-# ProjectRegistry
+# Registry
 
 
 
-> ProjectRegistry
+> Registry
 
 
 
@@ -30,7 +30,7 @@ Associate a new owner with a project
 ### createProject
 
 ```solidity
-function createProject(MetaPtr metadata) external nonpayable
+function createProject(MetaPtr projectMetadata, MetaPtr programMetadata) external nonpayable returns (uint256 projectID)
 ```
 
 
@@ -41,7 +41,38 @@ function createProject(MetaPtr metadata) external nonpayable
 
 | Name | Type | Description |
 |---|---|---|
-| metadata | MetaPtr | undefined |
+| projectMetadata | MetaPtr | undefined |
+| programMetadata | MetaPtr | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | uint256 | undefined |
+
+### createRound
+
+```solidity
+function createRound(contract IRoundFactory roundFactory, uint256 projectID, bytes encodedParameters) external nonpayable returns (address)
+```
+
+Create a new round for a project
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| roundFactory | contract IRoundFactory | undefined |
+| projectID | uint256 | ID of project creating the round |
+| encodedParameters | bytes | Encoded parameters for round creation |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### getProjectOwners
 
@@ -49,7 +80,7 @@ function createProject(MetaPtr metadata) external nonpayable
 function getProjectOwners(uint256 projectID) external view returns (address[])
 ```
 
-Retrieve list of project owners 
+Retrieve list of project owners
 
 
 
@@ -57,7 +88,7 @@ Retrieve list of project owners
 
 | Name | Type | Description |
 |---|---|---|
-| projectID | uint256 | ID of project  |
+| projectID | uint256 | ID of project |
 
 #### Returns
 
@@ -76,6 +107,29 @@ Initializes the contract after an upgrade
 *In future deploys of the implementation, an higher version should be passed to reinitializer*
 
 
+### isProjectOwner
+
+```solidity
+function isProjectOwner(uint256 projectID, address owner) external view returns (bool)
+```
+
+Check if an address is an owner of a project
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | uint256 | ID of previously created project |
+| owner | address | address to check |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### projectOwnersCount
 
 ```solidity
@@ -90,7 +144,7 @@ Retrieve count of existing project owners
 
 | Name | Type | Description |
 |---|---|---|
-| projectID | uint256 | ID of project  |
+| projectID | uint256 | ID of project |
 
 #### Returns
 
@@ -101,7 +155,7 @@ Retrieve count of existing project owners
 ### projects
 
 ```solidity
-function projects(uint256) external view returns (uint256 id, struct MetaPtr metadata)
+function projects(uint256) external view returns (uint256 id, struct MetaPtr projectMetadata, struct MetaPtr programMetadata)
 ```
 
 
@@ -119,7 +173,8 @@ function projects(uint256) external view returns (uint256 id, struct MetaPtr met
 | Name | Type | Description |
 |---|---|---|
 | id | uint256 | undefined |
-| metadata | MetaPtr | undefined |
+| projectMetadata | MetaPtr | undefined |
+| programMetadata | MetaPtr | undefined |
 
 ### projectsCount
 
@@ -178,10 +233,10 @@ Disassociate an existing owner from a project
 | prevOwner | address | Address of previous owner in OwnerList |
 | owner | address | Address of new Owner |
 
-### updateProjectMetadata
+### updateProgramMetadata
 
 ```solidity
-function updateProjectMetadata(uint256 projectID, MetaPtr metadata) external nonpayable
+function updateProgramMetadata(uint256 projectID, MetaPtr programMetadata) external nonpayable
 ```
 
 
@@ -193,7 +248,24 @@ function updateProjectMetadata(uint256 projectID, MetaPtr metadata) external non
 | Name | Type | Description |
 |---|---|---|
 | projectID | uint256 | undefined |
-| metadata | MetaPtr | undefined |
+| programMetadata | MetaPtr | undefined |
+
+### updateProjectMetadata
+
+```solidity
+function updateProjectMetadata(uint256 projectID, MetaPtr projectMetadata) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| projectID | uint256 | undefined |
+| projectMetadata | MetaPtr | undefined |
 
 
 
@@ -218,19 +290,20 @@ event Initialized(uint8 version)
 ### MetadataUpdated
 
 ```solidity
-event MetadataUpdated(uint256 indexed projectID, MetaPtr metaPtr)
+event MetadataUpdated(uint256 indexed projectID, MetaPtr metadata, uint8 metadataType)
 ```
 
 
 
-
+*Emitted when metadata is updated for a project or program.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| projectID `indexed` | uint256 | undefined |
-| metaPtr  | MetaPtr | undefined |
+| projectID `indexed` | uint256 | The ID of the project or program. |
+| metadata  | MetaPtr | The metadata pointer. |
+| metadataType  | uint8 | The type of metadata: 0 for projectMetadata, 1 for programMetadata. |
 
 ### OwnerAdded
 
@@ -240,14 +313,14 @@ event OwnerAdded(uint256 indexed projectID, address indexed owner)
 
 
 
-
+*Emitted when an owner is added to a project.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| projectID `indexed` | uint256 | undefined |
-| owner `indexed` | address | undefined |
+| projectID `indexed` | uint256 | The ID of the project. |
+| owner `indexed` | address | The address of the owner added. |
 
 ### OwnerRemoved
 
@@ -257,14 +330,14 @@ event OwnerRemoved(uint256 indexed projectID, address indexed owner)
 
 
 
-
+*Emitted when an owner is removed from a project.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| projectID `indexed` | uint256 | undefined |
-| owner `indexed` | address | undefined |
+| projectID `indexed` | uint256 | The ID of the project. |
+| owner `indexed` | address | The address of the owner removed. |
 
 ### ProjectCreated
 
@@ -274,14 +347,14 @@ event ProjectCreated(uint256 indexed projectID, address indexed owner)
 
 
 
-
+*Emitted when a project is created.*
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| projectID `indexed` | uint256 | undefined |
-| owner `indexed` | address | undefined |
+| projectID `indexed` | uint256 | The ID of the project. |
+| owner `indexed` | address | The address of the owner of the project. |
 
 
 

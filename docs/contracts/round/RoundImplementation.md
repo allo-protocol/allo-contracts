@@ -64,7 +64,7 @@ function VERSION() external view returns (string)
 ### alloSettings
 
 ```solidity
-function alloSettings() external view returns (contract AlloSettings)
+function alloSettings() external view returns (contract IAlloSettings)
 ```
 
 Allo Config Contract Address
@@ -76,7 +76,7 @@ Allo Config Contract Address
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract AlloSettings | undefined |
+| _0 | contract IAlloSettings | undefined |
 
 ### applicationMetaPtr
 
@@ -370,7 +370,7 @@ function hasRole(bytes32 role, address account) external view returns (bool)
 ### initialize
 
 ```solidity
-function initialize(bytes encodedParameters, address _alloSettings) external nonpayable
+function initialize(bytes encodedParameters, contract IAlloSettings _alloSettings) external nonpayable
 ```
 
 Instantiates a new round
@@ -382,7 +382,7 @@ Instantiates a new round
 | Name | Type | Description |
 |---|---|---|
 | encodedParameters | bytes | Encoded parameters for program creation |
-| _alloSettings | address | undefined |
+| _alloSettings | contract IAlloSettings | undefined |
 
 ### matchAmount
 

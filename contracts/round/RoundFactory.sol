@@ -4,7 +4,8 @@ pragma solidity 0.8.17;
 import "./IRoundFactory.sol";
 import "./IRoundImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+
 
 import "../utils/MetaPtr.sol";
 
@@ -18,11 +19,12 @@ import "../utils/MetaPtr.sol";
  * a reference to the deployed RoundImplementation.
  * @dev RoundFactory uses openzeppelin Clones to reduce deploy
  * costs and also allows upgrading RoundImplementationUpdated.
- * @dev This contract is Ownable thus supports ownership transfership
+ * @dev This contract supports Access Control via AccessControlEnumerableUpgradeable
  *
  */
-contract RoundFactory is IRoundFactory, OwnableUpgradeable {
+contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
   string public constant VERSION = "0.2.0";
+
 
   // --- Data ---
 
@@ -30,7 +32,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
   address public roundImplementation;
 
   /// @notice Address of the Allo settings contract
-  address public alloSettings;
+  IAlloSettings public alloSettings;
 
   /// @notice Nonce used to generate deterministic salt for Clones
   uint256 public nonce;
@@ -38,22 +40,24 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
   // --- Event ---
 
   /// @notice Emitted when allo settings contract is updated
-  event AlloSettingsUpdated(address alloSettings);
+  event AlloSettingsUpdated(IAlloSettings alloSettings);
 
   /// @notice Emitted when a Round implementation contract is updated
   event RoundImplementationUpdated(address roundImplementation);
 
   /// @notice Emitted when a new Round is created
   event RoundCreated(
+    uint256 projectID,
+    bytes32 indexed projectIdentifier,
     address indexed roundAddress,
-    address indexed ownedBy,
-    address indexed roundImplementation
+    address indexed roundImplementation,
+    address registry
   );
 
   /// @notice constructor function which ensure deployer is set as owner
   function initialize() external initializer {
     __Context_init_unchained();
-    __Ownable_init_unchained();
+    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
   // --- Core methods ---
@@ -63,7 +67,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
    *
    * @param newAlloSettings New allo settings contract address
    */
-  function updateAlloSettings(address newAlloSettings) external onlyOwner {
+  function updateAlloSettings(IAlloSettings newAlloSettings) external onlyRole(DEFAULT_ADMIN_ROLE) {
     alloSettings = newAlloSettings;
 
     emit AlloSettingsUpdated(alloSettings);
@@ -77,7 +81,7 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
    *
    * @param newRoundImplementation New RoundImplementation contract address
    */
-  function updateRoundImplementation(address payable newRoundImplementation) external onlyOwner {
+  function updateRoundImplementation(address payable newRoundImplementation) external onlyRole(DEFAULT_ADMIN_ROLE) {
 
     require(newRoundImplementation != address(0), "roundImplementation is 0x");
 
@@ -89,23 +93,32 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
   /**
    * @notice Clones RoundImplementation a new round and emits event
    *
+   * @param projectID ID of project on the registry creating the round
+   * @param projectIdentifier Unique identifier of project on the registry, chainId and projectID
    * @param encodedParameters Encoded parameters for creating a round
-   * @param ownedBy Program which created the contract
    */
   function create(
-    bytes calldata encodedParameters,
-    address ownedBy
+    uint256 projectID,
+    bytes32 projectIdentifier,
+    bytes calldata encodedParameters
   ) external returns (address) {
 
     nonce++;
 
     require(roundImplementation != address(0), "roundImplementation is 0x");
-    require(alloSettings != address(0), "alloSettings is 0x");
+    require(address(alloSettings) != address(0), "alloSettings is 0x");
+    require(alloSettings.isTrustedRegistry(msg.sender), "not trusted registry");
 
     bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
     address clone = ClonesUpgradeable.cloneDeterministic(roundImplementation, salt);
 
-    emit RoundCreated(clone, ownedBy, payable(roundImplementation));
+    emit RoundCreated(
+      projectID,
+      projectIdentifier,
+      clone,
+      payable(roundImplementation),
+      msg.sender
+    );
 
     IRoundImplementation(payable(clone)).initialize(
       encodedParameters,

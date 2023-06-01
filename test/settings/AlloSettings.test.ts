@@ -47,7 +47,7 @@ describe("AlloSettings", function () {
 
       it("SHOULD REVERT if not called by owner", async () => {
         const tx = alloSettings.connect(notOwnerWallet).updateProtocolFeePercentage(1);
-        await expect(tx).to.revertedWith('Ownable: caller is not the owner');
+        await expect(tx).to.revertedWith(`AccessControl: account ${notOwnerWallet.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`);
       });
 
       it("SHOULD have protocolFeePercentage as 0 after deploy ", async () => {
@@ -80,7 +80,7 @@ describe("AlloSettings", function () {
 
       it("SHOULD REVERT if not called by owner", async () => {
         const tx = alloSettings.connect(notOwnerWallet).updateProtocolTreasury(protocolTreasury.address);
-        await expect(tx).to.revertedWith('Ownable: caller is not the owner');
+        await expect(tx).to.revertedWith(`AccessControl: account ${notOwnerWallet.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`);
       });
 
       it("SHOULD have default protocolTreasury address after deploy ", async () => {
