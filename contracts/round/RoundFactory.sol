@@ -46,7 +46,7 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
 
     /// @notice Emitted when a new Round is created
     event RoundCreated(
-            bytes32 indexed projectID,
+        bytes32 indexed projectID,
         address indexed roundAddress,
         address indexed roundImplementation,
         address registry
@@ -123,12 +123,12 @@ contract RoundFactory is IRoundFactory, AccessControlEnumerableUpgradeable {
 
         address roundClone = _createClone(roundImplementation);
 
-    emit RoundCreated(
-      projectIdentifier,
-      roundClone,
-      payable(roundImplementation),
-      msg.sender
-    );
+        emit RoundCreated(
+            projectIdentifier,
+            roundClone,
+            payable(roundImplementation),
+            msg.sender
+        );
 
         address strategyClone = _createClone(strategyImplementation);
 
