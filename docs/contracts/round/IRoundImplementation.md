@@ -74,7 +74,7 @@ function getApplicationStatus(uint256 applicationIndex) external view returns (u
 ### initialize
 
 ```solidity
-function initialize(bytes encodedParameters, contract IAlloSettings _alloSettings) external nonpayable
+function initialize(bytes _encodedRoundParameters, bytes _encodedStrategyParameters, contract IAlloSettings _alloSettings, address _strategy) external nonpayable
 ```
 
 
@@ -85,8 +85,32 @@ function initialize(bytes encodedParameters, contract IAlloSettings _alloSetting
 
 | Name | Type | Description |
 |---|---|---|
-| encodedParameters | bytes | undefined |
+| _encodedRoundParameters | bytes | undefined |
+| _encodedStrategyParameters | bytes | undefined |
 | _alloSettings | contract IAlloSettings | undefined |
+| _strategy | address | undefined |
+
+### isRoundOperator
+
+```solidity
+function isRoundOperator(address operator) external view returns (bool)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| operator | address | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
 
 ### setApplicationStatuses
 
@@ -104,17 +128,6 @@ function setApplicationStatuses(IRoundImplementation.ApplicationStatus[] statuse
 |---|---|---|
 | statuses | IRoundImplementation.ApplicationStatus[] | undefined |
 
-### setReadyForPayout
-
-```solidity
-function setReadyForPayout() external payable
-```
-
-
-
-
-
-
 ### updateApplicationMetaPtr
 
 ```solidity
@@ -130,54 +143,6 @@ function updateApplicationMetaPtr(MetaPtr newApplicationMetaPtr) external nonpay
 | Name | Type | Description |
 |---|---|---|
 | newApplicationMetaPtr | MetaPtr | undefined |
-
-### updateMatchAmount
-
-```solidity
-function updateMatchAmount(uint256 newAmount) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newAmount | uint256 | undefined |
-
-### updateRoundFeeAddress
-
-```solidity
-function updateRoundFeeAddress(address payable newFeeAddress) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newFeeAddress | address payable | undefined |
-
-### updateRoundFeePercentage
-
-```solidity
-function updateRoundFeePercentage(uint32 newFeePercentage) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| newFeePercentage | uint32 | undefined |
 
 ### updateRoundMetaPtr
 

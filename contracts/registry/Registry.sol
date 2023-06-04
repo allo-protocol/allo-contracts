@@ -77,7 +77,6 @@ contract Registry is Initializable, AccessControlEnumerableUpgradeable {
         MetaPtr calldata projectMetadata,
         MetaPtr calldata programMetadata
     ) external returns (bytes32 projectID) {
-
         projectID = createProjectIdentifier();
 
         Project storage project = projects[projectID];
@@ -92,12 +91,20 @@ contract Registry is Initializable, AccessControlEnumerableUpgradeable {
 
         if (projectMetadata.protocol != 0) {
             project.projectMetadata = projectMetadata;
-            emit MetadataUpdated(projectID, projectMetadata, MetadataType.ProjectMetadata);
+            emit MetadataUpdated(
+                projectID,
+                projectMetadata,
+                MetadataType.ProjectMetadata
+            );
         }
 
         if (programMetadata.protocol != 0) {
             project.programMetadata = programMetadata;
-            emit MetadataUpdated(projectID, programMetadata, MetadataType.ProgramMetadata);
+            emit MetadataUpdated(
+                projectID,
+                programMetadata,
+                MetadataType.ProgramMetadata
+            );
         }
 
         emit ProjectCreated(projectID, msg.sender);
@@ -113,7 +120,11 @@ contract Registry is Initializable, AccessControlEnumerableUpgradeable {
         MetaPtr calldata projectMetadata
     ) external onlyRole(projectID) {
         projects[projectID].projectMetadata = projectMetadata;
-        emit MetadataUpdated(projectID, projectMetadata, MetadataType.ProjectMetadata);
+        emit MetadataUpdated(
+            projectID,
+            projectMetadata,
+            MetadataType.ProjectMetadata
+        );
     }
 
     /**
@@ -126,7 +137,11 @@ contract Registry is Initializable, AccessControlEnumerableUpgradeable {
         MetaPtr calldata programMetadata
     ) external onlyRole(projectID) {
         projects[projectID].programMetadata = programMetadata;
-        emit MetadataUpdated(projectID, programMetadata, MetadataType.ProgramMetadata);
+        emit MetadataUpdated(
+            projectID,
+            programMetadata,
+            MetadataType.ProgramMetadata
+        );
     }
 
     /**
@@ -157,18 +172,27 @@ contract Registry is Initializable, AccessControlEnumerableUpgradeable {
      * @notice Create a new round for a project
      * @param roundFactory Address of round factory
      * @param projectID ID of project creating the round
-     * @param encodedParameters Encoded parameters for round creation
+     * @param encodedRoundParameters Encoded parameters for round creation
+     * @param encodedStrategyParameters Encoded parameters for strategy creation
      */
     function createRound(
         IRoundFactory roundFactory,
         bytes32 projectID,
-        bytes calldata encodedParameters
+        address strategyImplementation,
+        bytes calldata encodedRoundParameters,
+        bytes calldata encodedStrategyParameters
     ) external onlyRole(projectID) returns (address) {
         if (projects[projectID].programMetadata.protocol == 0) {
             revert ProgramMetadataIsEmpty();
         }
 
-        return roundFactory.create(projectID, encodedParameters);
+        return
+            roundFactory.create(
+                projectID,
+                strategyImplementation,
+                encodedRoundParameters,
+                encodedStrategyParameters
+            );
     }
 
     /**

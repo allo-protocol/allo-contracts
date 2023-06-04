@@ -64,7 +64,7 @@ Address of the Allo settings contract
 ### create
 
 ```solidity
-function create(uint256 projectID, bytes32 projectIdentifier, bytes encodedParameters) external nonpayable returns (address)
+function create(bytes32 projectIdentifier, address strategyImplementation, bytes encodedRoundParameters, bytes encodedStrategyParameters) external nonpayable returns (address)
 ```
 
 Clones RoundImplementation a new round and emits event
@@ -75,9 +75,10 @@ Clones RoundImplementation a new round and emits event
 
 | Name | Type | Description |
 |---|---|---|
-| projectID | uint256 | ID of project on the registry creating the round |
-| projectIdentifier | bytes32 | Unique identifier of project on the registry, chainId and projectID |
-| encodedParameters | bytes | Encoded parameters for creating a round |
+| projectIdentifier | bytes32 | ID of project on the registry creating the round |
+| strategyImplementation | address | Address of the strategy implementation contract |
+| encodedRoundParameters | bytes | Encoded parameters for creating a round |
+| encodedStrategyParameters | bytes | Encoded parameters for creating a strategy |
 
 #### Returns
 
@@ -418,7 +419,7 @@ event RoleRevoked(bytes32 indexed role, address indexed account, address indexed
 ### RoundCreated
 
 ```solidity
-event RoundCreated(uint256 projectID, bytes32 indexed projectIdentifier, address indexed roundAddress, address indexed roundImplementation, address registry)
+event RoundCreated(bytes32 indexed projectID, address indexed roundAddress, address indexed roundImplementation, address registry)
 ```
 
 Emitted when a new Round is created
@@ -429,8 +430,7 @@ Emitted when a new Round is created
 
 | Name | Type | Description |
 |---|---|---|
-| projectID  | uint256 | undefined |
-| projectIdentifier `indexed` | bytes32 | undefined |
+| projectID `indexed` | bytes32 | undefined |
 | roundAddress `indexed` | address | undefined |
 | roundImplementation `indexed` | address | undefined |
 | registry  | address | undefined |
@@ -450,6 +450,23 @@ Emitted when a Round implementation contract is updated
 | Name | Type | Description |
 |---|---|---|
 | roundImplementation  | address | undefined |
+
+### VotingContractCreated
+
+```solidity
+event VotingContractCreated(address indexed round, address indexed votingImplementation)
+```
+
+Emitted when a new Voting is created
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| round `indexed` | address | undefined |
+| votingImplementation `indexed` | address | undefined |
 
 
 

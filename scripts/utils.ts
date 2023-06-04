@@ -12,12 +12,7 @@ dotenv.config();
 export const encodeRoundParameters = (params: any[]): string => {
   return ethers.utils.defaultAbiCoder.encode(
     [
-      "tuple(address votingStrategy, address payoutStrategy)",
       "tuple(uint256 applicationsStartTime, uint256 applicationsEndTime, uint256 roundStartTime, uint256 roundEndTime)",
-      "uint256",
-      "address",
-      "uint32",
-      "address",
       "tuple(tuple(uint256 protocol, string pointer), tuple(uint256 protocol, string pointer))",
       "tuple(address[] adminRoles, address[] roundOperators)"
     ],

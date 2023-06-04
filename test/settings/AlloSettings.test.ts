@@ -57,7 +57,7 @@ describe("AlloSettings", function () {
       it("SHOULD REVERT when protocolFeePercentage > 100 % ", async () => {
         const denominator = await alloSettings.DENOMINATOR();
         await expect(alloSettings.updateProtocolFeePercentage(denominator + 1)).to.revertedWith(
-          'exceeds 100%'
+          'value exceeds 100%'
         );
       });
 
