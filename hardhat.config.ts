@@ -40,8 +40,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 let deployPrivateKey = process.env.DEPLOYER_PRIVATE_KEY as string;
 if (!deployPrivateKey) {
+  // default first account deterministically created by local nodes like `npx hardhat node` or `anvil`
   deployPrivateKey =
-    "0x0000000000000000000000000000000000000000000000000000000000000001";
+    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 }
 
 const infuraIdKey = process.env.INFURA_ID as string;
