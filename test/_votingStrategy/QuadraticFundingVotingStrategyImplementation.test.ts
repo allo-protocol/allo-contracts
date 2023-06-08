@@ -21,7 +21,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
 
   const tokensToBeMinted = 1000;
 
-  const VERSION = "0.2.0";
+  const VERSION = "0.2.1";
 
   describe("constructor", () => {
     it("deploys properly", async () => {
@@ -295,6 +295,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             mockERC20.address,
             grant1TokenTransferAmount,
             user.address,
+            user.address,
             grant1.address,
             formatBytes32String("grant1"),
             0, // note: this is the application index
@@ -305,6 +306,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
             mockERC20.address,
             grant2TokenTransferAmount,
+            user.address,
             user.address,
             grant2.address,
             formatBytes32String("grant2"),
@@ -435,6 +437,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             nativeTokenAddress,
             grant1NativeTokenTransferAmount,
             user.address,
+            user.address,
             grant1.address,
             formatBytes32String("grant1"),
             BigNumber.from("99"),
@@ -445,6 +448,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
             nativeTokenAddress,
             grant2NativeTokenTransferAmount,
+            user.address,
             user.address,
             grant2.address,
             formatBytes32String("grant2"),
@@ -649,6 +653,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
             nativeTokenAddress,
             grant1NativeTokenTransferAmount,
             user.address,
+            user.address,
             grant1.address,
             formatBytes32String("grant1"),
             BigNumber.from("99"),
@@ -659,6 +664,7 @@ describe("QuadraticFundingVotingStrategyImplementation", () => {
           expect(txn).to.emit(quadraticFundingVotingStrategy, "Voted").withArgs(
             mockERC20.address,
             grant2TokenTransferAmount,
+            user.address,
             user.address,
             grant2.address,
             formatBytes32String("grant2"),
