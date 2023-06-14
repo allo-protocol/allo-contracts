@@ -83,6 +83,8 @@ contract Registry is Initializable, AccessControlEnumerableUpgradeable {
 
         project.projectID = projectID;
 
+        emit ProjectCreated(projectID, msg.sender);
+
         // Initialize project owners
         _grantRole(projectID, msg.sender);
         for (uint256 i = 0; i < projectOwners.length; i++) {
@@ -106,8 +108,6 @@ contract Registry is Initializable, AccessControlEnumerableUpgradeable {
                 MetadataType.ProgramMetadata
             );
         }
-
-        emit ProjectCreated(projectID, msg.sender);
     }
 
     /**
