@@ -32,7 +32,8 @@ export const encodeRoundParameters = (params: any[]): string => {
       "uint32",
       "address",
       "tuple(tuple(uint256 protocol, string pointer), tuple(uint256 protocol, string pointer))",
-      "tuple(address[] adminRoles, address[] roundOperators)"
+      "tuple(address[] adminRoles, address[] roundOperators)",
+      "bytes"
     ],
     params
   );

@@ -171,7 +171,8 @@ describe("RoundFactory", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles
+          initRoles,
+          "0x"
         ];
 
       });

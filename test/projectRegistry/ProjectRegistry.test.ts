@@ -22,7 +22,7 @@ describe("ProjectRegistry", function () {
   });
 
   it("doesn't allow to initilize again", async function () {
-    await expect(this.contract.connect(this.owner).initialize()).to.be.revertedWith("contract is already initialized");
+    await expect(this.contract.connect(this.owner).initialize()).to.be.revertedWith("Initializable: contract is already initialized");
   });
 
   it("creates a new project and adds it to the projects list", async function () {

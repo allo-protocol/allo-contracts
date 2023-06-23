@@ -159,7 +159,8 @@ describe("IPayoutStrategy", function () {
         roundFeePercentage,
         roundFeeAddress,
         initMetaPtr,
-        initRoles
+        initRoles,
+        "0x"
       ];
 
       await roundImplementation.initialize(
