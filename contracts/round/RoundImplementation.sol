@@ -18,8 +18,6 @@ import "../payoutStrategy/IPayoutStrategyInitializable.sol";
 
 import "../utils/MetaPtr.sol";
 
-import "hardhat/console.sol";
-
 /**
  * @notice Contract deployed per Round which would managed by
  * a group of ROUND_OPERATOR via the RoundFactory
@@ -213,7 +211,6 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
     bytes calldata encodedParameters,
     address _alloSettings
   ) external initializer {
-    console.log("initialize");
     // Decode _encodedParameters
     (
       InitAddress memory _initAddress,

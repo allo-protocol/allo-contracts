@@ -4,7 +4,7 @@ import { expect } from "chai";
 import { Wallet, BigNumberish, BigNumber } from 'ethers';
 import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
 import {takeSnapshot, restoreSnapshot, currentTime, signHash, executeTx, advanceTimeTo} from "../utils";
-import { ApplicationStatus } from "../../utils/applicationStatus";
+import { ApplicationStatus, buildStatusRow } from "../../utils/applicationStatus";
 import {
   DirectPayoutStrategyFactory,
   DirectPayoutStrategyImplementation,
@@ -29,7 +29,7 @@ type Payment = {
   allowanceSignature: BytesLike;
 }
 
-describe.only("DirectStrategy", () => {
+describe("DirectStrategy", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
@@ -112,20 +112,18 @@ describe.only("DirectStrategy", () => {
     await execSafeTransaction(safeVault.address, 0, enableModuleData, CALL)
 
     // add delegate
-    let addDelegateData = allowanceModule.interface.encodeFunctionData("addDelegate", [admin.address]);
+    let addDelegateData = allowanceModule.interface.encodeFunctionData("addDelegate", [roundOperator.address]);
     await execSafeTransaction(ALLOWANCE_MODULE, 0, addDelegateData, CALL)
 
     // set allowance
-    let setAllowanceDataERC20 = allowanceModule.interface.encodeFunctionData("setAllowance", [admin.address, mockERC20.address, 100, 0, 0]);
-    let setAllowanceDataETH = allowanceModule.interface.encodeFunctionData("setAllowance", [admin.address, ethers.constants.AddressZero, 100, 0, 0]);
+    let setAllowanceDataERC20 = allowanceModule.interface.encodeFunctionData("setAllowance", [roundOperator.address, mockERC20.address, 100, 0, 0]);
+    let setAllowanceDataETH = allowanceModule.interface.encodeFunctionData("setAllowance", [roundOperator.address, ethers.constants.AddressZero, 100, 0, 0]);
     await execSafeTransaction(ALLOWANCE_MODULE, 0, setAllowanceDataERC20, CALL)
     await execSafeTransaction(ALLOWANCE_MODULE, 0, setAllowanceDataETH, CALL)
 
     await mockERC20.transfer(safeVault.address, 1000);
 
-    console.log("antes", (await admin.getBalance()).toString(), (await ethers.provider.getBalance(safeVault.address)).toString())
     await admin.sendTransaction({to: safeVault.address, value: 1000})
-    console.log("despeus", (await admin.getBalance()).toString(), (await ethers.provider.getBalance(safeVault.address)).toString())
 
     strategyEncodedParams = ethers.utils.defaultAbiCoder.encode(
       ["address", "address", "uint32", "address"],
@@ -230,11 +228,12 @@ describe.only("DirectStrategy", () => {
         ];
 
         const encoded = encodeRoundParameters(params)
-        console.log({encoded})
         await mockRound.initialize(
           encoded,
           alloSettingsContract.address
         );
+
+        await advanceTimeTo(Number(startTime) + 1)
       });
 
       it("invoking init once SHOULD set the contract version", async () => {
@@ -341,241 +340,278 @@ describe.only("DirectStrategy", () => {
       });
     });
 
-  //   describe("test: updateRoundFeeAddress", () => {
-  //     let newRoundFeeAddress = Wallet.createRandom().address;
+    describe("test: updateRoundFeeAddress", () => {
+      let newRoundFeeAddress = Wallet.createRandom().address;
 
-  //     it("SHOULD revert if invoked by wallet who is not round operator", async () => {
-  //       await expect(
-  //         directStrategyProxy
-  //           .connect(notRoundOperator)
-  //           .updateRoundFeeAddress(newRoundFeeAddress)
-  //       ).to.revertedWith(
-  //         'not round operator'
-  //       );
-  //     });
-
-
-  //     it("SHOULD revert if round is ended", async () => {
-  //       await mockRound.setEnded();
-
-  //       let now = await currentTime();
-  //       expect(await mockRound.roundEndTime()).to.be.lt(now)
-
-  //       await expect(
-  //         directStrategyProxy
-  //           .updateRoundFeeAddress(newRoundFeeAddress)
-  //       ).to.revertedWith(
-  //         'round has ended'
-  //       );
-  //     });
-
-  //     it("SHOULD update roundFeeAddress IF called is round operator", async () => {
-  //       const txn = await directStrategyProxy.updateRoundFeeAddress(
-  //         newRoundFeeAddress
-  //       );
-  //       await txn.wait();
-
-  //       const roundFeeAddress = await directStrategyProxy.roundFeeAddress();
-  //       expect(roundFeeAddress).equals(newRoundFeeAddress);
-  //     });
-
-  //     it("SHOULD emit RoundFeeAddressUpdated event", async () => {
-  //       const txn = await directStrategyProxy.updateRoundFeeAddress(
-  //         newRoundFeeAddress
-  //       );
-
-  //       expect(txn)
-  //         .to.emit(directStrategyProxy, "RoundFeeAddressUpdated")
-  //         .withArgs(newRoundFeeAddress);
-  //     });
-  //   });
-
-  //   describe("test: vote", () => {
-  //     it("SHOULD revert since is not an implemented functionality", async () => {
-  //       let encodedVotes: BytesLike[] = [];
-  //       encodedVotes.push(
-  //         ethers.utils.defaultAbiCoder.encode(
-  //           ["address", "uint256", "address", "bytes32", "uint256"],
-  //           [
-  //             mockERC20.address,
-  //             10,
-  //             grantee1.address,
-  //             formatBytes32String("grantee1"),
-  //             0,
-  //           ]
-  //         )
-  //       );
-  //       await expect(mockRound.vote(encodedVotes)).to.revertedWith("DirectStrategy__vote_NotImplemented")
-  //     })
-  //   })
-
-  //   describe("test: payout", () => {
-  //     const grantee1ProjectId = formatBytes32String("grantee1");
-  //     const grantee1Index = 0;
-  //     const grantee1GrantAmount = 10;
-  //     let payment: Payment;
-
-  //     before(async () => {
-  //       await mockERC20.transfer(vaultAddress, 1000);
-  //       await mockERC20.connect(vault).approve(directStrategyProxy.address, ethers.constants.MaxUint256);
-  //     });
-
-  //     describe("using transferFrom", () => {
-  //       before(async () => {
-  //         payment = {
-  //           vault: vaultAddress,
-  //           token: mockERC20.address,
-  //           amount: grantee1GrantAmount,
-  //           grantAddress: grantee1.address,
-  //           projectId: grantee1ProjectId,
-  //           applicationIndex: grantee1Index,
-  //           allowanceModule: ethers.constants.AddressZero,
-  //           allowanceSignature: "0x"
-  //         }
-  //       });
-
-  //       it("SHOULD revert when caller is not the round operator", async () => {
-  //         await expect(directStrategyProxy.connect(notRoundOperator).payout(payment)).to.revertedWith("not round operator")
-  //       })
-
-  //       it("SHOULD revert if application is not APPROVED", async () => {
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.PENDING)
-  //         await expect(directStrategyProxy.payout(payment)).to.revertedWith("DirectStrategy__payout_ApplicationNotAccepted")
-  //       })
-
-  //       it("SHOULD revert if token is native token", async () => {
-  //         await mockRound.mockStatus(grantee1Index, ApplicationStatus.ACCEPTED);
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.ACCEPTED)
-
-  //         await expect(directStrategyProxy.payout({
-  //           ...payment,
-  //           token: ethers.constants.AddressZero
-  //         })).to.revertedWith("DirectStrategy__payout_NativeTokenNotAllowed")
-  //       })
-
-  //       it("SHOULD transfer indicated amount of ERC20 tokens from vault to grantee when application is APPROVED", async () => {
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.PENDING)
-  //         await mockRound.mockStatus(grantee1Index, ApplicationStatus.ACCEPTED);
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.ACCEPTED)
-
-  //         const balanceGrantee1Before = await mockERC20.balanceOf(grantee1.address);
-  //         const balanceVaultBefore = await mockERC20.balanceOf(vaultAddress);
-
-  //         await directStrategyProxy.payout(payment)
-
-  //         expect(await mockERC20.balanceOf(grantee1.address)).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
-  //         expect(await mockERC20.balanceOf(vaultAddress)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
-  //       })
-
-  //       it("SHOULD emit an event for each payment", async () => {
-  //         await mockRound.mockStatus(grantee1Index, ApplicationStatus.ACCEPTED);
-
-  //         await expect(
-  //           directStrategyProxy.payout(payment)
-  //         ).to.emit(directStrategyProxy, 'PayoutMade').withArgs(
-  //           vaultAddress,
-  //           mockERC20.address,
-  //           grantee1GrantAmount,
-  //           grantee1.address,
-  //           grantee1ProjectId,
-  //           grantee1Index,
-  //           ethers.constants.AddressZero
-  //         );
-  //       })
-  //     });
-
-  //     describe("using AllowanceModule", () => {
-  //       before(async () => {
-  //         payment = {
-  //           vault: ethers.constants.AddressZero,
-  //           token: mockERC20.address,
-  //           amount: grantee1GrantAmount,
-  //           grantAddress: grantee1.address,
-  //           projectId: grantee1ProjectId,
-  //           applicationIndex: grantee1Index,
-  //           allowanceModule: ALLOWANCE_MODULE,
-  //           allowanceSignature: "0x"
-  //         }
-  //       });
-
-  //       it("SHOULD revert when caller is not the round operator", async () => {
-  //         await expect(directStrategyProxy.connect(notRoundOperator).payout(payment)).to.revertedWith("not round operator")
-  //       })
-
-  //       it("SHOULD revert if application is not APPROVED", async () => {
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.PENDING)
-  //         await expect(directStrategyProxy.payout(payment)).to.revertedWith("DirectStrategy__payout_ApplicationNotAccepted")
-  //       })
-
-  //       it("SHOULD transfer indicated amount of ERC20 tokens from configured Safe vault to grantee when application is APPROVED", async () => {
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.PENDING)
-  //         await mockRound.mockStatus(grantee1Index, ApplicationStatus.ACCEPTED);
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.ACCEPTED)
-
-  //         const balanceGrantee1Before = await mockERC20.balanceOf(grantee1.address);
-  //         const balanceVaultBefore = await mockERC20.balanceOf(safeVault.address);
-
-  //         let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, admin.address, mockERC20.address, grantee1.address, grantee1GrantAmount)
-  //         let sig = await signHash(admin, transactionHash)
-
-  //         await directStrategyProxy.payout({...payment, allowanceSignature: sig.data})
-
-  //         expect(await mockERC20.balanceOf(grantee1.address)).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
-  //         expect(await mockERC20.balanceOf(safeVault.address)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
-  //       })
-
-  //       it("SHOULD transfer indicated amount of ETH from configured Safe vault to grantee when application is APPROVED", async () => {
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.PENDING)
-  //         await mockRound.mockStatus(grantee1Index, ApplicationStatus.ACCEPTED);
-  //         expect(await mockRound.getApplicationStatus(grantee1Index)).to.eq(ApplicationStatus.ACCEPTED)
-
-  //         const balanceGrantee1Before = await grantee1.getBalance();
-  //         const balanceVaultBefore = await ethers.provider.getBalance(safeVault.address);
-
-  //         let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, admin.address, ethers.constants.AddressZero, grantee1.address, grantee1GrantAmount)
-  //         let sig = await signHash(admin, transactionHash)
-
-  //         const tx = await directStrategyProxy.payout({...payment, token: ethers.constants.AddressZero, allowanceSignature: sig.data})
-
-  //         expect(await grantee1.getBalance()).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
-  //         expect(await ethers.provider.getBalance(safeVault.address)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
-  //       })
+      it("SHOULD revert if invoked by wallet who is not round operator", async () => {
+        await expect(
+          directStrategyProxy
+            .connect(notRoundOperator)
+            .updateRoundFeeAddress(newRoundFeeAddress)
+        ).to.revertedWith(
+          'not round operator'
+        );
+      });
 
 
-  //       it("SHOULD emit an event for each payment", async () => {
-  //         await mockRound.mockStatus(grantee1Index, ApplicationStatus.ACCEPTED);
+      it("SHOULD revert if round is ended", async () => {
+        await advanceTimeTo(Number(endTime) + 1)
 
-  //         let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, admin.address, ethers.constants.AddressZero, grantee1.address, grantee1GrantAmount)
-  //         let sig = await signHash(admin, transactionHash)
+        let now = await currentTime();
+        expect(await mockRound.roundEndTime()).to.be.lt(now)
 
-  //         await expect(
-  //           directStrategyProxy.payout({...payment, token: ethers.constants.AddressZero, allowanceSignature: sig.data})
-  //         ).to.emit(directStrategyProxy, 'PayoutMade').withArgs(
-  //           safeVault.address,
-  //           ethers.constants.AddressZero,
-  //           grantee1GrantAmount,
-  //           grantee1.address,
-  //           grantee1ProjectId,
-  //           grantee1Index,
-  //           ALLOWANCE_MODULE
-  //         );
+        await expect(
+          directStrategyProxy
+            .connect(roundOperator)
+            .updateRoundFeeAddress(newRoundFeeAddress)
+        ).to.revertedWith(
+          'round has ended'
+        );
+      });
 
-  //         let transactionHashERC20 = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, admin.address, mockERC20.address, grantee1.address, grantee1GrantAmount)
-  //         let sigERC20 = await signHash(admin, transactionHashERC20)
+      it("SHOULD update roundFeeAddress IF called is round operator", async () => {
+        const txn = await directStrategyProxy.connect(roundOperator).updateRoundFeeAddress(
+          newRoundFeeAddress
+        );
+        await txn.wait();
 
-  //         await expect(
-  //           directStrategyProxy.payout({...payment, allowanceSignature: sigERC20.data})
-  //           ).to.emit(directStrategyProxy, 'PayoutMade').withArgs(
-  //             safeVault.address,
-  //             mockERC20.address,
-  //             grantee1GrantAmount,
-  //             grantee1.address,
-  //             grantee1ProjectId,
-  //             grantee1Index,
-  //             ALLOWANCE_MODULE
-  //           );
-  //       })
-  //     });
-  //   });
+        const roundFeeAddress = await directStrategyProxy.roundFeeAddress();
+        expect(roundFeeAddress).equals(newRoundFeeAddress);
+      });
+
+      it("SHOULD emit RoundFeeAddressUpdated event", async () => {
+        const txn = await directStrategyProxy.connect(roundOperator).updateRoundFeeAddress(
+          newRoundFeeAddress
+        );
+
+        expect(txn)
+          .to.emit(directStrategyProxy, "RoundFeeAddressUpdated")
+          .withArgs(newRoundFeeAddress);
+      });
+    });
+
+    describe("test: vote", () => {
+      it("SHOULD revert since is not an implemented functionality", async () => {
+        let encodedVotes: BytesLike[] = [];
+        encodedVotes.push(
+          ethers.utils.defaultAbiCoder.encode(
+            ["address", "uint256", "address", "bytes32", "uint256"],
+            [
+              mockERC20.address,
+              10,
+              grantee1.address,
+              formatBytes32String("grantee1"),
+              0,
+            ]
+          )
+        );
+        await expect(mockRound.vote(encodedVotes)).to.reverted
+      })
+    })
+
+    describe("test: payout", () => {
+      const grantee1ProjectId = formatBytes32String("grantee1");
+      const grantee1IndexPending = 0;
+      const grantee1IndexApproved = 1;
+      const grantee1GrantAmount = 10;
+      let payment: Payment;
+
+      before(async () => {
+        await mockERC20.transfer(vaultAddress, 1000);
+        await mockERC20.connect(vault).approve(directStrategyProxy.address, ethers.constants.MaxUint256);
+        // 0
+        await mockRound.applyToRound(
+          grantee1ProjectId,
+          {
+            protocol: 1,
+            pointer: "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG",
+          }
+        );
+        // 1
+        await mockRound.applyToRound(
+          grantee1ProjectId,
+          {
+            protocol: 1,
+            pointer: "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG",
+          }
+        );
+
+        const statuses = [
+          { index: 0, status: ApplicationStatus.PENDING },
+          { index: 1, status: ApplicationStatus.ACCEPTED }
+        ]
+
+        const newState = buildStatusRow(0n, statuses);
+
+        const applicationStatus = {
+          index: 0,
+          statusRow: newState,
+        }
+
+        await mockRound.connect(roundOperator).setApplicationStatuses([applicationStatus]);
+        expect(await mockRound.getApplicationStatus(0)).equal(
+          ApplicationStatus.PENDING
+        );
+
+        expect(await mockRound.getApplicationStatus(1)).equal(
+          ApplicationStatus.ACCEPTED
+        );
+      });
+
+      describe("using transferFrom", () => {
+        before(async () => {
+          payment = {
+            vault: vaultAddress,
+            token: mockERC20.address,
+            amount: grantee1GrantAmount,
+            grantAddress: grantee1.address,
+            projectId: grantee1ProjectId,
+            applicationIndex: grantee1IndexPending,
+            allowanceModule: ethers.constants.AddressZero,
+            allowanceSignature: "0x"
+          }
+        });
+
+        it("SHOULD revert when caller is not the round operator", async () => {
+          await expect(directStrategyProxy.connect(notRoundOperator).payout(payment)).to.revertedWith("not round operator")
+        })
+
+        it("SHOULD revert if application is not APPROVED", async () => {
+          expect(await mockRound.getApplicationStatus(grantee1IndexPending)).to.eq(ApplicationStatus.PENDING)
+          await expect(directStrategyProxy.connect(roundOperator).payout(payment)).to.revertedWith("DirectStrategy__payout_ApplicationNotAccepted")
+        })
+
+        it("SHOULD revert if token is native token", async () => {
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          await expect(directStrategyProxy.connect(roundOperator).payout({
+            ...payment,
+            applicationIndex: grantee1IndexApproved,
+            token: ethers.constants.AddressZero
+          })).to.revertedWith("DirectStrategy__payout_NativeTokenNotAllowed")
+        })
+
+        it("SHOULD transfer indicated amount of ERC20 tokens from vault to grantee when application is APPROVED", async () => {
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          const balanceGrantee1Before = await mockERC20.balanceOf(grantee1.address);
+          const balanceVaultBefore = await mockERC20.balanceOf(vaultAddress);
+
+          await directStrategyProxy.connect(roundOperator).payout({
+            ...payment,
+            applicationIndex: grantee1IndexApproved
+          })
+
+          expect(await mockERC20.balanceOf(grantee1.address)).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
+          expect(await mockERC20.balanceOf(vaultAddress)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
+        })
+
+        it("SHOULD emit an event for each payment", async () => {
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          await expect(
+            directStrategyProxy.connect(roundOperator).payout({
+              ...payment,
+              applicationIndex: grantee1IndexApproved
+            })
+          ).to.emit(directStrategyProxy, 'PayoutMade').withArgs(
+            vaultAddress,
+            mockERC20.address,
+            grantee1GrantAmount,
+            grantee1.address,
+            grantee1ProjectId,
+            grantee1IndexApproved,
+            ethers.constants.AddressZero
+          );
+        })
+      });
+
+      describe("using AllowanceModule", () => {
+        before(async () => {
+          payment = {
+            vault: ethers.constants.AddressZero,
+            token: mockERC20.address,
+            amount: grantee1GrantAmount,
+            grantAddress: grantee1.address,
+            projectId: grantee1ProjectId,
+            applicationIndex: grantee1IndexPending,
+            allowanceModule: ALLOWANCE_MODULE,
+            allowanceSignature: "0x"
+          }
+        });
+
+        it("SHOULD revert when caller is not the round operator", async () => {
+          await expect(directStrategyProxy.connect(notRoundOperator).payout(payment)).to.revertedWith("not round operator")
+        })
+
+        it("SHOULD revert if application is not APPROVED", async () => {
+          expect(await mockRound.getApplicationStatus(grantee1IndexPending)).to.eq(ApplicationStatus.PENDING)
+          await expect(directStrategyProxy.connect(roundOperator).payout(payment)).to.revertedWith("DirectStrategy__payout_ApplicationNotAccepted")
+        })
+
+        it("SHOULD transfer indicated amount of ERC20 tokens from configured Safe vault to grantee when application is APPROVED", async () => {
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          const balanceGrantee1Before = await mockERC20.balanceOf(grantee1.address);
+          const balanceVaultBefore = await mockERC20.balanceOf(safeVault.address);
+
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, mockERC20.address, grantee1.address, grantee1GrantAmount)
+          let sig = await signHash(roundOperator, transactionHash)
+
+          await directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, allowanceSignature: sig.data})
+
+          expect(await mockERC20.balanceOf(grantee1.address)).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
+          expect(await mockERC20.balanceOf(safeVault.address)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
+        })
+
+        it("SHOULD transfer indicated amount of ETH from configured Safe vault to grantee when application is APPROVED", async () => {
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          const balanceGrantee1Before = await grantee1.getBalance();
+          const balanceVaultBefore = await ethers.provider.getBalance(safeVault.address);
+
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, ethers.constants.AddressZero, grantee1.address, grantee1GrantAmount)
+          let sig = await signHash(roundOperator, transactionHash)
+
+          const tx = await directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, token: ethers.constants.AddressZero, allowanceSignature: sig.data})
+
+          expect(await grantee1.getBalance()).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
+          expect(await ethers.provider.getBalance(safeVault.address)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
+        })
+
+
+        it("SHOULD emit an event for each payment", async () => {
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, ethers.constants.AddressZero, grantee1.address, grantee1GrantAmount)
+          let sig = await signHash(roundOperator, transactionHash)
+
+          await expect(
+            directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, token: ethers.constants.AddressZero, allowanceSignature: sig.data})
+          ).to.emit(directStrategyProxy, 'PayoutMade').withArgs(
+            safeVault.address,
+            ethers.constants.AddressZero,
+            grantee1GrantAmount,
+            grantee1.address,
+            grantee1ProjectId,
+            grantee1IndexApproved,
+            ALLOWANCE_MODULE
+          );
+
+          let transactionHashERC20 = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, mockERC20.address, grantee1.address, grantee1GrantAmount)
+          let sigERC20 = await signHash(roundOperator, transactionHashERC20)
+
+          await expect(
+            directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, allowanceSignature: sigERC20.data})
+            ).to.emit(directStrategyProxy, 'PayoutMade').withArgs(
+              safeVault.address,
+              mockERC20.address,
+              grantee1GrantAmount,
+              grantee1.address,
+              grantee1ProjectId,
+              grantee1IndexApproved,
+              ALLOWANCE_MODULE
+            );
+        })
+      });
+    });
   });
 });
