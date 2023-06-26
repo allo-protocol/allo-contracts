@@ -6,8 +6,8 @@ import hre from "hardhat";
 import { confirmContinue } from "../../utils/script-utils";
 import { roundParams } from '../config/round.config';
 import { programParams } from "../config/program.config";
-import { QFVotingParams } from "../config/votingStrategy.config";
-import { MerklePayoutParams } from "../config/payoutStrategy.config";
+import { DirectPayoutParams } from "../config/payoutStrategy.config";
+import { AlloSettingsParams } from '../config/allo.config';
 import { encodeRoundParameters } from "../utils";
 import * as utils from "../utils";
 import { AddressZero } from "@ethersproject/constants";
@@ -20,8 +20,8 @@ export async function main() {
 
   const networkParams = roundParams[network.name];
   const programNetworkParams = programParams[network.name];
-  const votingNetworkParams = QFVotingParams[network.name];
-  const payoutNetworkParams = MerklePayoutParams[network.name];
+  const payoutNetworkParams = DirectPayoutParams[network.name];
+  const alloNetworkParams = AlloSettingsParams[network.name];
 
   if (!networkParams) {
     throw new Error(`Invalid network ${network.name}`);
@@ -31,8 +31,9 @@ export async function main() {
   const roundImplementationContract = networkParams.roundImplementationContract;
   const programContract = programNetworkParams.programContract;
 
-  const votingContract = votingNetworkParams.contract;
+  const votingContract = ethers.constants.AddressZero;
   const payoutContract = payoutNetworkParams.contract;
+  const alloSettingsContract = alloNetworkParams.alloSettingsContract;
 
   if (!roundFactoryContract) {
     throw new Error(`error: missing roundFactoryContract`);
@@ -42,28 +43,29 @@ export async function main() {
     throw new Error(`error: missing roundImplementationContract`);
   }
 
-  if (!votingContract) {
-    throw new Error(`error: missing votingContract`);
-  }
-
   if (!payoutContract) {
     throw new Error(`error: missing payoutContract`);
+  }
+
+  if (!alloSettingsContract) {
+    throw new Error(`error: missing alloSettingsContract`);
   }
 
   const roundFactory = await ethers.getContractAt('RoundFactory', roundFactoryContract);
 
   await confirmContinue({
-    "info"                         : "create a Round",
+    "info"                         : "create a Direct Round",
     "roundFactoryContract"         : roundFactoryContract,
     "roundImplementationContract"  : roundImplementationContract,
     "programContractAddress"       : programContract,
     "votingContractAddress"        : votingContract,
     "payoutContractAddress"        : payoutContract,
+    "alloSettingsContract"         : alloSettingsContract,
     "network"                      : network.name,
     "chainId"                      : network.config.chainId
   });
 
-  const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutContract);
+  const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutContract, alloSettingsContract);
 
   const roundTx = await roundFactory.create(
     encodedParameters,
@@ -84,7 +86,7 @@ export async function main() {
   console.log("✅ Round created: ", roundAddress);
 }
 
-const generateAndEncodeRoundParam = async (votingContract: string, payoutContract: string) => {
+const generateAndEncodeRoundParam = async (votingContract: string, payoutContract: string, alloSettingsContract: string) => {
 
   const _currentTimestamp = (await ethers.provider.getBlock(
     await ethers.provider.getBlockNumber())
@@ -119,11 +121,13 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
     payoutContract, // payoutStrategy
   ];
 
+  const yearInSec = 365*24*60*60;
+
   const initRoundTime = [
-    _currentTimestamp + 3600,     // 1 hour later   appStartTime
-    _currentTimestamp + 432000, // 5 days later   appEndTime
-    _currentTimestamp + 7200,   // 2 hours later  roundStartTime
-    _currentTimestamp + 864000, // 10 days later  roundEndTime
+    _currentTimestamp + 1800,     // 1/2 hour later   appStartTime
+    _currentTimestamp + yearInSec, // 1 year later  roundEndTime
+    _currentTimestamp + 1800,   // 1/2 hour later   appStartTime
+    _currentTimestamp + yearInSec, // 1 year later  roundEndTime
   ];
 
   const initMetaPtr = [
@@ -136,6 +140,11 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
     roles   // roundOperators
   ];
 
+  const strategyEncodedParams = ethers.utils.defaultAbiCoder.encode(
+    ["address", "address", "uint32", "address"],
+    [alloSettingsContract, ethers.constants.AddressZero, roundFeePercentage, roundFeeAddress]
+  )
+
   let params = [
     initAddress,
     initRoundTime,
@@ -145,7 +154,7 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
     roundFeeAddress,
     initMetaPtr,
     initRoles,
-    "0x"
+    strategyEncodedParams
   ];
 
   return encodeRoundParameters(params);
