@@ -9,7 +9,7 @@ import "../IVotingStrategyFactory.sol";
 import "./QuadraticFundingVotingStrategyImplementation.sol";
 
 contract QuadraticFundingVotingStrategyFactory is IVotingStrategyFactory, OwnableUpgradeable {
- 
+
   address public votingContract;
 
   uint256 public nonce;

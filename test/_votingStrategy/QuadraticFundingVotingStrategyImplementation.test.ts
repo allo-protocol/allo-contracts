@@ -2,14 +2,114 @@ import { AddressZero } from "@ethersproject/constants";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { deployContract } from "ethereum-waffle";
-import { Event, Wallet, BigNumber } from 'ethers';
+import { Event, Wallet, BigNumber } from "ethers";
 import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
+import { encodeRoundParameters } from "../../scripts/utils";
 import { artifacts, ethers } from "hardhat";
 import { Artifact } from "hardhat/types";
 import {
   MockERC20,
-  QuadraticFundingVotingStrategyImplementation
+  QuadraticFundingVotingStrategyImplementation,
+  RoundFactory,
+  MerklePayoutStrategyFactory,
+  QuadraticFundingVotingStrategyFactory,
+  RoundImplementation,
+  AlloSettings,
 } from "../../typechain";
+
+describe("QuadraticFundingVotingStrategyImplementation Vote event", () => {
+  it("test", async () => {
+    const [user] = await ethers.getSigners();
+
+    // Deploy AlloSettings contract
+    const alloSettingsContractFactory = await ethers.getContractFactory(
+      "AlloSettings"
+    );
+    const alloSettingsContract = <AlloSettings>(
+      await upgrades.deployProxy(alloSettingsContractFactory)
+    );
+
+    // Deploy RoundFactory contract
+    const roundContractFactory = await ethers.getContractFactory(
+      "RoundFactory"
+    );
+
+    const roundFactoryContract = <RoundFactory>(
+      await upgrades.deployProxy(roundContractFactory)
+    );
+
+    // Deploy VotingStrategyFactory contract
+    const votingStrategyFactoryArtifact = await artifacts.readArtifact(
+      "QuadraticFundingVotingStrategyFactory"
+    );
+    const votingStrategyFactoryContract = <
+      QuadraticFundingVotingStrategyFactory
+    >await deployContract(user, votingStrategyFactoryArtifact, []);
+
+    // Deploy PayoutStrategy factory contract
+    const payoutStrategyFactoryArtifact = await artifacts.readArtifact(
+      "MerklePayoutStrategyFactory"
+    );
+    const payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+      await deployContract(user, payoutStrategyFactoryArtifact, [])
+    );
+
+    const roundImplementationArtifact = await artifacts.readArtifact(
+      "RoundImplementation"
+    );
+
+    const roundImplementation = <RoundImplementation>(
+      await deployContract(user, roundImplementationArtifact, [])
+    );
+
+    const initAddress = [
+      votingStrategyFactoryContract.address, // votingStrategyFactory
+      payoutStrategyFactoryContract.address, // payoutStrategyFactory
+    ];
+
+    const _currentBlockTimestamp = (
+      await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
+    ).timestamp;
+
+    const initRoundTime = [
+      _currentBlockTimestamp + 100, // applicationsStartTime
+      _currentBlockTimestamp + 250, // applicationsEndTime
+      _currentBlockTimestamp + 500, // roundStartTime
+      _currentBlockTimestamp + 1000, // roundEndTime
+    ];
+
+    const roundMetaPtr = {
+      protocol: 1,
+      pointer: "bafybeia4khbew3r2mkflyn7nzlvfzcb3qpfeftz5ivpzfwn77ollj47gqi",
+    };
+    const applicationMetaPtr = {
+      protocol: 1,
+      pointer: "bafybeiaoakfoxjwi2kwh43djbmomroiryvhv5cetg74fbtzwef7hzzvrnq",
+    };
+    const initMetaPtr = [roundMetaPtr, applicationMetaPtr];
+    const initRoles = [[user.address], [user.address]];
+
+    let params = [
+      initAddress,
+      initRoundTime,
+      "0x0",
+      AddressZero,
+      "0x0",
+      AddressZero,
+      initMetaPtr,
+      initRoles,
+    ];
+
+    const tx = await roundImplementation.initialize(
+      encodeRoundParameters(params),
+      alloSettingsContract.address
+    );
+
+    const rec = await tx.wait();
+    const votingContractCreatedEvent = rec.logs[0];
+    const votingContractAddress = votingContractCreatedEvent.topics[0];
+  });
+});
 
 describe("QuadraticFundingVotingStrategyImplementation", () => {
   let user: SignerWithAddress;
