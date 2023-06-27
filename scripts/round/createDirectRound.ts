@@ -8,6 +8,7 @@ import { roundParams } from '../config/round.config';
 import { programParams } from "../config/program.config";
 import { DirectPayoutParams } from "../config/payoutStrategy.config";
 import { AlloSettingsParams } from '../config/allo.config';
+import { DummyVotingParams } from "../config/votingStrategy.config";
 import { encodeRoundParameters } from "../utils";
 import * as utils from "../utils";
 import { AddressZero } from "@ethersproject/constants";
@@ -22,6 +23,7 @@ export async function main() {
   const programNetworkParams = programParams[network.name];
   const payoutNetworkParams = DirectPayoutParams[network.name];
   const alloNetworkParams = AlloSettingsParams[network.name];
+  const votingNetworkParams = DummyVotingParams[network.name];
 
   if (!networkParams) {
     throw new Error(`Invalid network ${network.name}`);
@@ -31,7 +33,7 @@ export async function main() {
   const roundImplementationContract = networkParams.roundImplementationContract;
   const programContract = programNetworkParams.programContract;
 
-  const votingContract = ethers.constants.AddressZero;
+  const votingContract = votingNetworkParams.contract;
   const payoutContract = payoutNetworkParams.contract;
   const alloSettingsContract = alloNetworkParams.alloSettingsContract;
 
@@ -41,6 +43,10 @@ export async function main() {
 
   if (!roundImplementationContract) {
     throw new Error(`error: missing roundImplementationContract`);
+  }
+
+  if (!votingContract) {
+    throw new Error(`error: missing dummy voting contract`);
   }
 
   if (!payoutContract) {
@@ -65,7 +71,7 @@ export async function main() {
     "chainId"                      : network.config.chainId
   });
 
-  const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutContract, alloSettingsContract);
+  const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutContract);
 
   const roundTx = await roundFactory.create(
     encodedParameters,
@@ -86,7 +92,7 @@ export async function main() {
   console.log("✅ Round created: ", roundAddress);
 }
 
-const generateAndEncodeRoundParam = async (votingContract: string, payoutContract: string, alloSettingsContract: string) => {
+const generateAndEncodeRoundParam = async (votingContract: string, payoutContract: string) => {
 
   const _currentTimestamp = (await ethers.provider.getBlock(
     await ethers.provider.getBlockNumber())
@@ -140,11 +146,6 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
     roles   // roundOperators
   ];
 
-  const strategyEncodedParams = ethers.utils.defaultAbiCoder.encode(
-    ["address", "address", "uint32", "address"],
-    [alloSettingsContract, ethers.constants.AddressZero, roundFeePercentage, roundFeeAddress]
-  )
-
   let params = [
     initAddress,
     initRoundTime,
@@ -153,8 +154,7 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
     roundFeePercentage,
     roundFeeAddress,
     initMetaPtr,
-    initRoles,
-    strategyEncodedParams
+    initRoles
   ];
 
   return encodeRoundParameters(params);

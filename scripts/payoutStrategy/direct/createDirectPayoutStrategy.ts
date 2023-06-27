@@ -4,6 +4,7 @@ import { ethers } from "hardhat";
 import hre from "hardhat";
 import { confirmContinue } from "../../../utils/script-utils";
 import { DirectPayoutParams } from '../../config/payoutStrategy.config';
+import { AlloSettingsParams } from '../../config/allo.config';
 import * as utils from "../../utils";
 
 utils.assertEnvironment();
@@ -13,12 +14,15 @@ export async function main() {
   const network = hre.network;
 
   const networkParams = DirectPayoutParams[network.name];
+  const alloNetworkParams = AlloSettingsParams[network.name];
+
   if (!networkParams) {
     throw new Error(`Invalid network ${network.name}`);
   }
 
   const payoutFactoryContract = networkParams.factory;
   const payoutImplementationContract = networkParams.implementation;
+  const alloSettingsContract = alloNetworkParams.alloSettingsContract;
 
 
   if (!payoutFactoryContract) {
@@ -29,6 +33,9 @@ export async function main() {
     throw new Error(`error: missing implementation`);
   }
 
+  if (!alloSettingsContract) {
+    throw new Error(`error: missing alloSettingsContract`);
+  }
 
   const DirectPayoutStrategyFactory = await ethers.getContractAt('DirectPayoutStrategyFactory', payoutFactoryContract);
 
@@ -41,7 +48,12 @@ export async function main() {
   });
 
 
-  const payoutStrategyTx = await DirectPayoutStrategyFactory.create();
+  const payoutStrategyTx = await DirectPayoutStrategyFactory.create(
+    alloSettingsContract,
+    ethers.constants.AddressZero, // safe vault
+    0, // round fee percentage
+    ethers.constants.AddressZero // round fee address
+  );
 
   const receipt = await payoutStrategyTx.wait();
   let payoutStrategyAddress;

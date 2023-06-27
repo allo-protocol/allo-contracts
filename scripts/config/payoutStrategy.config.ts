@@ -47,7 +47,7 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   goerli: {
-    factory: "0x51cDB7de5476e3B85Ca76FEcD63862adc343aAe6",
+    factory: "0xBD4Ea65DBbc5677F8C230a4B1CF4296E20A80160",
     implementation: "0xAEd1cE441FA6aD4F89d28026F3E7491394deEa5F",
     contract: "0xe14c00F31fBF325FE35f461e6cb821286F6cF040",
   },

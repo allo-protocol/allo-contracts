@@ -53,6 +53,7 @@
     "create-merkle-contract": "pnpm hardhat run scripts/payoutStrategy/merkle/createMerklePayoutStrategy.ts --network",
     "upgrade-merkle-factory": "pnpm hardhat run scripts/payoutStrategy/merkle/upgradeMerkleFactory.ts --network",
     "// direct-payout-deploy-scripts": "echo '//-- Direct Payout deploy Script --//'",
+    "deploy-dummy-voting-strategy": "pnpm hardhat run scripts/votingStrategy/deployDummyVotingStrategy.ts --network",
     "deploy-direct-factory": "pnpm hardhat run scripts/payoutStrategy/direct/deployDirectPayoutStrategyFactory.ts --network",
     "deploy-direct-implementation": "pnpm hardhat run scripts/payoutStrategy/direct/deployDirectPayoutStrategyImplementation.ts --network",
     "link-direct-implementation": "pnpm hardhat run scripts/payoutStrategy/direct/linkDirectPayoutStrategyImplementation.ts --network",
