@@ -1208,7 +1208,7 @@ describe("RoundImplementation", function () {
 
       it("SHOULD set the correct application statuses", async () => {
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 110]);
-        for (let i = 0; i <= 16; i++) {
+        for (let i = 0; i < 4; i++) {
           await roundImplementation.applyToRound(
             ethers.utils.hexlify(ethers.utils.randomBytes(32)),
             {
@@ -1223,20 +1223,6 @@ describe("RoundImplementation", function () {
           { index: 1, status: ApplicationStatus.ACCEPTED },
           { index: 2, status: ApplicationStatus.REJECTED },
           { index: 3, status: ApplicationStatus.CANCELED },
-          { index: 4, status: ApplicationStatus.ADDITIONAL_1 },
-          { index: 5, status: ApplicationStatus.ADDITIONAL_2 },
-          { index: 6, status: ApplicationStatus.ADDITIONAL_3 },
-          { index: 7, status: ApplicationStatus.ADDITIONAL_4 },
-          { index: 8, status: ApplicationStatus.ADDITIONAL_5 },
-          { index: 9, status: ApplicationStatus.ADDITIONAL_6 },
-          { index: 10, status: ApplicationStatus.ADDITIONAL_7 },
-          { index: 11, status: ApplicationStatus.ADDITIONAL_8 },
-          { index: 12, status: ApplicationStatus.ADDITIONAL_9 },
-          { index: 13, status: ApplicationStatus.ADDITIONAL_10 },
-          { index: 14, status: ApplicationStatus.ADDITIONAL_11 },
-          { index: 15, status: ApplicationStatus.ADDITIONAL_12 },
-          { index: 16, status: ApplicationStatus.PENDING },
-
         ];
 
         const newState = buildStatusRow(0n, statuses);
@@ -1262,58 +1248,6 @@ describe("RoundImplementation", function () {
 
         expect(await roundImplementation.getApplicationStatus(3)).equal(
           ApplicationStatus.CANCELED
-        );
-
-        expect(await roundImplementation.getApplicationStatus(4)).equal(
-          ApplicationStatus.ADDITIONAL_1
-        );
-
-        expect(await roundImplementation.getApplicationStatus(5)).equal(
-          ApplicationStatus.ADDITIONAL_2
-        );
-
-        expect(await roundImplementation.getApplicationStatus(6)).equal(
-          ApplicationStatus.ADDITIONAL_3
-        );
-
-        expect(await roundImplementation.getApplicationStatus(7)).equal(
-          ApplicationStatus.ADDITIONAL_4
-        );
-
-        expect(await roundImplementation.getApplicationStatus(8)).equal(
-          ApplicationStatus.ADDITIONAL_5
-        );
-
-        expect(await roundImplementation.getApplicationStatus(9)).equal(
-          ApplicationStatus.ADDITIONAL_6
-        );
-
-        expect(await roundImplementation.getApplicationStatus(10)).equal(
-          ApplicationStatus.ADDITIONAL_7
-        );
-
-        expect(await roundImplementation.getApplicationStatus(11)).equal(
-          ApplicationStatus.ADDITIONAL_8
-        );
-
-        expect(await roundImplementation.getApplicationStatus(12)).equal(
-          ApplicationStatus.ADDITIONAL_9
-        );
-
-        expect(await roundImplementation.getApplicationStatus(13)).equal(
-          ApplicationStatus.ADDITIONAL_10
-        );
-
-        expect(await roundImplementation.getApplicationStatus(14)).equal(
-          ApplicationStatus.ADDITIONAL_11
-        );
-
-        expect(await roundImplementation.getApplicationStatus(15)).equal(
-          ApplicationStatus.ADDITIONAL_12
-        );
-
-        expect(await roundImplementation.getApplicationStatus(16)).equal(
-          ApplicationStatus.PENDING
         );
       });
     });

@@ -175,16 +175,13 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
 
   // This is a packed array of booleans.
   // statuses[0] is the first row of the bitmap and allows to store 256 bits to describe
-  // the status of 64 projects.
+  // the status of 256 projects.
   // statuses[1] is the second row, and so on.
   // Instead of using 1 bit for each application status, we use 2 bits to allow 4 statuses:
   // 0: pending
   // 1: approved
   // 2: rejected
   // 3: canceled
-  // 4: [Additional Status]
-  // ...
-  // 15: [Additional Status]
   // Since it's a mapping the storage it's pre-allocated with zero values,
   // so if we check the status of an existing application, the value is by default 0 (pending).
   // If we want to check the status of an application, we take its index from the `applications` array
@@ -414,9 +411,6 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   // * 1  - approved
   // * 2  - rejected
   // * 3  - canceled
-  // * 4  - [Additional Status]
-  // ...
-  // * 15 - [Additional Status]
   /// Set application statuses
   /// @param statuses new statuses
   function setApplicationStatuses(ApplicationStatus[] memory statuses) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
@@ -440,11 +434,11 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   function getApplicationStatus(uint256 applicationIndex) external view returns(uint256) {
     require(applicationIndex < applications.length, "Round: Application does not exist");
 
-    uint256 rowIndex = applicationIndex / 64; // 64 = number of 4 bits words on 256 bits
-    uint256 colIndex = (applicationIndex % 64) * 4; // using 4 bits mask
+    uint256 rowIndex = applicationIndex / 128;
+    uint256 colIndex = (applicationIndex % 128) * 2;
 
     uint256 currentRow = applicationStatusesBitMap[rowIndex];
-    uint256 status = (currentRow >> colIndex) & 15; // 1111 = 15
+    uint256 status = (currentRow >> colIndex) & 3;
 
     return status;
   }
