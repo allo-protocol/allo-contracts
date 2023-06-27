@@ -13,11 +13,9 @@ import {IAllowanceModule} from "./IAllowanceModule.sol";
 import "../../utils/MetaPtr.sol";
 
 /**
- * Allows voters to cast multiple weighted votes to grants with one transaction
- * This is inspired from BulkCheckout documented over at:
- * https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BulkCheckout.sol
+ * @notice Direct Payout Strategy contract which is deployed once per round
+ * and is used to handle IN REVIEW applications status and to pay grantees based on internal review process.
  *
- * Emits event upon every transfer.
  */
 contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayoutStrategy {
   using SafeERC20Upgradeable for IERC20Upgradeable;
