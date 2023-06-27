@@ -145,7 +145,6 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
     roundFeeAddress,
     initMetaPtr,
     initRoles,
-    "0x"
   ];
 
   return encodeRoundParameters(params);
