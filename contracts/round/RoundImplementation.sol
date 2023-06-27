@@ -24,7 +24,7 @@ import "../utils/MetaPtr.sol";
  */
 contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, Initializable, MulticallUpgradeable {
 
-  string public constant VERSION = "1.1.0";
+  string public constant VERSION = "1.0.0";
 
   // --- Libraries ---
   using Address for address;
@@ -407,10 +407,10 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   }
 
   // Statuses:
-  // * 0  - pending
-  // * 1  - approved
-  // * 2  - rejected
-  // * 3  - canceled
+  // * 0 - pending
+  // * 1 - approved
+  // * 2 - rejected
+  // * 3 - canceled
   /// Set application statuses
   /// @param statuses new statuses
   function setApplicationStatuses(ApplicationStatus[] memory statuses) external roundHasNotEnded onlyRole(ROUND_OPERATOR_ROLE) {
