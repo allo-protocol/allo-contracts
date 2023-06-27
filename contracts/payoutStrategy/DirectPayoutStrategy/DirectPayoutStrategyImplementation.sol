@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
-import "../IPayoutStrategyInitializable.sol";
+import "../IPayoutStrategy.sol";
 import {AlloSettings} from "../../settings/AlloSettings.sol";
 import {RoundImplementation} from "../../round/RoundImplementation.sol";
 import {IAllowanceModule} from "./IAllowanceModule.sol";
@@ -18,7 +18,7 @@ import {IAllowanceModule} from "./IAllowanceModule.sol";
  *
  * Emits event upon every transfer.
  */
-contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayoutStrategyInitializable {
+contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayoutStrategy {
   using SafeERC20Upgradeable for IERC20Upgradeable;
   using AddressUpgradeable for address;
 
@@ -59,6 +59,8 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
   // Errors
 
+  error DirectStrategy__isConfigured();
+  error DirectStrategy__notConfigured();
   error DirectStrategy__notImplemented();
   error DirectStrategy__vote_NotImplemented();
   error DirectStrategy__payout_ApplicationNotAccepted();
@@ -102,36 +104,19 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     _;
   }
 
-  function initialize() external initializer {
-    // empty initializer
+  function initialize(
+    address _alloSettings,
+    address _vaultAddress,
+    uint32  _roundFeePercentage,
+    address _roundFeeAddress
+  ) external initializer {
+    alloSettings = AlloSettings(_alloSettings);
+    vaultAddress = _vaultAddress;
+    roundFeePercentage = _roundFeePercentage;
+    roundFeeAddress = payable(_roundFeeAddress);
   }
 
   // --- Core methods ---
-
-  /**
-   * @notice It is used to initialize the strategy with any additional parameters that may be required.
-   *  The parameters are passed during the creation of each round.
-   * @param _encodedParams The encoded parameters passed during round creation.
-   */
-  function _initialize(bytes calldata _encodedParams) internal override {
-        // Decode _encodedParameters
-      (
-        AlloSettings _alloSettings,
-        address _vaultAddress,
-        uint32  _roundFeePercentage,
-        address _roundFeeAddress
-      ) = abi.decode(_encodedParams, (
-        (AlloSettings),
-        address,
-        uint32,
-        address
-      ));
-
-      alloSettings = _alloSettings;
-      vaultAddress = _vaultAddress;
-      roundFeePercentage = _roundFeePercentage;
-      roundFeeAddress = payable(_roundFeeAddress);
-  }
 
   // @notice Update round fee percentage (only by ROUND_OPERATOR_ROLE)
   /// @param _newFeePercentage new fee percentage

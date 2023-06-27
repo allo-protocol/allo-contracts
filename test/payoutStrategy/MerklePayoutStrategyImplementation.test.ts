@@ -219,8 +219,7 @@ describe("MerklePayoutStrategyImplementation", function () {
         roundFeePercentage,
         roundFeeAddress,
         initMetaPtr,
-        initRoles,
-        "0x"
+        initRoles
       ];
 
       await roundImplementation.initialize(

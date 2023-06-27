@@ -14,7 +14,6 @@ import "../votingStrategy/IVotingStrategyFactory.sol";
 import "../payoutStrategy/IPayoutStrategyFactory.sol";
 import "../votingStrategy/IVotingStrategy.sol";
 import "../payoutStrategy/IPayoutStrategy.sol";
-import "../payoutStrategy/IPayoutStrategyInitializable.sol";
 
 import "../utils/MetaPtr.sol";
 
@@ -205,7 +204,6 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
    *  - _token Address of the ERC20/native token for accepting matching pool contributions
    *  - _initMetaPtr Round metaPtrs
    *  - _initRoles Round roles
-   *  - _payoutEncodedParameters Optional bytes encoded parameters to be used for initializing the Payout Strategy
    */
   function initialize(
     bytes calldata encodedParameters,
@@ -220,8 +218,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
       uint32 _roundFeePercentage,
       address payable _roundFeeAddress,
       InitMetaPtr memory _initMetaPtr,
-      InitRoles memory _initRoles,
-      bytes memory _payoutEncodedParameters
+      InitRoles memory _initRoles
     ) = abi.decode(
       encodedParameters, (
       (InitAddress),
@@ -231,8 +228,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
       uint32,
       address,
       (InitMetaPtr),
-      (InitRoles),
-      bytes
+      (InitRoles)
     ));
 
     // slither-disable-next-line timestamp

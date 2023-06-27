@@ -1,5 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
+import { Wallet } from 'ethers';
 import { deployContract } from "ethereum-waffle";
 import { isAddress } from "ethers/lib/utils";
 import { AddressZero } from "@ethersproject/constants";
@@ -17,6 +18,7 @@ describe("DirectPayoutStrategyFactory", function () {
 
   // DirectPayoutStrategy Implementation
   let DirectPayoutStrategyImplementation: DirectPayoutStrategyImplementation;
+  let directStrategyProxy: DirectPayoutStrategyImplementation;
   let DirectPayoutStrategyImplementationArtifact: Artifact;
 
 
@@ -37,21 +39,18 @@ describe("DirectPayoutStrategyFactory", function () {
 
   describe('core functions', () => {
 
-    beforeEach(async () => {
-      [user] = await ethers.getSigners();
-
-      // Deploy DirectPayoutStrategyFactory contract
-      DirectPayoutStrategyContractFactory = await ethers.getContractFactory('DirectPayoutStrategyFactory');
-      DirectPayoutStrategyFactory = <DirectPayoutStrategyFactory>await upgrades.deployProxy(DirectPayoutStrategyContractFactory);
-
-      // Deploy DirectPayoutStrategyImplementation contract
-      DirectPayoutStrategyImplementationArtifact = await artifacts.readArtifact('DirectPayoutStrategyImplementation');
-      DirectPayoutStrategyImplementation = <DirectPayoutStrategyImplementation>await deployContract(user, DirectPayoutStrategyImplementationArtifact, []);
-
-    });
-
-
     describe('test: updatePayoutImplementation', async () => {
+      beforeEach(async () => {
+        [user] = await ethers.getSigners();
+
+        // Deploy DirectPayoutStrategyFactory contract
+        DirectPayoutStrategyContractFactory = await ethers.getContractFactory('DirectPayoutStrategyFactory');
+        DirectPayoutStrategyFactory = <DirectPayoutStrategyFactory>await upgrades.deployProxy(DirectPayoutStrategyContractFactory);
+
+        // Deploy DirectPayoutStrategyImplementation contract
+        DirectPayoutStrategyImplementationArtifact = await artifacts.readArtifact('DirectPayoutStrategyImplementation');
+        DirectPayoutStrategyImplementation = <DirectPayoutStrategyImplementation>await deployContract(user, DirectPayoutStrategyImplementationArtifact, []);
+      });
 
       it("SHOULD have default address after deploy ", async () => {
         expect(await DirectPayoutStrategyFactory.payoutImplementation())
@@ -75,22 +74,52 @@ describe("DirectPayoutStrategyFactory", function () {
 
     describe('test: create', async () => {
 
-      it("invoking create SHOULD have a successful transaction", async () => {
+      before(async () => {
+        [user] = await ethers.getSigners();
 
-        const txn = await DirectPayoutStrategyFactory.create();
+        // Deploy DirectPayoutStrategyFactory contract
+        DirectPayoutStrategyContractFactory = await ethers.getContractFactory('DirectPayoutStrategyFactory');
+        DirectPayoutStrategyFactory = <DirectPayoutStrategyFactory>await upgrades.deployProxy(DirectPayoutStrategyContractFactory);
 
-        await expect(DirectPayoutStrategyFactory.updatePayoutImplementation(DirectPayoutStrategyImplementation.address))
+        // Deploy DirectPayoutStrategyImplementation contract
+        DirectPayoutStrategyImplementationArtifact = await artifacts.readArtifact('DirectPayoutStrategyImplementation');
+        DirectPayoutStrategyImplementation = <DirectPayoutStrategyImplementation>await deployContract(user, DirectPayoutStrategyImplementationArtifact, []);
+
+        await (await DirectPayoutStrategyFactory.updatePayoutImplementation(DirectPayoutStrategyImplementation.address)).wait()
+      })
+
+      it("invoking create SHOULD initialize strategy", async () => {
+        let alloSettings = Wallet.createRandom().address;
+        let vaultAddress = Wallet.createRandom().address;
+        let roundFeeAddress = Wallet.createRandom().address;
+        let roundFeePercentage = 123;
+
+        const txn = await DirectPayoutStrategyFactory.create(alloSettings, vaultAddress, roundFeePercentage, roundFeeAddress);
 
         const receipt = await txn.wait();
 
-        expect(txn.hash).to.not.be.empty;
-        expect(receipt.status).equals(1);
+        if (receipt.events) {
+          const event = receipt.events.find(e => e.event === 'PayoutContractCreated');
+          if (event && event.args) {
+            directStrategyProxy = await ethers.getContractAt("DirectPayoutStrategyImplementation", event.args.payoutContractAddress) as DirectPayoutStrategyImplementation;
+          }
+        }
+
+        expect(await directStrategyProxy.alloSettings()).to.eq(alloSettings)
+        expect(await directStrategyProxy.vaultAddress()).to.eq(vaultAddress)
+        expect(await directStrategyProxy.roundFeeAddress()).to.eq(roundFeeAddress)
+        expect(await directStrategyProxy.roundFeePercentage()).to.eq(roundFeePercentage)
       });
 
 
       it("SHOULD emit PayoutContractCreated event after invoking create", async () => {
+        let alloSettings = Wallet.createRandom().address;
+        let vaultAddress = Wallet.createRandom().address;
+        let roundFeeAddress = Wallet.createRandom().address;
+        let roundFeePercentage = 123;
 
-        const txn = await DirectPayoutStrategyFactory.create();
+        const txn = await DirectPayoutStrategyFactory.create(alloSettings, vaultAddress, roundFeePercentage, roundFeeAddress);
+
 
         const receipt = await txn.wait();
 
@@ -112,9 +141,7 @@ describe("DirectPayoutStrategyFactory", function () {
 
         await expect(isAddress(payoutContractAddress)).to.be.true;
         await expect(isAddress(payoutImplementation)).to.be.true;
-
       });
-
     });
 
   });

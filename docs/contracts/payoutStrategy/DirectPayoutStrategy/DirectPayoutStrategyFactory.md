@@ -13,13 +13,21 @@
 ### create
 
 ```solidity
-function create() external nonpayable returns (address)
+function create(address _alloSettings, address _vaultAddress, uint32 _roundFeePercentage, address _roundFeeAddress) external nonpayable returns (address)
 ```
 
 Clones DirectPayoutStrategyImplementation and deploys a contract and emits an event
 
 
 
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _alloSettings | address | undefined |
+| _vaultAddress | address | undefined |
+| _roundFeePercentage | uint32 | undefined |
+| _roundFeeAddress | address | undefined |
 
 #### Returns
 

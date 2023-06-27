@@ -108,10 +108,21 @@ function generateTransferHash(address _allowanceModule, address _roundOperator, 
 ### init
 
 ```solidity
-function init(bytes _encodedParams) external nonpayable
+function init() external nonpayable
 ```
 
 Invoked by RoundImplementation on creation to set the round for which the payout strategy is to be used
+
+
+
+
+### initialize
+
+```solidity
+function initialize(address _alloSettings, address _vaultAddress, uint32 _roundFeePercentage, address _roundFeeAddress) external nonpayable
+```
+
+
 
 
 
@@ -119,18 +130,10 @@ Invoked by RoundImplementation on creation to set the round for which the payout
 
 | Name | Type | Description |
 |---|---|---|
-| _encodedParams | bytes | undefined |
-
-### initialize
-
-```solidity
-function initialize() external nonpayable
-```
-
-
-
-
-
+| _alloSettings | address | undefined |
+| _vaultAddress | address | undefined |
+| _roundFeePercentage | uint32 | undefined |
+| _roundFeeAddress | address | undefined |
 
 ### isDistributionSet
 
@@ -448,6 +451,28 @@ Emitted when a Round fee percentage is updated
 
 
 ## Errors
+
+### DirectStrategy__isConfigured
+
+```solidity
+error DirectStrategy__isConfigured()
+```
+
+
+
+
+
+
+### DirectStrategy__notConfigured
+
+```solidity
+error DirectStrategy__notConfigured()
+```
+
+
+
+
+
 
 ### DirectStrategy__notImplemented
 

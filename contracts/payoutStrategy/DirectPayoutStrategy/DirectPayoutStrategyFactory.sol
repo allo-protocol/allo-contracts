@@ -54,6 +54,10 @@ contract DirectPayoutStrategyFactory is OwnableUpgradeable {
    * and emits an event
    */
   function create(
+    address _alloSettings,
+    address _vaultAddress,
+    uint32  _roundFeePercentage,
+    address _roundFeeAddress
   ) external returns (address) {
 
     nonce++;
@@ -61,7 +65,12 @@ contract DirectPayoutStrategyFactory is OwnableUpgradeable {
     bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
     address clone = ClonesUpgradeable.cloneDeterministic(payoutImplementation, salt);
 
-    DirectPayoutStrategyImplementation(payable(clone)).initialize();
+    DirectPayoutStrategyImplementation(payable(clone)).initialize(
+      _alloSettings,
+      _vaultAddress,
+      _roundFeePercentage,
+      _roundFeeAddress
+    );
     emit PayoutContractCreated(clone, payoutImplementation);
 
     return clone;

@@ -13,7 +13,8 @@ import {
   MockERC20,
   GnosisSafeProxyFactory,
   GnosisSafe,
-  IAllowanceModule
+  IAllowanceModule,
+  DummyVotingStrategy
 } from "../../typechain";
 
 import { encodeRoundParameters } from "../../scripts/utils";
@@ -29,7 +30,7 @@ type Payment = {
   allowanceSignature: BytesLike;
 }
 
-describe("DirectStrategy", () => {
+describe("DirectPayoutStrategyImplementation", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
@@ -38,6 +39,7 @@ describe("DirectStrategy", () => {
   let vault: SignerWithAddress;
   let grantee1: SignerWithAddress;
 
+  let dummyVotingStrategy: DummyVotingStrategy;
   let directStrategyFactory: DirectPayoutStrategyFactory;
   let directStrategyImpl: DirectPayoutStrategyImplementation;
   let directStrategyProxy: DirectPayoutStrategyImplementation;
@@ -90,6 +92,8 @@ describe("DirectStrategy", () => {
     roundFeeAddress = Wallet.createRandom().address;
     vaultAddress = vault.address;
 
+    dummyVotingStrategy = await (await ethers.getContractFactory('DummyVotingStrategy')).deploy();
+
     let alloSettingsContractFactory = await ethers.getContractFactory('AlloSettings');
     alloSettingsContract = <AlloSettings>await upgrades.deployProxy(alloSettingsContractFactory);
 
@@ -125,10 +129,10 @@ describe("DirectStrategy", () => {
 
     await admin.sendTransaction({to: safeVault.address, value: 1000})
 
-    strategyEncodedParams = ethers.utils.defaultAbiCoder.encode(
-      ["address", "address", "uint32", "address"],
-      [alloSettingsContract.address, safeVault.address, roundFeePercentage, roundFeeAddress]
-    )
+    // strategyEncodedParams = ethers.utils.defaultAbiCoder.encode(
+    //   ["address", "address", "uint32", "address"],
+    //   [alloSettingsContract.address, safeVault.address, roundFeePercentage, roundFeeAddress]
+    // )
 
     // Deploy DirectStrategy contract
     directStrategyImpl = await (await ethers.getContractFactory('DirectPayoutStrategyImplementation')).deploy();
@@ -136,7 +140,7 @@ describe("DirectStrategy", () => {
     directStrategyFactory = <DirectPayoutStrategyFactory>await upgrades.deployProxy(await ethers.getContractFactory('DirectPayoutStrategyFactory'));
     await directStrategyFactory.updatePayoutImplementation(directStrategyImpl.address);
 
-    const txn = await directStrategyFactory.create();
+    const txn = await directStrategyFactory.create(alloSettingsContract.address, safeVault.address, roundFeePercentage, roundFeeAddress);
     const receipt = await txn.wait();
 
     if (receipt.events) {
@@ -196,7 +200,7 @@ describe("DirectStrategy", () => {
         // roundFeePercentage = roundFeePercentage * (denominator / 100);
 
         const initAddress = [
-          ethers.constants.AddressZero, // votingStrategy
+          dummyVotingStrategy.address, // votingStrategy
           directStrategyProxy.address, // payoutStrategy
         ];
 
@@ -223,8 +227,7 @@ describe("DirectStrategy", () => {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
-          strategyEncodedParams
+          initRoles
         ];
 
         const encoded = encodeRoundParameters(params)
@@ -270,7 +273,7 @@ describe("DirectStrategy", () => {
       });
 
       it("invoking init more than once SHOULD revert the transaction ", () => {
-        expect(directStrategyProxy.connect(notRoundOperator).init(strategyEncodedParams)).to.revertedWith(
+        expect(directStrategyProxy.connect(notRoundOperator).init()).to.revertedWith(
           "roundAddress already set"
         );
       });
@@ -389,25 +392,6 @@ describe("DirectStrategy", () => {
           .withArgs(newRoundFeeAddress);
       });
     });
-
-    describe("test: vote", () => {
-      it("SHOULD revert since is not an implemented functionality", async () => {
-        let encodedVotes: BytesLike[] = [];
-        encodedVotes.push(
-          ethers.utils.defaultAbiCoder.encode(
-            ["address", "uint256", "address", "bytes32", "uint256"],
-            [
-              mockERC20.address,
-              10,
-              grantee1.address,
-              formatBytes32String("grantee1"),
-              0,
-            ]
-          )
-        );
-        await expect(mockRound.vote(encodedVotes)).to.reverted
-      })
-    })
 
     describe("test: payout", () => {
       const grantee1ProjectId = formatBytes32String("grantee1");

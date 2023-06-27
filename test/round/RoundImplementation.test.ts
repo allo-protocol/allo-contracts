@@ -171,8 +171,7 @@ describe("RoundImplementation", function () {
         roundFeePercentage,
         roundFeeAddress,
         initMetaPtr,
-        initRoles,
-        '0x'
+        initRoles
       ];
 
       await roundImplementation.initialize(
@@ -328,8 +327,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
-          "0x"
+          initRoles
         ];
 
         await expect(
@@ -378,8 +376,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
-          "0x"
+          initRoles
         ];
 
         await expect(
@@ -428,8 +425,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
-          "0x"
+          initRoles
         ];
 
         await expect(
@@ -478,8 +474,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
-          "0x"
+          initRoles
         ];
 
         await expect(
@@ -528,8 +523,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
-          "0x"
+          initRoles
         ];
 
         await expect(
@@ -565,8 +559,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
-          "0x"
+          initRoles
         ];
 
         await expect(
