@@ -10,6 +10,7 @@ import "../IPayoutStrategy.sol";
 import {AlloSettings} from "../../settings/AlloSettings.sol";
 import {RoundImplementation} from "../../round/RoundImplementation.sol";
 import {IAllowanceModule} from "./IAllowanceModule.sol";
+import "../../utils/MetaPtr.sol";
 
 /**
  * Allows voters to cast multiple weighted votes to grants with one transaction
@@ -28,8 +29,7 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     PENDING,
     ACCEPTED,
     REJECTED,
-    CANCELED,
-    IN_REVIEW
+    CANCELED
   }
 
   struct Payment {
@@ -57,12 +57,16 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
   /// @notice Round fee address
   address payable public roundFeeAddress;
 
-  // Errors
+  /// @notice In Review Applications - applicationIndex -> is in review
+  mapping(uint256 => bool) internal _inReviewApplications;
+
+  // --- Errors ---
 
   error DirectStrategy__isConfigured();
   error DirectStrategy__notConfigured();
   error DirectStrategy__notImplemented();
   error DirectStrategy__vote_NotImplemented();
+  error DirectStrategy__setApplicationInReview_applicationInWrongStatus();
   error DirectStrategy__payout_ApplicationNotAccepted();
   error DirectStrategy__payout_NativeTokenNotAllowed();
   error DirectStrategy__payout_NotImplementedYet();
@@ -71,6 +75,9 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
   /// @notice Emitted when a Round fee percentage is updated
   event RoundFeePercentageUpdated(uint32 roundFeePercentage);
+
+  /// @notice Emitted when a Round wallet address is updated
+  event ApplicationInReview(uint256 indexed applicationIndex, address indexed operator);
 
   /// @notice Emitted when a Round wallet address is updated
   event RoundFeeAddressUpdated(address roundFeeAddress);
@@ -120,16 +127,28 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
   // @notice Update round fee percentage (only by ROUND_OPERATOR_ROLE)
   /// @param _newFeePercentage new fee percentage
-  function updateRoundFeePercentage(uint32 _newFeePercentage) external isCallerRoundOperator(msg.sender) roundHasNotEnded {
+  function updateRoundFeePercentage(uint32 _newFeePercentage) external isRoundOperator roundHasNotEnded {
     roundFeePercentage = _newFeePercentage;
     emit RoundFeePercentageUpdated(roundFeePercentage);
   }
 
   // @notice Update round fee address (only by ROUND_OPERATOR_ROLE)
   /// @param _newFeeAddress new fee address
-  function updateRoundFeeAddress(address payable _newFeeAddress) external isCallerRoundOperator(msg.sender) roundHasNotEnded {
+  function updateRoundFeeAddress(address payable _newFeeAddress) external isRoundOperator roundHasNotEnded {
     roundFeeAddress = _newFeeAddress;
     emit RoundFeeAddressUpdated(roundFeeAddress);
+  }
+
+  /**
+   * @notice Invoked by a round operator to make signal that a pending application turns to IN REVIEW status.*
+   *
+   * @param _applicationIndex Application index
+   */
+  function setApplicationInReview(uint256 _applicationIndex) external isRoundOperator roundHasNotEnded {
+    if (!_isPendingRoundApplication(_applicationIndex)) revert DirectStrategy__setApplicationInReview_applicationInWrongStatus();
+    _inReviewApplications[_applicationIndex] = true;
+
+    emit ApplicationInReview(_applicationIndex, msg.sender);
   }
 
   /**
@@ -206,8 +225,21 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
       );
   }
 
+  /// @dev Determines if a given application index on IN REVIEW status
+  function isApplicationInReview(uint256 applicationIndex) public view returns (bool) {
+    return _isPendingRoundApplication(applicationIndex) && _inReviewApplications[applicationIndex];
+  }
+
+  /// @dev Determines if a given application index on PENDING status
+  function _isPendingRoundApplication(uint256 applicationIndex) internal view returns(bool) {
+    RoundImplementation round = RoundImplementation(roundAddress);
+    uint256 currentStatus = round.getApplicationStatus(applicationIndex);
+
+    return currentStatus == uint256(ApplicationStatus.PENDING);
+  }
+
   // not implemented functions
-  function updateDistribution(bytes calldata _encodedDistribution) external override {
+  function updateDistribution(bytes calldata) external override {
     revert DirectStrategy__notImplemented();
   }
   function isDistributionSet() public override pure returns (bool) {

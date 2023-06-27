@@ -30,7 +30,7 @@ type Payment = {
   allowanceSignature: BytesLike;
 }
 
-describe("DirectPayoutStrategyImplementation", () => {
+describe.only("DirectPayoutStrategyImplementation", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
@@ -393,6 +393,85 @@ describe("DirectPayoutStrategyImplementation", () => {
       });
     });
 
+    describe("test: setApplicationInReview", () => {
+      const grantee1ProjectId = formatBytes32String("grantee1");
+      const grantee1IndexPending = 0;
+      const grantee1IndexApproved = 1;
+      const grantee1IndexNoApplied = 2;
+      const grantee1GrantAmount = 10;
+      let payment: Payment;
+
+      before(async () => {
+        await mockERC20.transfer(vaultAddress, 1000);
+        await mockERC20.connect(vault).approve(directStrategyProxy.address, ethers.constants.MaxUint256);
+        // 0
+        await mockRound.applyToRound(
+          grantee1ProjectId,
+          {
+            protocol: 1,
+            pointer: "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG",
+          }
+        );
+        // 1
+        await mockRound.applyToRound(
+          grantee1ProjectId,
+          {
+            protocol: 1,
+            pointer: "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG",
+          }
+        );
+
+        const statuses = [
+          { index: 0, status: ApplicationStatus.PENDING },
+          { index: 1, status: ApplicationStatus.ACCEPTED }
+        ]
+
+        const newState = buildStatusRow(0n, statuses);
+
+        const applicationStatus = {
+          index: 0,
+          statusRow: newState,
+        }
+
+        await mockRound.connect(roundOperator).setApplicationStatuses([applicationStatus]);
+        expect(await mockRound.getApplicationStatus(0)).equal(
+          ApplicationStatus.PENDING
+        );
+
+        expect(await mockRound.getApplicationStatus(1)).equal(
+          ApplicationStatus.ACCEPTED
+        );
+      });
+
+      it("SHOULD revert when caller is not the round operator", async () => {
+        await expect(directStrategyProxy.connect(notRoundOperator).setApplicationInReview(grantee1IndexPending)).to.revertedWith("not round operator")
+      })
+
+      it("SHOULD revert if application is not PENDING but ACCEPTED", async () => {
+        expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+        await expect(directStrategyProxy.connect(roundOperator).setApplicationInReview(grantee1IndexApproved)).to.revertedWith("DirectStrategy__setApplicationInReview_applicationInWrongStatus")
+      })
+
+      it("SHOULD revert if application is PENDING but not a real application", async () => {
+        await expect(mockRound.getApplicationStatus(grantee1IndexNoApplied)).to.revertedWith("Round: Application does not exist")
+        await expect(directStrategyProxy.connect(roundOperator).setApplicationInReview(grantee1IndexNoApplied)).to.revertedWith("Round: Application does not exist")
+      })
+
+      it("SHOULD set a PENDING application to IN REVIEW", async () => {
+        expect(await mockRound.getApplicationStatus(grantee1IndexPending)).to.eq(ApplicationStatus.PENDING)
+        expect(await directStrategyProxy.isApplicationInReview(grantee1IndexPending)).to.false
+
+        await expect(
+          directStrategyProxy.connect(roundOperator).setApplicationInReview(grantee1IndexPending)
+          ).to.emit(directStrategyProxy, 'ApplicationInReview').withArgs(
+            grantee1IndexPending,
+            roundOperator.address
+          );
+
+        expect(await directStrategyProxy.isApplicationInReview(grantee1IndexPending)).to.true
+      })
+
+    })
     describe("test: payout", () => {
       const grantee1ProjectId = formatBytes32String("grantee1");
       const grantee1IndexPending = 0;

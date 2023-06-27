@@ -135,6 +135,28 @@ function initialize(address _alloSettings, address _vaultAddress, uint32 _roundF
 | _roundFeePercentage | uint32 | undefined |
 | _roundFeeAddress | address | undefined |
 
+### isApplicationInReview
+
+```solidity
+function isApplicationInReview(uint256 applicationIndex) external view returns (bool)
+```
+
+
+
+*Determines if a given application index on IN REVIEW status*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| applicationIndex | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### isDistributionSet
 
 ```solidity
@@ -236,6 +258,22 @@ Round fee percentage
 |---|---|---|
 | _0 | uint32 | undefined |
 
+### setApplicationInReview
+
+```solidity
+function setApplicationInReview(uint256 _applicationIndex) external nonpayable
+```
+
+Invoked by a round operator to make signal that a pending application turns to IN REVIEW status.*
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _applicationIndex | uint256 | Application index |
+
 ### setReadyForPayout
 
 ```solidity
@@ -267,18 +305,18 @@ Token address
 ### updateDistribution
 
 ```solidity
-function updateDistribution(bytes _encodedDistribution) external nonpayable
+function updateDistribution(bytes) external nonpayable
 ```
 
-sInvoked by RoundImplementation to upload distribution to the payout strategy
 
-*- ideally IPayoutStrategy implementation should emit events after   distribution is updated - would be invoked at the end of the round Modifiers:  - isRoundOperator  - roundHasEnded*
+
+
 
 #### Parameters
 
 | Name | Type | Description |
 |---|---|---|
-| _encodedDistribution | bytes | encoded distribution |
+| _0 | bytes | undefined |
 
 ### updateRoundFeeAddress
 
@@ -348,6 +386,23 @@ Invoked by RoundImplementation to withdraw funds to withdrawAddress from the pay
 
 
 ## Events
+
+### ApplicationInReview
+
+```solidity
+event ApplicationInReview(uint256 indexed applicationIndex, address indexed operator)
+```
+
+Emitted when a Round wallet address is updated
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| applicationIndex `indexed` | uint256 | undefined |
+| operator `indexed` | address | undefined |
 
 ### FundsWithdrawn
 
@@ -511,6 +566,17 @@ error DirectStrategy__payout_NativeTokenNotAllowed()
 
 ```solidity
 error DirectStrategy__payout_NotImplementedYet()
+```
+
+
+
+
+
+
+### DirectStrategy__setApplicationInReview_applicationInWrongStatus
+
+```solidity
+error DirectStrategy__setApplicationInReview_applicationInWrongStatus()
 ```
 
 
