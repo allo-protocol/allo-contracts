@@ -155,6 +155,8 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
    * @dev It can be used to pay from a given address using `ERC20.transferFrom`, or from
    * the configured vault in which case the AllowanceModule should be set as a Safe Module on the Safe Multisig vault,
    * and the caller as delegate on the AllowanceModule.
+   *[AllowanceModule](https://github.com/safe-global/safe-modules/tree/master/allowances)
+   *
    * Using `transferFrom` only allow to pay with ERC20 tokens, and requires the indicated vault previously approved this
    * contract to use such ERC20 token on it behalf.
    * This 2 options are handled by the `payment.vault` parameter, if it set to an address different from address(0) then
