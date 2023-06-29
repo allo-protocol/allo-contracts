@@ -18,7 +18,7 @@ contract DirectPayoutStrategyFactory is OwnableUpgradeable {
   // --- Event ---
 
   /// @notice Emitted when payoutImplementation is updated
-  event PayoutImplementationUpdated(address DirectPayoutStrategyAddress);
+  event PayoutImplementationUpdated(address directPayoutStrategyAddress);
 
   /// @notice Emitted when a new payout contract is created
   event PayoutContractCreated(

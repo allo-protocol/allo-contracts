@@ -197,7 +197,7 @@ Emitted when a new payout contract is created
 ### PayoutImplementationUpdated
 
 ```solidity
-event PayoutImplementationUpdated(address DirectPayoutStrategyAddress)
+event PayoutImplementationUpdated(address directPayoutStrategyAddress)
 ```
 
 Emitted when payoutImplementation is updated
@@ -208,7 +208,7 @@ Emitted when payoutImplementation is updated
 
 | Name | Type | Description |
 |---|---|---|
-| DirectPayoutStrategyAddress  | address | undefined |
+| directPayoutStrategyAddress  | address | undefined |
 
 
 

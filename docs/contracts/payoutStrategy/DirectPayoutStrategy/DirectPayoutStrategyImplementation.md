@@ -4,7 +4,7 @@
 
 
 
-Allows voters to cast multiple weighted votes to grants with one transaction This is inspired from BulkCheckout documented over at: https://github.com/gitcoinco/BulkTransactions/blob/master/contracts/BulkCheckout.sol Emits event upon every transfer.
+Direct Payout Strategy contract which is deployed once per round and is used to handle IN REVIEW applications status and to pay grantees based on internal review process.
 
 
 
