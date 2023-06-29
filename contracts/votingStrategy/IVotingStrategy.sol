@@ -33,7 +33,7 @@ abstract contract IVotingStrategy {
    * set the round for which the voting contracts is to be used
    *
    */
-  function init() external virtual {
+  function init() external {
     require(roundAddress == address(0), "init: roundAddress already set");
     roundAddress = msg.sender;
   }
