@@ -19,7 +19,7 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
 
   using SafeERC20Upgradeable for IERC20Upgradeable;
 
-  string public constant VERSION = "0.2.0";
+  string public constant VERSION = "0.2.1";
 
   // --- Event ---
 
@@ -27,6 +27,7 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
   event Voted(
     address token,                    // voting token
     uint256 amount,                   // voting amount
+    address origin,                   // voter origin
     address indexed voter,            // voter address
     address grantAddress,             // grant address
     bytes32 indexed projectId,        // project id
@@ -92,6 +93,7 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
       emit Voted(
         _token,
         _amount,
+        tx.origin,
         voterAddress,
         _grantAddress,
         _projectId,
