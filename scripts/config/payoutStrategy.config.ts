@@ -48,8 +48,8 @@ export const DirectPayoutParams: DeployParams = {
   },
   goerli: {
     factory: "0xEA5cddfb6B755636852CE10c4407Cc1613B78355",
-    implementation: "0xAEd1cE441FA6aD4F89d28026F3E7491394deEa5F",
-    contract: "0xe14c00F31fBF325FE35f461e6cb821286F6cF040",
+    implementation: "0xa0EaE51246a00781E952Ce134FcFA9341CE7a99E",
+    contract: "0xcA88D1b0c92D2bAE0B9137eEAc4e0D1374cb5eC5",
   },
   "optimism-mainnet": {
     factory: "",

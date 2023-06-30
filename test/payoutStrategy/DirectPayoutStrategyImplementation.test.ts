@@ -30,7 +30,7 @@ type Payment = {
   allowanceSignature: BytesLike;
 }
 
-describe.only("DirectPayoutStrategyImplementation", () => {
+describe("DirectPayoutStrategyImplementation", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
