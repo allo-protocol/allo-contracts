@@ -20,7 +20,7 @@ export const QFVotingParams: DeployParams = {
   },
   "optimism-mainnet": {
     factory: '0x838C5e10dcc1e54d62761d994722367BA167AC22',
-    implementation: '0x9Bb7eE67b688E4a5E9D24CF9604996c8DFA1C9ab',
+    implementation: '0x27C43Ee6b8deF6Ad804Ca9106736a43FF9dFB6F1',
     contract: ''
   },
   "fantom-mainnet": {
