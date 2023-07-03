@@ -87,7 +87,7 @@ function generateTransferHash(address _allowanceModule, address _roundOperator, 
 
 
 
-*Generates the transfer hash that should be signed by the delegate to authorize a transfer*
+*Generates the transfer hash that should be signed by the delegate to authorize a transfer. This function add both protocol and round fees to the amount so they are included in the signature required for executing the `payout` function*
 
 #### Parameters
 
@@ -441,7 +441,7 @@ event Initialized(uint8 version)
 ### PayoutMade
 
 ```solidity
-event PayoutMade(address indexed vault, address token, uint256 amount, address grantAddress, bytes32 indexed projectId, uint256 indexed applicationIndex, address allowanceModule)
+event PayoutMade(address indexed vault, address token, uint256 amount, uint256 protocolFee, uint256 roundFee, address grantAddress, bytes32 indexed projectId, uint256 indexed applicationIndex, address allowanceModule)
 ```
 
 Emitted when a payout is executed
@@ -455,6 +455,8 @@ Emitted when a payout is executed
 | vault `indexed` | address | undefined |
 | token  | address | undefined |
 | amount  | uint256 | undefined |
+| protocolFee  | uint256 | undefined |
+| roundFee  | uint256 | undefined |
 | grantAddress  | address | undefined |
 | projectId `indexed` | bytes32 | undefined |
 | applicationIndex `indexed` | uint256 | undefined |

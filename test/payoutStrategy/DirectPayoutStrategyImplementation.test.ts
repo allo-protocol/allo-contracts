@@ -30,7 +30,7 @@ type Payment = {
   allowanceSignature: BytesLike;
 }
 
-describe("DirectPayoutStrategyImplementation", () => {
+describe.only("DirectPayoutStrategyImplementation", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
@@ -38,6 +38,8 @@ describe("DirectPayoutStrategyImplementation", () => {
   let safeOwner: SignerWithAddress;
   let vault: SignerWithAddress;
   let grantee1: SignerWithAddress;
+  let protocolTreasury: SignerWithAddress;
+  let roundFeeAddress: SignerWithAddress;
 
   let dummyVotingStrategy: DummyVotingStrategy;
   let directStrategyFactory: DirectPayoutStrategyFactory;
@@ -49,7 +51,6 @@ describe("DirectPayoutStrategyImplementation", () => {
 
   let vaultAddress: string;
   let roundFeePercentage: BigNumberish;
-  let roundFeeAddress: string;
 
   let strategyEncodedParams: string;
   let roundEncodedParams: string;
@@ -86,10 +87,9 @@ describe("DirectPayoutStrategyImplementation", () => {
   }
 
   before(async () => {
-    [admin, safeOwner, roundOperator, notRoundOperator, vault, grantee1] = await ethers.getSigners();
+    [admin, safeOwner, roundOperator, notRoundOperator, vault, grantee1, roundFeeAddress, protocolTreasury] = await ethers.getSigners();
 
     roundFeePercentage = 0;
-    roundFeeAddress = Wallet.createRandom().address;
     vaultAddress = vault.address;
 
     dummyVotingStrategy = await (await ethers.getContractFactory('DummyVotingStrategy')).deploy();
@@ -98,7 +98,7 @@ describe("DirectPayoutStrategyImplementation", () => {
     alloSettingsContract = <AlloSettings>await upgrades.deployProxy(alloSettingsContractFactory);
 
     mockRound = await (await ethers.getContractFactory('MockRoundImplementation')).deploy() as MockRoundImplementation;
-    mockERC20 = await (await ethers.getContractFactory('MockERC20')).deploy(1000000);
+    mockERC20 = await (await ethers.getContractFactory('MockERC20')).deploy(100000000000);
 
     allowanceModule = await ethers.getContractAt("IAllowanceModule", ALLOWANCE_MODULE) as IAllowanceModule;
     safeFactory = await ethers.getContractAt("GnosisSafeProxyFactory", "0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2") as GnosisSafeProxyFactory;
@@ -120,19 +120,14 @@ describe("DirectPayoutStrategyImplementation", () => {
     await execSafeTransaction(ALLOWANCE_MODULE, 0, addDelegateData, CALL)
 
     // set allowance
-    let setAllowanceDataERC20 = allowanceModule.interface.encodeFunctionData("setAllowance", [roundOperator.address, mockERC20.address, 100, 0, 0]);
-    let setAllowanceDataETH = allowanceModule.interface.encodeFunctionData("setAllowance", [roundOperator.address, ethers.constants.AddressZero, 100, 0, 0]);
+    let setAllowanceDataERC20 = allowanceModule.interface.encodeFunctionData("setAllowance", [roundOperator.address, mockERC20.address, 100000000, 0, 0]);
+    let setAllowanceDataETH = allowanceModule.interface.encodeFunctionData("setAllowance", [roundOperator.address, ethers.constants.AddressZero, 100000000, 0, 0]);
     await execSafeTransaction(ALLOWANCE_MODULE, 0, setAllowanceDataERC20, CALL)
     await execSafeTransaction(ALLOWANCE_MODULE, 0, setAllowanceDataETH, CALL)
 
-    await mockERC20.transfer(safeVault.address, 1000);
+    await mockERC20.transfer(safeVault.address, 10000000);
 
-    await admin.sendTransaction({to: safeVault.address, value: 1000})
-
-    // strategyEncodedParams = ethers.utils.defaultAbiCoder.encode(
-    //   ["address", "address", "uint32", "address"],
-    //   [alloSettingsContract.address, safeVault.address, roundFeePercentage, roundFeeAddress]
-    // )
+    await admin.sendTransaction({to: safeVault.address, value: 10000000})
 
     // Deploy DirectStrategy contract
     directStrategyImpl = await (await ethers.getContractFactory('DirectPayoutStrategyImplementation')).deploy();
@@ -140,7 +135,7 @@ describe("DirectPayoutStrategyImplementation", () => {
     directStrategyFactory = <DirectPayoutStrategyFactory>await upgrades.deployProxy(await ethers.getContractFactory('DirectPayoutStrategyFactory'));
     await directStrategyFactory.updatePayoutImplementation(directStrategyImpl.address);
 
-    const txn = await directStrategyFactory.create(alloSettingsContract.address, safeVault.address, roundFeePercentage, roundFeeAddress);
+    const txn = await directStrategyFactory.create(alloSettingsContract.address, safeVault.address, roundFeePercentage, roundFeeAddress.address);
     const receipt = await txn.wait();
 
     if (receipt.events) {
@@ -225,7 +220,7 @@ describe("DirectPayoutStrategyImplementation", () => {
           matchAmount,
           ethers.constants.AddressZero,
           roundFeePercentage,
-          roundFeeAddress,
+          roundFeeAddress.address,
           initMetaPtr,
           initRoles
         ];
@@ -268,7 +263,7 @@ describe("DirectPayoutStrategyImplementation", () => {
       });
       it("invoking init once SHOULD set the roundFee Address", async () => {
         expect(await directStrategyProxy.roundFeeAddress()).to.equal(
-          roundFeeAddress
+          roundFeeAddress.address
         );
       });
 
@@ -476,11 +471,11 @@ describe("DirectPayoutStrategyImplementation", () => {
       const grantee1ProjectId = formatBytes32String("grantee1");
       const grantee1IndexPending = 0;
       const grantee1IndexApproved = 1;
-      const grantee1GrantAmount = 10;
+      const grantee1GrantAmount = 1000000;
       let payment: Payment;
 
       before(async () => {
-        await mockERC20.transfer(vaultAddress, 1000);
+        await mockERC20.transfer(vaultAddress, 10000000);
         await mockERC20.connect(vault).approve(directStrategyProxy.address, ethers.constants.MaxUint256);
         // 0
         await mockRound.applyToRound(
@@ -569,6 +564,32 @@ describe("DirectPayoutStrategyImplementation", () => {
           expect(await mockERC20.balanceOf(vaultAddress)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
         })
 
+        it("SHOULD transfer indicated amount and fees of ERC20 tokens from vault to grantee, protocol treasury and round fee address when application is APPROVED", async () => {
+          alloSettingsContract.updateProtocolTreasury(protocolTreasury.address);
+          alloSettingsContract.updateProtocolFeePercentage(100); // 0.1%
+          directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
+
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          const balanceGrantee1Before = await mockERC20.balanceOf(grantee1.address);
+          const balanceVaultBefore = await mockERC20.balanceOf(vaultAddress);
+          const balanceProtocolTreasuryBefore = await mockERC20.balanceOf(protocolTreasury.address);
+          const balanceRoundBefore = await mockERC20.balanceOf(roundFeeAddress.address);
+
+          await directStrategyProxy.connect(roundOperator).payout({
+            ...payment,
+            applicationIndex: grantee1IndexApproved
+          })
+
+          const protocolFee = grantee1GrantAmount*100/100000;
+          const roundFee = grantee1GrantAmount*10/100000;
+
+          expect(await mockERC20.balanceOf(grantee1.address)).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
+          expect(await mockERC20.balanceOf(vaultAddress)).to.eq((balanceVaultBefore.sub(grantee1GrantAmount).sub(protocolFee).sub(roundFee)))
+          expect(await mockERC20.balanceOf(protocolTreasury.address)).to.eq(balanceProtocolTreasuryBefore.add(protocolFee))
+          expect(await mockERC20.balanceOf(roundFeeAddress.address)).to.eq(balanceRoundBefore.add(roundFee))
+        })
+
         it("SHOULD emit an event for each payment", async () => {
           expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
 
@@ -581,6 +602,8 @@ describe("DirectPayoutStrategyImplementation", () => {
             vaultAddress,
             mockERC20.address,
             grantee1GrantAmount,
+            0,
+            0,
             grantee1.address,
             grantee1ProjectId,
             grantee1IndexApproved,
@@ -618,7 +641,8 @@ describe("DirectPayoutStrategyImplementation", () => {
           const balanceGrantee1Before = await mockERC20.balanceOf(grantee1.address);
           const balanceVaultBefore = await mockERC20.balanceOf(safeVault.address);
 
-          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, mockERC20.address, grantee1.address, grantee1GrantAmount)
+          // receiver is directStrategyProxy, funds (amount + protocolFee + roundFee) are collected and distributed
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, mockERC20.address, directStrategyProxy.address, grantee1GrantAmount)
           let sig = await signHash(roundOperator, transactionHash)
 
           await directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, allowanceSignature: sig.data})
@@ -627,13 +651,41 @@ describe("DirectPayoutStrategyImplementation", () => {
           expect(await mockERC20.balanceOf(safeVault.address)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
         })
 
+        it("SHOULD transfer indicated amount and fees of ERC20 tokens from vault to grantee, protocol treasury and round fee address when application is APPROVED", async () => {
+          alloSettingsContract.updateProtocolTreasury(protocolTreasury.address);
+          alloSettingsContract.updateProtocolFeePercentage(100); // 0.1%
+          directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
+
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          const balanceGrantee1Before = await mockERC20.balanceOf(grantee1.address);
+          const balanceVaultBefore = await mockERC20.balanceOf(safeVault.address);
+          const balanceProtocolTreasuryBefore = await mockERC20.balanceOf(protocolTreasury.address);
+          const balanceRoundBefore = await mockERC20.balanceOf(roundFeeAddress.address);
+
+          // receiver is directStrategyProxy, funds (amount + protocolFee + roundFee) are collected and distributed
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, mockERC20.address, directStrategyProxy.address, grantee1GrantAmount)
+          let sig = await signHash(roundOperator, transactionHash)
+
+          await directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, allowanceSignature: sig.data})
+
+          const protocolFee = grantee1GrantAmount*100/100000;
+          const roundFee = grantee1GrantAmount*10/100000;
+
+          expect(await mockERC20.balanceOf(grantee1.address)).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
+          expect(await mockERC20.balanceOf(safeVault.address)).to.eq((balanceVaultBefore.sub(grantee1GrantAmount).sub(protocolFee).sub(roundFee)))
+          expect(await mockERC20.balanceOf(protocolTreasury.address)).to.eq(balanceProtocolTreasuryBefore.add(protocolFee))
+          expect(await mockERC20.balanceOf(roundFeeAddress.address)).to.eq(balanceRoundBefore.add(roundFee))
+        })
+
         it("SHOULD transfer indicated amount of ETH from configured Safe vault to grantee when application is APPROVED", async () => {
           expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
 
           const balanceGrantee1Before = await grantee1.getBalance();
           const balanceVaultBefore = await ethers.provider.getBalance(safeVault.address);
 
-          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, ethers.constants.AddressZero, grantee1.address, grantee1GrantAmount)
+          // receiver is directStrategyProxy, funds (amount + protocolFee + roundFee) are collected and distributed
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, ethers.constants.AddressZero, directStrategyProxy.address, grantee1GrantAmount)
           let sig = await signHash(roundOperator, transactionHash)
 
           const tx = await directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, token: ethers.constants.AddressZero, allowanceSignature: sig.data})
@@ -642,9 +694,37 @@ describe("DirectPayoutStrategyImplementation", () => {
           expect(await ethers.provider.getBalance(safeVault.address)).to.eq(balanceVaultBefore.sub(grantee1GrantAmount))
         })
 
+        it("SHOULD transfer indicated amount and fees of ETH from configured Safe vault to grantee, protocol treasury and round fee address when application is APPROVED", async () => {
+          alloSettingsContract.updateProtocolTreasury(protocolTreasury.address);
+          alloSettingsContract.updateProtocolFeePercentage(100); // 0.1%
+          directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
+
+          expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
+
+          const balanceGrantee1Before = await grantee1.getBalance();
+          const balanceVaultBefore = await ethers.provider.getBalance(safeVault.address);
+          const balanceProtocolTreasuryBefore = await ethers.provider.getBalance(protocolTreasury.address);
+          const balanceRoundBefore = await ethers.provider.getBalance(roundFeeAddress.address);
+
+          // receiver is directStrategyProxy, funds (amount + protocolFee + roundFee) are collected and distributed
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, ethers.constants.AddressZero, directStrategyProxy.address, grantee1GrantAmount)
+          let sig = await signHash(roundOperator, transactionHash)
+
+          const tx = await directStrategyProxy.connect(roundOperator).payout({...payment, applicationIndex: grantee1IndexApproved, token: ethers.constants.AddressZero, allowanceSignature: sig.data})
+
+          const protocolFee = grantee1GrantAmount*100/100000;
+          const roundFee = grantee1GrantAmount*10/100000;
+
+
+          expect(await grantee1.getBalance()).to.eq(balanceGrantee1Before.add(grantee1GrantAmount))
+          expect(await ethers.provider.getBalance(safeVault.address)).to.eq((balanceVaultBefore.sub(grantee1GrantAmount).sub(protocolFee).sub(roundFee)))
+          expect(await ethers.provider.getBalance(protocolTreasury.address)).to.eq(balanceProtocolTreasuryBefore.add(protocolFee))
+          expect(await ethers.provider.getBalance(roundFeeAddress.address)).to.eq(balanceRoundBefore.add(roundFee))
+        })
 
         it("SHOULD emit an event for each payment", async () => {
-          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, ethers.constants.AddressZero, grantee1.address, grantee1GrantAmount)
+          // receiver is directStrategyProxy, funds (amount + protocolFee + roundFee) are collected and distributed
+          let transactionHash = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, ethers.constants.AddressZero, directStrategyProxy.address, grantee1GrantAmount)
           let sig = await signHash(roundOperator, transactionHash)
 
           await expect(
@@ -653,13 +733,16 @@ describe("DirectPayoutStrategyImplementation", () => {
             safeVault.address,
             ethers.constants.AddressZero,
             grantee1GrantAmount,
+            0,
+            0,
             grantee1.address,
             grantee1ProjectId,
             grantee1IndexApproved,
             ALLOWANCE_MODULE
           );
 
-          let transactionHashERC20 = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, mockERC20.address, grantee1.address, grantee1GrantAmount)
+          // receiver is directStrategyProxy, funds (amount + protocolFee + roundFee) are collected and distributed
+          let transactionHashERC20 = await directStrategyProxy.generateTransferHash(ALLOWANCE_MODULE, roundOperator.address, mockERC20.address, directStrategyProxy.address, grantee1GrantAmount)
           let sigERC20 = await signHash(roundOperator, transactionHashERC20)
 
           await expect(
@@ -668,6 +751,8 @@ describe("DirectPayoutStrategyImplementation", () => {
               safeVault.address,
               mockERC20.address,
               grantee1GrantAmount,
+              0,
+            0,
               grantee1.address,
               grantee1ProjectId,
               grantee1IndexApproved,

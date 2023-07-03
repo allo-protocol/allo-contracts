@@ -85,6 +85,8 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
       address indexed vault,
       address token,
       uint256 amount,
+      uint256 protocolFee,
+      uint256 roundFee,
       address grantAddress,
       bytes32 indexed projectId,
       uint256 indexed applicationIndex,
@@ -172,38 +174,32 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
     address usedVault = vaultAddress;
 
+    (uint256 protocolFeeAmount, uint256 roundFeeAmount) = _getFees(_payment.amount);
+
     // use transfer from
     if (_payment.vault != address(0)) {
-      if (_payment.token == address(0)) revert DirectStrategy__payout_NativeTokenNotAllowed();
-      /// @dev erc20 transfer to grant address
-      // slither-disable-next-line arbitrary-send-erc20,reentrancy-events,
-      SafeERC20Upgradeable.safeTransferFrom(
-        IERC20Upgradeable(_payment.token),
-        _payment.vault,
-        _payment.grantAddress,
-        _payment.amount
-      );
+      _payWithWallet(_payment, protocolFeeAmount, roundFeeAmount);
       usedVault = _payment.vault;
     } else { // use Safe multisig vault
-      IAllowanceModule allowanceModule = IAllowanceModule(_payment.allowanceModule);
-      allowanceModule.executeAllowanceTransfer(
-          vaultAddress,
-          _payment.token,
-          payable(_payment.grantAddress),
-          uint96(_payment.amount),
-          address(0),
-          0,
-          msg.sender,
-          _payment.allowanceSignature
-      );
+      _payWithSafe(_payment, protocolFeeAmount, roundFeeAmount);
     }
 
-    // TODO - implement round fee
-
-    emit PayoutMade(usedVault, _payment.token, _payment.amount, _payment.grantAddress, _payment.projectId, _payment.applicationIndex, _payment.allowanceModule);
+    emit PayoutMade(
+      usedVault,
+      _payment.token,
+      _payment.amount,
+      protocolFeeAmount,
+      roundFeeAmount,
+      _payment.grantAddress,
+      _payment.projectId,
+      _payment.applicationIndex,
+      _payment.allowanceModule
+    );
   }
 
-  /// @dev Generates the transfer hash that should be signed by the delegate to authorize a transfer
+  /// @dev Generates the transfer hash that should be signed by the delegate to authorize a transfer.
+  /// This function add both protocol and round fees to the amount so they are included in the signature required for
+  /// executing the `payout` function
   function generateTransferHash(
       address _allowanceModule,
       address _roundOperator,
@@ -214,11 +210,13 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
       IAllowanceModule allowanceModule = IAllowanceModule(_allowanceModule);
       uint256[5] memory tokenAllowance = allowanceModule.getTokenAllowance(vaultAddress, _roundOperator, _token);
 
+      (uint256 protocolFeeAmount, uint256 roundFeeAmount) = _getFees(_amount);
+
       return allowanceModule.generateTransferHash(
         vaultAddress,
         _token,
         _to,
-        _amount,
+        _amount + uint96(protocolFeeAmount + roundFeeAmount),
         address(0),
         0,
         uint16(tokenAllowance[4])
@@ -230,12 +228,85 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     return _isPendingRoundApplication(applicationIndex) && _inReviewApplications[applicationIndex];
   }
 
+  function _payWithWallet(Payment calldata _payment, uint256 _protocolFeeAmount, uint256 _roundFeeAmount) internal {
+    address protocolTreasury = alloSettings.protocolTreasury();
+
+    if (_payment.token == address(0)) revert DirectStrategy__payout_NativeTokenNotAllowed();
+
+    /// @dev erc20 transfer to grant address
+    // slither-disable-next-line arbitrary-send-erc20,reentrancy-events,
+    IERC20Upgradeable(_payment.token).safeTransferFrom(
+      _payment.vault,
+      _payment.grantAddress,
+      _payment.amount
+    );
+
+    if (_protocolFeeAmount > 0 && protocolTreasury != address(0)) {
+      IERC20Upgradeable(_payment.token).safeTransferFrom(
+        _payment.vault,
+        protocolTreasury,
+        _protocolFeeAmount
+      );
+    }
+
+    // deduct round fee
+    if (_roundFeeAmount > 0 && roundFeeAddress != address(0)) {
+      IERC20Upgradeable(_payment.token).safeTransferFrom(
+        _payment.vault,
+        roundFeeAddress,
+        _roundFeeAmount
+      );
+    }
+  }
+  function _payWithSafe(Payment calldata _payment, uint256 _protocolFeeAmount, uint256 _roundFeeAmount) internal {
+    address protocolTreasury = alloSettings.protocolTreasury();
+
+    IAllowanceModule allowanceModule = IAllowanceModule(_payment.allowanceModule);
+    allowanceModule.executeAllowanceTransfer(
+        vaultAddress,
+        _payment.token,
+        payable(address(this)),
+        uint96(_payment.amount + _protocolFeeAmount + _roundFeeAmount),
+        address(0),
+        0,
+        msg.sender,
+        _payment.allowanceSignature // allowanceSignature should contain _payment.amount + protocolFeeAmount + roundFeeAmount as the amount
+    );
+
+    _transferAmount(_payment.token, payable(_payment.grantAddress), _payment.amount);
+    if (_protocolFeeAmount > 0 && protocolTreasury != address(0)) {
+      _transferAmount(_payment.token, payable(protocolTreasury), _protocolFeeAmount);
+    }
+    if (_roundFeeAmount > 0 && roundFeeAddress != address(0)) {
+      _transferAmount(_payment.token, payable(roundFeeAddress), _roundFeeAmount);
+    }
+  }
+
+  function _getFees(uint256 _amount) internal view returns (uint256 protocolFeeAmount, uint256 roundFeeAmount) {
+    uint32 denominator = alloSettings.DENOMINATOR();
+
+    protocolFeeAmount = (_amount * alloSettings.protocolFeePercentage()) / denominator;
+    roundFeeAmount = (_amount * roundFeePercentage) / denominator;
+
+  }
+
   /// @dev Determines if a given application index on PENDING status
   function _isPendingRoundApplication(uint256 applicationIndex) internal view returns(bool) {
     RoundImplementation round = RoundImplementation(roundAddress);
     uint256 currentStatus = round.getApplicationStatus(applicationIndex);
 
     return currentStatus == uint256(ApplicationStatus.PENDING);
+  }
+
+  /// @notice Util function to transfer amount to recipient
+  /// @param _recipient recipient address
+  /// @param _amount amount to transfer
+  function _transferAmount(address _token, address payable _recipient, uint256 _amount) private {
+    if (_token == address(0)) {
+      Address.sendValue(_recipient, _amount);
+    } else {
+      IERC20Upgradeable(_token).safeTransfer(_recipient, _amount);
+    }
   }
 
   // not implemented functions
