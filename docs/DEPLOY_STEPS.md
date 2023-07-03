@@ -26,9 +26,9 @@ cp ../.env.example ../.env
     - `DEPLOYER_PRIVATE_KEY`    : address which deploys the contract
     - `ETHERSCAN_API_KEY`       : API key for etherscan verification ([Get one here](https://etherscan.io/myapikey))
 
-2. Deploy the `ProgramRegistry` contract
+2. Deploy the `ProjectRegistry` contract
 ```shell
-pnpm run deploy-builder goerli
+pnpm run deploy-project-registry goerli
 ```
 
 

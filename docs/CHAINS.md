@@ -119,22 +119,22 @@ These are contracts that are created/deployed for every round created on goerli
 | Round                                 | 0xF7b7d21257DEaC12F75D901309026913429C9bdF |
 
 
-## Fantom Testnetwork
+## Fantom Testnet
 
 These are contracts that are created/deployed once for fantom testnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        |  |
-| ProgramImplementation                 |  |
-| QuadraticFundingVotingStrategyFactory |  |
-| QFVotingStrategyImplementation        |  |
-| RoundFactory                          |  |
-| RoundImplementation                   |  |
-| ProjectRegistry                       |  |
-| MerklePayoutStrategyFactory           |  |
-| MerklePayouStrategyImplementation     |  |
-| AlloSettings                          |  |
+| ProgramFactory                        | 0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D |
+| ProgramImplementation                 | 0xd07D54b0231088Ca9BF7DA6291c911B885cBC140 |
+| QuadraticFundingVotingStrategyFactory | 0x545B282A50EaeA01A619914d44105437036CbB36 |
+| QFVotingStrategyImplementation        | 0x2AFA4bE0f2468347A2F086c2167630fb1E58b725 |
+| RoundFactory                          | 0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3 |
+| RoundImplementation                   | 0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1 |
+| ProjectRegistry                       | 0x5e5b7D871efDE8224390a334045e1dcb7daAf4E2 |
+| MerklePayoutStrategyFactory           | 0x5b55728e41154562ee80027C1247B13382692e5C |
+| MerklePayouStrategyImplementation     | 0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb |
+| AlloSettings                          | 0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90 |
 
 **Sample contracts unique to a round **
 

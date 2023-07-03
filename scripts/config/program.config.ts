@@ -29,8 +29,8 @@ export const programParams: DeployParams = {
     programContract: ''
   },
   "fantom-testnet": {
-    programFactoryContract: '',
-    programImplementationContract: '',
+    programFactoryContract: '0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D',
+    programImplementationContract: '0xd07D54b0231088Ca9BF7DA6291c911B885cBC140',
     programContract: ''
   }
 };

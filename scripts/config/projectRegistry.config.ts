@@ -19,6 +19,6 @@ export const projectRegistryParams: DeployParams = {
     proxyContactAddress: '',
   },
   "fantom-testnet": {
-    proxyContactAddress: '',
+    proxyContactAddress: '0x5e5b7D871efDE8224390a334045e1dcb7daAf4E2',
   }
 };

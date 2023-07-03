@@ -29,8 +29,8 @@ export const QFVotingParams: DeployParams = {
     contract: ''
   },
   "fantom-testnet": {
-    factory: '',
-    implementation: '',
+    factory: '0x545B282A50EaeA01A619914d44105437036CbB36',
+    implementation: '0x2AFA4bE0f2468347A2F086c2167630fb1E58b725',
     contract: ''
   }
 };

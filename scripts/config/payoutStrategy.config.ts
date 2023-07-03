@@ -29,8 +29,8 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   "fantom-testnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x5b55728e41154562ee80027C1247B13382692e5C",
+    implementation: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
     contract: "",
   },
 };
