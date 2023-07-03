@@ -44,23 +44,6 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### alloSettings
-
-```solidity
-function alloSettings() external view returns (contract AlloSettings)
-```
-
-Allo Config Contract Address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | contract AlloSettings | undefined |
-
 ### distributionMetaPtr
 
 ```solidity
@@ -119,21 +102,13 @@ Invoked by RoundImplementation on creation to set the round for which the payout
 ### initialize
 
 ```solidity
-function initialize(address _alloSettings, address _vaultAddress, uint32 _roundFeePercentage, address _roundFeeAddress) external nonpayable
+function initialize() external nonpayable
 ```
 
 
 
 
 
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _alloSettings | address | undefined |
-| _vaultAddress | address | undefined |
-| _roundFeePercentage | uint32 | undefined |
-| _roundFeeAddress | address | undefined |
 
 ### isApplicationInReview
 
@@ -224,40 +199,6 @@ RoundImplementation address
 |---|---|---|
 | _0 | address payable | undefined |
 
-### roundFeeAddress
-
-```solidity
-function roundFeeAddress() external view returns (address payable)
-```
-
-Round fee address
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address payable | undefined |
-
-### roundFeePercentage
-
-```solidity
-function roundFeePercentage() external view returns (uint32)
-```
-
-Round fee percentage
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint32 | undefined |
-
 ### setApplicationInReview
 
 ```solidity
@@ -318,10 +259,10 @@ function updateDistribution(bytes) external nonpayable
 |---|---|---|
 | _0 | bytes | undefined |
 
-### updateRoundFeeAddress
+### updateVaultAddress
 
 ```solidity
-function updateRoundFeeAddress(address payable _newFeeAddress) external nonpayable
+function updateVaultAddress(address _newVaultAddress) external nonpayable
 ```
 
 
@@ -332,23 +273,7 @@ function updateRoundFeeAddress(address payable _newFeeAddress) external nonpayab
 
 | Name | Type | Description |
 |---|---|---|
-| _newFeeAddress | address payable | new fee address |
-
-### updateRoundFeePercentage
-
-```solidity
-function updateRoundFeePercentage(uint32 _newFeePercentage) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _newFeePercentage | uint32 | new fee percentage |
+| _newVaultAddress | address | new vault address |
 
 ### vaultAddress
 
@@ -473,13 +398,13 @@ Emitted when contract is ready for payout
 
 
 
-### RoundFeeAddressUpdated
+### VaultAddressUpdated
 
 ```solidity
-event RoundFeeAddressUpdated(address roundFeeAddress)
+event VaultAddressUpdated(address vaultAddress)
 ```
 
-Emitted when a Round wallet address is updated
+Emitted when a Vault address is updated
 
 
 
@@ -487,23 +412,7 @@ Emitted when a Round wallet address is updated
 
 | Name | Type | Description |
 |---|---|---|
-| roundFeeAddress  | address | undefined |
-
-### RoundFeePercentageUpdated
-
-```solidity
-event RoundFeePercentageUpdated(uint32 roundFeePercentage)
-```
-
-Emitted when a Round fee percentage is updated
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| roundFeePercentage  | uint32 | undefined |
+| vaultAddress  | address | undefined |
 
 
 

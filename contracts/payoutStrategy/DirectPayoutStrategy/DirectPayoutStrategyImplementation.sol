@@ -41,19 +41,17 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
       bytes allowanceSignature;
   }
 
+  struct Fees {
+      address protocolTreasury;
+      address roundFeeAddress;
+      uint256 protocolFeeAmount;
+      uint256 roundFeeAmount;
+  }
+
   // --- Data ---
 
   /// @notice Funds vault address
   address public vaultAddress;
-
-   /// @notice Allo Config Contract Address
-  AlloSettings public alloSettings;
-
-  /// @notice Round fee percentage
-  uint32 public roundFeePercentage;
-
-  /// @notice Round fee address
-  address payable public roundFeeAddress;
 
   /// @notice In Review Applications - applicationIndex -> is in review
   mapping(uint256 => bool) internal _inReviewApplications;
@@ -71,14 +69,11 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
   // --- Event ---
 
-  /// @notice Emitted when a Round fee percentage is updated
-  event RoundFeePercentageUpdated(uint32 roundFeePercentage);
+  /// @notice Emitted when a Vault address is updated
+  event VaultAddressUpdated(address vaultAddress);
 
   /// @notice Emitted when a Round wallet address is updated
   event ApplicationInReview(uint256 indexed applicationIndex, address indexed operator);
-
-  /// @notice Emitted when a Round wallet address is updated
-  event RoundFeeAddressUpdated(address roundFeeAddress);
 
   /// @notice Emitted when a payout is executed
   event PayoutMade(
@@ -111,32 +106,17 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     _;
   }
 
-  function initialize(
-    address _alloSettings,
-    address _vaultAddress,
-    uint32  _roundFeePercentage,
-    address _roundFeeAddress
-  ) external initializer {
-    alloSettings = AlloSettings(_alloSettings);
-    vaultAddress = _vaultAddress;
-    roundFeePercentage = _roundFeePercentage;
-    roundFeeAddress = payable(_roundFeeAddress);
+  function initialize() external initializer {
+    // empty initializer
   }
 
   // --- Core methods ---
 
-  // @notice Update round fee percentage (only by ROUND_OPERATOR_ROLE)
-  /// @param _newFeePercentage new fee percentage
-  function updateRoundFeePercentage(uint32 _newFeePercentage) external isRoundOperator roundHasNotEnded {
-    roundFeePercentage = _newFeePercentage;
-    emit RoundFeePercentageUpdated(roundFeePercentage);
-  }
-
-  // @notice Update round fee address (only by ROUND_OPERATOR_ROLE)
-  /// @param _newFeeAddress new fee address
-  function updateRoundFeeAddress(address payable _newFeeAddress) external isRoundOperator roundHasNotEnded {
-    roundFeeAddress = _newFeeAddress;
-    emit RoundFeeAddressUpdated(roundFeeAddress);
+  // @notice Update safe vault address (only by ROUND_OPERATOR_ROLE)
+  /// @param _newVaultAddress new vault address
+  function updateVaultAddress(address _newVaultAddress) external isRoundOperator roundHasNotEnded {
+    vaultAddress = _newVaultAddress;
+    emit VaultAddressUpdated(_newVaultAddress);
   }
 
   /**
@@ -172,24 +152,21 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     uint256 currentStatus = RoundImplementation(roundAddress).getApplicationStatus(_payment.applicationIndex);
     if (currentStatus != uint256(ApplicationStatus.ACCEPTED)) revert DirectStrategy__payout_ApplicationNotAccepted();
 
-    address usedVault = vaultAddress;
+    Fees memory fees = _getFees(_payment.amount);
 
-    (uint256 protocolFeeAmount, uint256 roundFeeAmount) = _getFees(_payment.amount);
-
-    // use transfer from
-    if (_payment.vault != address(0)) {
-      _payWithWallet(_payment, protocolFeeAmount, roundFeeAmount);
-      usedVault = _payment.vault;
-    } else { // use Safe multisig vault
-      _payWithSafe(_payment, protocolFeeAmount, roundFeeAmount);
+    // use Safe multisig vault
+    if (_payment.allowanceModule != address(0)) {
+      _payWithSafe(_payment, fees);
+    } else { // use transfer from
+      _payWithWallet(_payment, fees);
     }
 
     emit PayoutMade(
-      usedVault,
+      _payment.vault != address(0) ? _payment.vault : vaultAddress,
       _payment.token,
       _payment.amount,
-      protocolFeeAmount,
-      roundFeeAmount,
+      fees.protocolFeeAmount,
+      fees.roundFeeAmount,
       _payment.grantAddress,
       _payment.projectId,
       _payment.applicationIndex,
@@ -210,13 +187,13 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
       IAllowanceModule allowanceModule = IAllowanceModule(_allowanceModule);
       uint256[5] memory tokenAllowance = allowanceModule.getTokenAllowance(vaultAddress, _roundOperator, _token);
 
-      (uint256 protocolFeeAmount, uint256 roundFeeAmount) = _getFees(_amount);
+      Fees memory fees = _getFees(_amount);
 
       return allowanceModule.generateTransferHash(
         vaultAddress,
         _token,
         _to,
-        _amount + uint96(protocolFeeAmount + roundFeeAmount),
+        _amount + uint96(fees.protocolFeeAmount + fees.roundFeeAmount),
         address(0),
         0,
         uint16(tokenAllowance[4])
@@ -228,45 +205,45 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     return _isPendingRoundApplication(applicationIndex) && _inReviewApplications[applicationIndex];
   }
 
-  function _payWithWallet(Payment calldata _payment, uint256 _protocolFeeAmount, uint256 _roundFeeAmount) internal {
-    address protocolTreasury = alloSettings.protocolTreasury();
-
+  function _payWithWallet(Payment calldata _payment, Fees memory _fees) internal {
     if (_payment.token == address(0)) revert DirectStrategy__payout_NativeTokenNotAllowed();
+
+    address vault = _payment.vault != address(0) ? _payment.vault : vaultAddress;
 
     /// @dev erc20 transfer to grant address
     // slither-disable-next-line arbitrary-send-erc20,reentrancy-events,
     IERC20Upgradeable(_payment.token).safeTransferFrom(
-      _payment.vault,
+      vault,
       _payment.grantAddress,
       _payment.amount
     );
 
-    if (_protocolFeeAmount > 0 && protocolTreasury != address(0)) {
+    if (_fees.protocolFeeAmount > 0 && _fees.protocolTreasury != address(0)) {
       IERC20Upgradeable(_payment.token).safeTransferFrom(
-        _payment.vault,
-        protocolTreasury,
-        _protocolFeeAmount
+        vault,
+        _fees.protocolTreasury,
+        _fees.protocolFeeAmount
       );
     }
 
     // deduct round fee
-    if (_roundFeeAmount > 0 && roundFeeAddress != address(0)) {
+    if (_fees.roundFeeAmount > 0 && _fees.roundFeeAddress != address(0)) {
       IERC20Upgradeable(_payment.token).safeTransferFrom(
-        _payment.vault,
-        roundFeeAddress,
-        _roundFeeAmount
+        vault,
+        _fees.roundFeeAddress,
+        _fees.roundFeeAmount
       );
     }
   }
-  function _payWithSafe(Payment calldata _payment, uint256 _protocolFeeAmount, uint256 _roundFeeAmount) internal {
-    address protocolTreasury = alloSettings.protocolTreasury();
+  function _payWithSafe(Payment calldata _payment,  Fees memory _fees) internal {
+    address vault = _payment.vault != address(0) ? _payment.vault : vaultAddress;
 
     IAllowanceModule allowanceModule = IAllowanceModule(_payment.allowanceModule);
     allowanceModule.executeAllowanceTransfer(
-        vaultAddress,
+        vault,
         _payment.token,
         payable(address(this)),
-        uint96(_payment.amount + _protocolFeeAmount + _roundFeeAmount),
+        uint96(_payment.amount + _fees.protocolFeeAmount + _fees.roundFeeAmount),
         address(0),
         0,
         msg.sender,
@@ -274,20 +251,26 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     );
 
     _transferAmount(_payment.token, payable(_payment.grantAddress), _payment.amount);
-    if (_protocolFeeAmount > 0 && protocolTreasury != address(0)) {
-      _transferAmount(_payment.token, payable(protocolTreasury), _protocolFeeAmount);
+    if (_fees.protocolFeeAmount > 0 && _fees.protocolTreasury != address(0)) {
+      _transferAmount(_payment.token, payable(_fees.protocolTreasury), _fees.protocolFeeAmount);
     }
-    if (_roundFeeAmount > 0 && roundFeeAddress != address(0)) {
-      _transferAmount(_payment.token, payable(roundFeeAddress), _roundFeeAmount);
+    if (_fees.roundFeeAmount > 0 && _fees.roundFeeAddress != address(0)) {
+      _transferAmount(_payment.token, payable(_fees.roundFeeAddress), _fees.roundFeeAmount);
     }
   }
 
-  function _getFees(uint256 _amount) internal view returns (uint256 protocolFeeAmount, uint256 roundFeeAmount) {
+  function _getFees(uint256 _amount) internal view returns (Fees memory fees) {
+    RoundImplementation round = RoundImplementation(roundAddress);
+    AlloSettings alloSettings = round.alloSettings();
+
     uint32 denominator = alloSettings.DENOMINATOR();
 
-    protocolFeeAmount = (_amount * alloSettings.protocolFeePercentage()) / denominator;
-    roundFeeAmount = (_amount * roundFeePercentage) / denominator;
-
+    fees = Fees(
+      alloSettings.protocolTreasury(),
+      round.roundFeeAddress(),
+      (_amount * alloSettings.protocolFeePercentage()) / denominator,
+      (_amount * round.roundFeePercentage()) / denominator
+    );
   }
 
   /// @dev Determines if a given application index on PENDING status

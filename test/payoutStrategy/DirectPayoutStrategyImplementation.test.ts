@@ -135,7 +135,7 @@ describe.only("DirectPayoutStrategyImplementation", () => {
     directStrategyFactory = <DirectPayoutStrategyFactory>await upgrades.deployProxy(await ethers.getContractFactory('DirectPayoutStrategyFactory'));
     await directStrategyFactory.updatePayoutImplementation(directStrategyImpl.address);
 
-    const txn = await directStrategyFactory.create(alloSettingsContract.address, safeVault.address, roundFeePercentage, roundFeeAddress.address);
+    const txn = await directStrategyFactory.create();
     const receipt = await txn.wait();
 
     if (receipt.events) {
@@ -246,27 +246,6 @@ describe.only("DirectPayoutStrategyImplementation", () => {
         );
       });
 
-      it("invoking init once SHOULD set the allo settings", async () => {
-        expect(await directStrategyProxy.alloSettings()).to.equal(
-          alloSettingsContract.address
-        );
-      });
-      it("invoking init once SHOULD set the vault address", async () => {
-        expect(await directStrategyProxy.vaultAddress()).to.equal(
-          safeVault.address
-        );
-      });
-      it("invoking init once SHOULD set the roundFee Percentage", async () => {
-        expect(await directStrategyProxy.roundFeePercentage()).to.equal(
-          roundFeePercentage
-        );
-      });
-      it("invoking init once SHOULD set the roundFee Address", async () => {
-        expect(await directStrategyProxy.roundFeeAddress()).to.equal(
-          roundFeeAddress.address
-        );
-      });
-
       it("invoking init more than once SHOULD revert the transaction ", () => {
         expect(directStrategyProxy.connect(notRoundOperator).init()).to.revertedWith(
           "roundAddress already set"
@@ -274,27 +253,18 @@ describe.only("DirectPayoutStrategyImplementation", () => {
       });
     });
 
-    describe('test: updateRoundFeePercentage', () => {
-
-      let denominator: number;
-
-      before(async () => {
-        denominator = await alloSettingsContract.DENOMINATOR();
-      });
-
+    describe('test: updateVaultAddress', () => {
       it ('SHOULD revert if invoked by wallet who is not round operator', async () => {
-        const newRoundFeePercentage = 10 * (denominator / 100);
         await expect(
           directStrategyProxy
             .connect(notRoundOperator)
-            .updateRoundFeePercentage(newRoundFeePercentage)
+            .updateVaultAddress(safeVault.address)
         ).to.revertedWith(
           'not round operator'
         );
       });
 
       it ('SHOULD revert if round is ended', async () => {
-        const newRoundFeePercentage = 10 * (denominator / 100);
         await advanceTimeTo(Number(endTime) + 1)
 
         let now = await currentTime();
@@ -303,88 +273,22 @@ describe.only("DirectPayoutStrategyImplementation", () => {
         await expect(
           directStrategyProxy
             .connect(roundOperator)
-            .updateRoundFeePercentage(newRoundFeePercentage)
+            .updateVaultAddress(safeVault.address)
         ).to.revertedWith(
           'round has ended'
         );
       });
 
 
-      it ('SHOULD update roundFeePercentage value IF called is round operator', async () => {
+      it ('SHOULD update vaultAddress value IF called is round operator', async () => {
+        const newVaultAddress = Wallet.createRandom().address;
 
-        const newRoundFeePercentage = 10 * (denominator / 100);
-
-        const txn = await directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(
-          newRoundFeePercentage
-        );
+        const txn = await directStrategyProxy.connect(roundOperator).updateVaultAddress(newVaultAddress);
         await txn.wait();
 
-        const roundFeePercentage =
-          await directStrategyProxy.roundFeePercentage();
-        expect(roundFeePercentage).equals(newRoundFeePercentage);
-      });
-
-      it ('SHOULD emit RoundFeePercentageUpdated event', async () => {
-
-        const newRoundFeePercentage = 10 * (denominator / 100);
-
-        const txn = await directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(
-          newRoundFeePercentage
-        );
-
-        expect(txn)
-          .to.emit(directStrategyProxy, "RoundFeePercentageUpdated")
-          .withArgs(newRoundFeePercentage);
-      });
-    });
-
-    describe("test: updateRoundFeeAddress", () => {
-      let newRoundFeeAddress = Wallet.createRandom().address;
-
-      it("SHOULD revert if invoked by wallet who is not round operator", async () => {
-        await expect(
-          directStrategyProxy
-            .connect(notRoundOperator)
-            .updateRoundFeeAddress(newRoundFeeAddress)
-        ).to.revertedWith(
-          'not round operator'
-        );
-      });
-
-
-      it("SHOULD revert if round is ended", async () => {
-        await advanceTimeTo(Number(endTime) + 1)
-
-        let now = await currentTime();
-        expect(await mockRound.roundEndTime()).to.be.lt(now)
-
-        await expect(
-          directStrategyProxy
-            .connect(roundOperator)
-            .updateRoundFeeAddress(newRoundFeeAddress)
-        ).to.revertedWith(
-          'round has ended'
-        );
-      });
-
-      it("SHOULD update roundFeeAddress IF called is round operator", async () => {
-        const txn = await directStrategyProxy.connect(roundOperator).updateRoundFeeAddress(
-          newRoundFeeAddress
-        );
-        await txn.wait();
-
-        const roundFeeAddress = await directStrategyProxy.roundFeeAddress();
-        expect(roundFeeAddress).equals(newRoundFeeAddress);
-      });
-
-      it("SHOULD emit RoundFeeAddressUpdated event", async () => {
-        const txn = await directStrategyProxy.connect(roundOperator).updateRoundFeeAddress(
-          newRoundFeeAddress
-        );
-
-        expect(txn)
-          .to.emit(directStrategyProxy, "RoundFeeAddressUpdated")
-          .withArgs(newRoundFeeAddress);
+        const vaultAddress =
+          await directStrategyProxy.vaultAddress();
+        expect(vaultAddress).equals(newVaultAddress);
       });
     });
 
@@ -475,6 +379,7 @@ describe.only("DirectPayoutStrategyImplementation", () => {
       let payment: Payment;
 
       before(async () => {
+        await directStrategyProxy.connect(roundOperator).updateVaultAddress(safeVault.address);
         await mockERC20.transfer(vaultAddress, 10000000);
         await mockERC20.connect(vault).approve(directStrategyProxy.address, ethers.constants.MaxUint256);
         // 0
@@ -567,7 +472,8 @@ describe.only("DirectPayoutStrategyImplementation", () => {
         it("SHOULD transfer indicated amount and fees of ERC20 tokens from vault to grantee, protocol treasury and round fee address when application is APPROVED", async () => {
           alloSettingsContract.updateProtocolTreasury(protocolTreasury.address);
           alloSettingsContract.updateProtocolFeePercentage(100); // 0.1%
-          directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
+          mockRound.connect(roundOperator).updateRoundFeeAddress(roundFeeAddress.address); // 0.01%
+          mockRound.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
 
           expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
 
@@ -654,7 +560,8 @@ describe.only("DirectPayoutStrategyImplementation", () => {
         it("SHOULD transfer indicated amount and fees of ERC20 tokens from vault to grantee, protocol treasury and round fee address when application is APPROVED", async () => {
           alloSettingsContract.updateProtocolTreasury(protocolTreasury.address);
           alloSettingsContract.updateProtocolFeePercentage(100); // 0.1%
-          directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
+          mockRound.connect(roundOperator).updateRoundFeeAddress(roundFeeAddress.address); // 0.01%
+          mockRound.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
 
           expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
 
@@ -697,7 +604,8 @@ describe.only("DirectPayoutStrategyImplementation", () => {
         it("SHOULD transfer indicated amount and fees of ETH from configured Safe vault to grantee, protocol treasury and round fee address when application is APPROVED", async () => {
           alloSettingsContract.updateProtocolTreasury(protocolTreasury.address);
           alloSettingsContract.updateProtocolFeePercentage(100); // 0.1%
-          directStrategyProxy.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
+          mockRound.connect(roundOperator).updateRoundFeeAddress(roundFeeAddress.address); // 0.01%
+          mockRound.connect(roundOperator).updateRoundFeePercentage(10); // 0.01%
 
           expect(await mockRound.getApplicationStatus(grantee1IndexApproved)).to.eq(ApplicationStatus.ACCEPTED)
 
