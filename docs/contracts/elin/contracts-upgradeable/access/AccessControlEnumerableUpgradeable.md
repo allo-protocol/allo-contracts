@@ -1,4 +1,4 @@
-# AccessControl
+# AccessControlEnumerableUpgradeable
 
 
 
@@ -6,7 +6,7 @@
 
 
 
-*Contract module that allows children to implement role-based access control mechanisms. This is a lightweight version that doesn&#39;t allow enumerating role members except through off-chain means by accessing the contract event logs. Some applications may benefit from on-chain enumerability, for those cases see {AccessControlEnumerable}. Roles are referred to by their `bytes32` identifier. These should be exposed in the external API and be unique. The best way to achieve this is by using `public constant` hash digests: ```solidity bytes32 public constant MY_ROLE = keccak256(&quot;MY_ROLE&quot;); ``` Roles can be used to represent a set of permissions. To restrict access to a function call, use {hasRole}: ```solidity function foo() public {     require(hasRole(MY_ROLE, msg.sender));     ... } ``` Roles can be granted and revoked dynamically via the {grantRole} and {revokeRole} functions. Each role has an associated admin role, and only accounts that have a role&#39;s admin role can call {grantRole} and {revokeRole}. By default, the admin role for all roles is `DEFAULT_ADMIN_ROLE`, which means that only accounts with this role will be able to grant or revoke other roles. More complex role relationships can be created by using {_setRoleAdmin}. WARNING: The `DEFAULT_ADMIN_ROLE` is also its own admin: it has permission to grant and revoke this role. Extra precautions should be taken to secure accounts that have been granted it. We recommend using {AccessControlDefaultAdminRules} to enforce additional security measures for this role.*
+*Extension of {AccessControl} that allows enumerating the members of each role.*
 
 ## Methods
 
@@ -48,6 +48,51 @@ function getRoleAdmin(bytes32 role) external view returns (bytes32)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bytes32 | undefined |
+
+### getRoleMember
+
+```solidity
+function getRoleMember(bytes32 role, uint256 index) external view returns (address)
+```
+
+
+
+*Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| role | bytes32 | undefined |
+| index | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
+### getRoleMemberCount
+
+```solidity
+function getRoleMemberCount(bytes32 role) external view returns (uint256)
+```
+
+
+
+*Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| role | bytes32 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
 
 ### grantRole
 
@@ -148,6 +193,22 @@ function supportsInterface(bytes4 interfaceId) external view returns (bool)
 
 
 ## Events
+
+### Initialized
+
+```solidity
+event Initialized(uint8 version)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| version  | uint8 | undefined |
 
 ### RoleAdminChanged
 
