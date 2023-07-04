@@ -34,7 +34,7 @@ export async function main() {
   const programContract = programNetworkParams.programContract;
 
   const votingContract = votingNetworkParams.contract;
-  const payoutContract = payoutNetworkParams.contract;
+  const payoutFactory = payoutNetworkParams.factory;
   const alloSettingsContract = alloNetworkParams.alloSettingsContract;
 
   if (!roundFactoryContract) {
@@ -49,7 +49,7 @@ export async function main() {
     throw new Error(`error: missing dummy voting contract`);
   }
 
-  if (!payoutContract) {
+  if (!payoutFactory) {
     throw new Error(`error: missing payoutContract`);
   }
 
@@ -65,13 +65,13 @@ export async function main() {
     "roundImplementationContract"  : roundImplementationContract,
     "programContractAddress"       : programContract,
     "votingContractAddress"        : votingContract,
-    "payoutContractAddress"        : payoutContract,
+    "payoutFactoryAddress"         : payoutFactory,
     "alloSettingsContract"         : alloSettingsContract,
     "network"                      : network.name,
     "chainId"                      : network.config.chainId
   });
 
-  const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutContract);
+  const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutFactory);
 
   const roundTx = await roundFactory.create(
     encodedParameters,
@@ -92,7 +92,7 @@ export async function main() {
   console.log("✅ Round created: ", roundAddress);
 }
 
-const generateAndEncodeRoundParam = async (votingContract: string, payoutContract: string) => {
+const generateAndEncodeRoundParam = async (votingContract: string, payoutFactory: string) => {
 
   const _currentTimestamp = (await ethers.provider.getBlock(
     await ethers.provider.getBlockNumber())
@@ -124,7 +124,7 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
 
   const initAddress = [
     votingContract, // votingStrategy
-    payoutContract, // payoutStrategy
+    payoutFactory, // payoutStrategy
   ];
 
   const yearInSec = 365*24*60*60;

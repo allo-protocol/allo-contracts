@@ -45,7 +45,7 @@ export const DummyVotingParams: Record<string, {contract: string}> = {
     contract: ''
   },
   "goerli": {
-    contract: '0xBBc57Ec75a32A5C169bFD6F0234D941506509c6e'
+    contract: '0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46'
   },
   "optimism-mainnet": {
     contract: ''
