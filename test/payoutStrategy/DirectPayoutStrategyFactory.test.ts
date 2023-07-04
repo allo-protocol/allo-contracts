@@ -88,29 +88,6 @@ describe("DirectPayoutStrategyFactory", function () {
         await (await DirectPayoutStrategyFactory.updatePayoutImplementation(DirectPayoutStrategyImplementation.address)).wait()
       })
 
-      it("invoking create SHOULD initialize strategy", async () => {
-        let alloSettings = Wallet.createRandom().address;
-        let vaultAddress = Wallet.createRandom().address;
-        let roundFeeAddress = Wallet.createRandom().address;
-        let roundFeePercentage = 123;
-
-        const txn = await DirectPayoutStrategyFactory.create(alloSettings, vaultAddress, roundFeePercentage, roundFeeAddress);
-
-        const receipt = await txn.wait();
-
-        if (receipt.events) {
-          const event = receipt.events.find(e => e.event === 'PayoutContractCreated');
-          if (event && event.args) {
-            directStrategyProxy = await ethers.getContractAt("DirectPayoutStrategyImplementation", event.args.payoutContractAddress) as DirectPayoutStrategyImplementation;
-          }
-        }
-
-        expect(await directStrategyProxy.alloSettings()).to.eq(alloSettings)
-        expect(await directStrategyProxy.vaultAddress()).to.eq(vaultAddress)
-        expect(await directStrategyProxy.roundFeeAddress()).to.eq(roundFeeAddress)
-        expect(await directStrategyProxy.roundFeePercentage()).to.eq(roundFeePercentage)
-      });
-
 
       it("SHOULD emit PayoutContractCreated event after invoking create", async () => {
         let alloSettings = Wallet.createRandom().address;
@@ -118,8 +95,7 @@ describe("DirectPayoutStrategyFactory", function () {
         let roundFeeAddress = Wallet.createRandom().address;
         let roundFeePercentage = 123;
 
-        const txn = await DirectPayoutStrategyFactory.create(alloSettings, vaultAddress, roundFeePercentage, roundFeeAddress);
-
+        const txn = await DirectPayoutStrategyFactory.create();
 
         const receipt = await txn.wait();
 

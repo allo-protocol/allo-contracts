@@ -44,24 +44,6 @@ function VERSION() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
-### distributionMetaPtr
-
-```solidity
-function distributionMetaPtr() external view returns (uint256 protocol, string pointer)
-```
-
-MetaPtr containing the distribution
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| protocol | uint256 | undefined |
-| pointer | string | undefined |
-
 ### generateTransferHash
 
 ```solidity
@@ -125,23 +107,6 @@ function isApplicationInReview(uint256 applicationIndex) external view returns (
 | Name | Type | Description |
 |---|---|---|
 | applicationIndex | uint256 | undefined |
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bool | undefined |
-
-### isDistributionSet
-
-```solidity
-function isDistributionSet() external pure returns (bool)
-```
-
-checks that distribution is set before setReadyForPayout
-
-
-
 
 #### Returns
 
@@ -223,7 +188,7 @@ function setReadyForPayout() external payable
 
 Invoked by RoundImplementation to set isReadyForPayout
 
-
+*Can only be called once and (by default) cannot be changed once called*
 
 
 ### tokenAddress
@@ -242,22 +207,6 @@ Token address
 | Name | Type | Description |
 |---|---|---|
 | _0 | address | undefined |
-
-### updateDistribution
-
-```solidity
-function updateDistribution(bytes) external nonpayable
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | bytes | undefined |
 
 ### updateVaultAddress
 
@@ -292,22 +241,6 @@ Funds vault address
 |---|---|---|
 | _0 | address | undefined |
 
-### withdrawFunds
-
-```solidity
-function withdrawFunds(address payable withdrawAddress) external payable
-```
-
-Invoked by RoundImplementation to withdraw funds to withdrawAddress from the payout contract
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| withdrawAddress | address payable | withdraw funds address |
-
 
 
 ## Events
@@ -328,24 +261,6 @@ Emitted when a Round wallet address is updated
 |---|---|---|
 | applicationIndex `indexed` | uint256 | undefined |
 | operator `indexed` | address | undefined |
-
-### FundsWithdrawn
-
-```solidity
-event FundsWithdrawn(address indexed tokenAddress, uint256 amount, address withdrawAddress)
-```
-
-Emitted when funds are withdrawn from the payout contract
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| tokenAddress `indexed` | address | undefined |
-| amount  | uint256 | undefined |
-| withdrawAddress  | address | undefined |
 
 ### Initialized
 
@@ -418,39 +333,6 @@ Emitted when a Vault address is updated
 
 ## Errors
 
-### DirectStrategy__isConfigured
-
-```solidity
-error DirectStrategy__isConfigured()
-```
-
-
-
-
-
-
-### DirectStrategy__notConfigured
-
-```solidity
-error DirectStrategy__notConfigured()
-```
-
-
-
-
-
-
-### DirectStrategy__notImplemented
-
-```solidity
-error DirectStrategy__notImplemented()
-```
-
-
-
-
-
-
 ### DirectStrategy__payout_ApplicationNotAccepted
 
 ```solidity
@@ -473,32 +355,10 @@ error DirectStrategy__payout_NativeTokenNotAllowed()
 
 
 
-### DirectStrategy__payout_NotImplementedYet
-
-```solidity
-error DirectStrategy__payout_NotImplementedYet()
-```
-
-
-
-
-
-
 ### DirectStrategy__setApplicationInReview_applicationInWrongStatus
 
 ```solidity
 error DirectStrategy__setApplicationInReview_applicationInWrongStatus()
-```
-
-
-
-
-
-
-### DirectStrategy__vote_NotImplemented
-
-```solidity
-error DirectStrategy__vote_NotImplemented()
 ```
 
 

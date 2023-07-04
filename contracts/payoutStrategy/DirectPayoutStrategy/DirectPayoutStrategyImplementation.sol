@@ -58,14 +58,9 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
   // --- Errors ---
 
-  error DirectStrategy__isConfigured();
-  error DirectStrategy__notConfigured();
-  error DirectStrategy__notImplemented();
-  error DirectStrategy__vote_NotImplemented();
   error DirectStrategy__setApplicationInReview_applicationInWrongStatus();
   error DirectStrategy__payout_ApplicationNotAccepted();
   error DirectStrategy__payout_NativeTokenNotAllowed();
-  error DirectStrategy__payout_NotImplementedYet();
 
   // --- Event ---
 
@@ -290,13 +285,5 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     } else {
       IERC20Upgradeable(_token).safeTransfer(_recipient, _amount);
     }
-  }
-
-  // not implemented functions
-  function updateDistribution(bytes calldata) external override {
-    revert DirectStrategy__notImplemented();
-  }
-  function isDistributionSet() public override pure returns (bool) {
-    return true;
   }
 }

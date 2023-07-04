@@ -30,7 +30,7 @@ type Payment = {
   allowanceSignature: BytesLike;
 }
 
-describe.only("DirectPayoutStrategyImplementation", () => {
+describe("DirectPayoutStrategyImplementation", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
@@ -135,15 +135,15 @@ describe.only("DirectPayoutStrategyImplementation", () => {
     directStrategyFactory = <DirectPayoutStrategyFactory>await upgrades.deployProxy(await ethers.getContractFactory('DirectPayoutStrategyFactory'));
     await directStrategyFactory.updatePayoutImplementation(directStrategyImpl.address);
 
-    const txn = await directStrategyFactory.create();
-    const receipt = await txn.wait();
+    // const txn = await directStrategyFactory.create();
+    // const receipt = await txn.wait();
 
-    if (receipt.events) {
-      const event = receipt.events.find(e => e.event === 'PayoutContractCreated');
-      if (event && event.args) {
-        directStrategyProxy = await ethers.getContractAt("DirectPayoutStrategyImplementation", event.args.payoutContractAddress) as DirectPayoutStrategyImplementation;
-      }
-    }
+    // if (receipt.events) {
+    //   const event = receipt.events.find(e => e.event === 'PayoutContractCreated');
+    //   if (event && event.args) {
+    //     directStrategyProxy = await ethers.getContractAt("DirectPayoutStrategyImplementation", event.args.payoutContractAddress) as DirectPayoutStrategyImplementation;
+    //   }
+    // }
   })
 
   beforeEach(async () => {
@@ -196,7 +196,7 @@ describe.only("DirectPayoutStrategyImplementation", () => {
 
         const initAddress = [
           dummyVotingStrategy.address, // votingStrategy
-          directStrategyProxy.address, // payoutStrategy
+          directStrategyFactory.address, // payoutStrategy
         ];
 
         now = await currentTime();
@@ -230,6 +230,9 @@ describe.only("DirectPayoutStrategyImplementation", () => {
           encoded,
           alloSettingsContract.address
         );
+
+        const payoutContractAddress = await mockRound.payoutStrategy();
+        directStrategyProxy = await ethers.getContractAt("DirectPayoutStrategyImplementation", payoutContractAddress) as DirectPayoutStrategyImplementation;
 
         await advanceTimeTo(Number(startTime) + 1)
       });
