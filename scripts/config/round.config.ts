@@ -26,8 +26,8 @@ export const roundParams: DeployParams = {
     roundContract: "",
   },
   "fantom-mainnet": {
-    roundFactoryContract: "",
-    roundImplementationContract: "",
+    roundFactoryContract: "0xfb08d1fD3a7c693677eB096E722ABf4Ae63B0B95",
+    roundImplementationContract: "0x43F24E777A2a3717690784633c01c9F9122352BB",
     roundContract: "",
   },
   "fantom-testnet": {
