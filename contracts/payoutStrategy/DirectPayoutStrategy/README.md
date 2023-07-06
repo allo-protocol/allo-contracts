@@ -1,6 +1,12 @@
+## In review applications
+
+The `setApplicationInReview` is used for indicating a given application starts the REVIEW process. The function checks that the given `_applicationIndex` is in PENDING status on the round contract, meaning it is a valid application index which hasn't been moved to APPROVED or REJECTED status.
+
+To determine if an application is IN REVIEW status, the `isApplicationInReview` function can be used which checks that the given `_applicationIndex` is on PENDING status on the round contract and flagged as `_inReviewApplication` in this contract.
+
 ## Payout Flows
 
-The `payout` function can be used to pay grants in two different ways:
+The `payout` function is used for paying grants in two different ways:
 - From a given address using `ERC20.transferFrom`
 - From a Safe multisig using the [AllowanceModule](https://github.com/safe-global/safe-modules/tree/master/allowances)
 
