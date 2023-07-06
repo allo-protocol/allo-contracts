@@ -129,15 +129,16 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
   /**
    * @notice Invoked by a round operator to make direct payments of funds to a project application.
    *
-   * @dev It can be used to pay from a given address using `ERC20.transferFrom`, or from
-   * the configured vault in which case the AllowanceModule should be set as a Safe Module on the Safe Multisig vault,
-   * and the caller as delegate on the AllowanceModule.
-   *[AllowanceModule](https://github.com/safe-global/safe-modules/tree/master/allowances)
+   * @dev The `payout` function can be used to pay grants in two different ways:
+   * - From a given address using `ERC20.transferFrom`
+   * - From a Safe multisig using the [AllowanceModule](https://github.com/safe-global/safe-modules/tree/master/allowances)
    *
    * Using `transferFrom` only allow to pay with ERC20 tokens, and requires the indicated vault previously approved this
    * contract to use such ERC20 token on it behalf.
-   * This 2 options are handled by the `payment.vault` parameter, if it set to an address different from address(0) then
-   * the function will follow the `transferFrom` path.
+   *
+   * The decision wether which flow it is used is handled by the `_payment.allowanceModule` parameter.
+   * If the parameter is set to the address(0) then the function execute the `ERC20.transferFrom` flow, if not then it
+   * follows the Safe multisig + AllowanceModule path.
    *
    * To complete the payment it is required for the project application to be on status ACCEPTED.
    *
