@@ -24,13 +24,13 @@ export const programParams: DeployParams = {
     programContract: ''
   },
   "fantom-mainnet": {
-    programFactoryContract: '',
-    programImplementationContract: '',
+    programFactoryContract: '0x4d1f64c7920262c8F78e989C9E7Bf48b7eC02Eb5',
+    programImplementationContract: '0x5c1EDa32B5d2F8048a709f8b18B02AbEC68601D8',
     programContract: ''
   },
   "fantom-testnet": {
-    programFactoryContract: '',
-    programImplementationContract: '',
+    programFactoryContract: '0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D',
+    programImplementationContract: '0xd07D54b0231088Ca9BF7DA6291c911B885cBC140',
     programContract: ''
   }
 };

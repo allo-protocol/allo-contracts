@@ -24,13 +24,13 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   "fantom-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0xFA1D9FF7F885757fc20Fdd9D78B72F88B00Cff77",
+    implementation: "0x5FFc749cb926349fAf05EA81D157AA9E94Dd6301",
     contract: "",
   },
   "fantom-testnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x5b55728e41154562ee80027C1247B13382692e5C",
+    implementation: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
     contract: "",
   },
 };

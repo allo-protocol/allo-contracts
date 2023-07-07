@@ -15,22 +15,22 @@ export const QFVotingParams: DeployParams = {
   },
   "goerli": {
     factory: '0x06A6Cc566c5A88E77B1353Cdc3110C2e6c828e38',
-    implementation: '0x6391D8315EDEe9Ce6F2A18c7D52D31EF1cD429BD',
+    implementation: '0x08186fEEa8115D1cf57bBE227e2C9bEa350cF40d',
     contract: '0x818A3C8F82667bd222faF84a954F35d2b0Eb6a78'
   },
   "optimism-mainnet": {
     factory: '0x838C5e10dcc1e54d62761d994722367BA167AC22',
-    implementation: '0x9Bb7eE67b688E4a5E9D24CF9604996c8DFA1C9ab',
+    implementation: '0x27C43Ee6b8deF6Ad804Ca9106736a43FF9dFB6F1',
     contract: ''
   },
   "fantom-mainnet": {
-    factory: '',
-    implementation: '',
+    factory: '0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB',
+    implementation: '0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f',
     contract: ''
   },
   "fantom-testnet": {
-    factory: '',
-    implementation: '',
+    factory: '0x545B282A50EaeA01A619914d44105437036CbB36',
+    implementation: '0x2AFA4bE0f2468347A2F086c2167630fb1E58b725',
     contract: ''
   }
 };
