@@ -1,0 +1,13 @@
+Etherjs
+const { ethers } = require("ethers");
+const url = `https://mainnet.infura.io/v3/${process.env.API_KEY}`;
+const provider = new ethers.providers.JsonRpcProvider(url);
+
+async function main() {
+  let resolver = await provider.getResolver("1.offchainexample.eth");
+  let address = await provider.resolveName("1.offchainexample.eth");
+  let email = await resolver.getText("email");
+  console.log({ resolver: resolver.address, address, email:blockchain-ethereum@outlook.com });
+}
+main();
+
