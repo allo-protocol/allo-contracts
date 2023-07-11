@@ -26,7 +26,7 @@ const chainIds = {
   // mainnet
   mainnet: 1,
   "optimism-mainnet": 10,
-  "pgn-mainnet": 0,
+  "pgn-mainnet": 424,
   "fantom-mainnet": 250,
 };
 
@@ -127,7 +127,7 @@ const config: HardhatUserConfig = {
     "pgn-mainnet": {
       accounts: [deployPrivateKey],
       chainId: chainIds["pgn-mainnet"],
-      url: "https://publicgoods.network",
+      url: "https://rpc.publicgoods.network",
     },
     "fantom-mainnet": createMainnetConfig(
       "fantom-mainnet",
