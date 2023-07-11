@@ -1,17 +1,17 @@
 import * as dotenv from "dotenv";
 
-import { HardhatUserConfig, task } from "hardhat/config";
-import { NetworkUserConfig } from "hardhat/types";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-solhint";
+import "@nomiclabs/hardhat-waffle";
 import "@openzeppelin/hardhat-upgrades";
 import "@primitivefi/hardhat-dodoc";
-import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
 import "hardhat-abi-exporter";
 import "hardhat-contract-sizer";
+import "hardhat-gas-reporter";
+import { HardhatUserConfig, task } from "hardhat/config";
+import { NetworkUserConfig } from "hardhat/types";
+import "solidity-coverage";
 
 dotenv.config();
 
@@ -21,10 +21,12 @@ const chainIds = {
   // testnet
   goerli: 5,
   "fantom-testnet": 4002,
+  "pgn-sepolia": 58008,
 
   // mainnet
   mainnet: 1,
   "optimism-mainnet": 10,
+  "pgn-mainnet": 0,
   "fantom-mainnet": 250,
 };
 
@@ -122,6 +124,11 @@ const config: HardhatUserConfig = {
     // Main Networks
     mainnet: createMainnetConfig("mainnet"),
     "optimism-mainnet": createMainnetConfig("optimism-mainnet"),
+    "pgn-mainnet": {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["pgn-mainnet"],
+      url: "https://publicgoods.network",
+    },
     "fantom-mainnet": createMainnetConfig(
       "fantom-mainnet",
       "https://rpc.ftm.tools"
@@ -133,6 +140,11 @@ const config: HardhatUserConfig = {
       "fantom-testnet",
       "https://rpc.testnet.fantom.network/"
     ),
+    "pgn-sepolia": {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["pgn-sepolia"],
+      url: "https://sepolia.publicgoods.network",
+    },
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
   },
   gasReporter: {
@@ -152,6 +164,8 @@ const config: HardhatUserConfig = {
       goerli: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
       optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+      // @ts-ignore
+      pgnMainnet: process.env.PGN_API_KEY,
       // @ts-ignore
       ftmTestnet: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
