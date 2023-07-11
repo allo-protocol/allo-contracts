@@ -23,11 +23,16 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
   string public constant VERSION = "0.2.0";
 
-  enum ApplicationStatus {
+  enum RoundStatus {
     PENDING,
     ACCEPTED,
     REJECTED,
     CANCELED
+  }
+
+  enum Status {
+    PENDING,
+    IN_REVIEW
   }
 
   struct Payment {
@@ -48,17 +53,31 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
       uint256 roundFeeAmount;
   }
 
+  struct ApplicationStatus {
+      uint256 index;
+      uint256 statusRow;
+  }
+
   // --- Data ---
 
   /// @notice Funds vault address
   address public vaultAddress;
 
-  /// @notice In Review Applications - applicationIndex -> is in review
-  mapping(uint256 => bool) internal _inReviewApplications;
+
+  // This is a packed array of booleans.
+  // inReviewApplicationsBitMap[0] is the first row of the bitmap and allows to store 256 bits to describe
+  // the status of 256 applications.
+  // statuses[1] is the second row, and so on.
+  // 0: pending
+  // 1: in review
+  // Since it's a mapping the storage it's pre-allocated with zero values,
+  // so if we check the status of an existing application, the value is by default 0 (pending).
+  // If we want to check the status of an application, we take its index from the `applications` array
+  // and convert it to the 1-bits position in the bitmap.
+  mapping(uint256 => uint256) public inReviewApplicationsBitMap;
 
   // --- Errors ---
 
-  error DirectStrategy__setApplicationInReview_applicationInWrongStatus();
   error DirectStrategy__payout_ApplicationNotAccepted();
   error DirectStrategy__payout_NativeTokenNotAllowed();
 
@@ -67,8 +86,8 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
   /// @notice Emitted when a Vault address is updated
   event VaultAddressUpdated(address vaultAddress);
 
-  /// @notice Emitted when a Round wallet address is updated
-  event ApplicationInReview(uint256 indexed applicationIndex, address indexed operator);
+/// @notice Emitted when a Application statuses are updated
+  event ApplicationInReviewUpdated(uint256 indexed index, uint256 indexed status);
 
   /// @notice Emitted when a payout is executed
   event PayoutMade(
@@ -115,15 +134,27 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
   }
 
   /**
-   * @notice Invoked by a round operator to make signal that a pending application turns to IN REVIEW status.*
+   * @notice Invoked by a round operator to signal that a pending applications turn into IN REVIEW status.
    *
-   * @param _applicationIndex Application index
+   * Statuses:
+   * 0 - pending
+   * 1 - in review
+   *
+   * @param statuses New statuses
    */
-  function setApplicationInReview(uint256 _applicationIndex) external isRoundOperator roundHasNotEnded {
-    if (!_isPendingRoundApplication(_applicationIndex)) revert DirectStrategy__setApplicationInReview_applicationInWrongStatus();
-    _inReviewApplications[_applicationIndex] = true;
+  function setApplicationsInReview(ApplicationStatus[] memory statuses) external isRoundOperator roundHasNotEnded {
+    for (uint256 i = 0; i < statuses.length;) {
+      uint256 rowIndex = statuses[i].index;
+      uint256 fullRow = statuses[i].statusRow;
 
-    emit ApplicationInReview(_applicationIndex, msg.sender);
+      inReviewApplicationsBitMap[rowIndex] = fullRow;
+
+      emit ApplicationInReviewUpdated(rowIndex, fullRow);
+
+      unchecked {
+        i++;
+      }
+    }
   }
 
   /**
@@ -146,7 +177,7 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
    */
   function payout(Payment calldata _payment) external nonReentrant isRoundOperator {
     uint256 currentStatus = RoundImplementation(roundAddress).getApplicationStatus(_payment.applicationIndex);
-    if (currentStatus != uint256(ApplicationStatus.ACCEPTED)) revert DirectStrategy__payout_ApplicationNotAccepted();
+    if (currentStatus != uint256(RoundStatus.ACCEPTED)) revert DirectStrategy__payout_ApplicationNotAccepted();
 
     Fees memory fees = _getFees(_payment.amount);
 
@@ -198,8 +229,23 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
 
   /// @dev Determines if a given application index on IN REVIEW status
   function isApplicationInReview(uint256 applicationIndex) public view returns (bool) {
-    return _isPendingRoundApplication(applicationIndex) && _inReviewApplications[applicationIndex];
+    return _isPendingRoundApplication(applicationIndex)
+      && _getApplicationInReviewStatus(applicationIndex) == uint256(Status.IN_REVIEW);
   }
+
+  /// @notice Get application status
+  /// @param applicationIndex index of the application
+  /// @return status status of the application
+  function _getApplicationInReviewStatus(uint256 applicationIndex) internal view returns(uint256) {
+    uint256 rowIndex = applicationIndex / 256;
+    uint256 colIndex = (applicationIndex % 256);
+
+    uint256 currentRow = inReviewApplicationsBitMap[rowIndex];
+    uint256 status = (currentRow >> colIndex) & 1;
+
+    return status;
+  }
+
 
   function _payWithWallet(Payment calldata _payment, Fees memory _fees) internal {
     if (_payment.token == address(0)) revert DirectStrategy__payout_NativeTokenNotAllowed();
@@ -274,7 +320,7 @@ contract DirectPayoutStrategyImplementation is ReentrancyGuardUpgradeable, IPayo
     RoundImplementation round = RoundImplementation(roundAddress);
     uint256 currentStatus = round.getApplicationStatus(applicationIndex);
 
-    return currentStatus == uint256(ApplicationStatus.PENDING);
+    return currentStatus == uint256(Status.PENDING);
   }
 
   /// @notice Util function to transfer amount to recipient

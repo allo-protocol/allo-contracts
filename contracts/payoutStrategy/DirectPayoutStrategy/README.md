@@ -1,8 +1,8 @@
 ## In review applications
 
-The `setApplicationInReview` is used for indicating a given application starts the REVIEW process. The function checks that the given `_applicationIndex` is in PENDING status on the round contract, meaning it is a valid application index which hasn't been moved to APPROVED or REJECTED status.
+The `setApplicationsInReview` is used for indicating a group of applications starts the REVIEW process. For this, the function uses a mapping of packed array of booleans representing the status of 256 applications each row, similar to how the RoundImplementation contracts handles application statuses.
 
-To determine if an application is IN REVIEW status, the `isApplicationInReview` function can be used which checks that the given `_applicationIndex` is on PENDING status on the round contract and flagged as `_inReviewApplication` in this contract.
+To determine if an application is IN REVIEW status, the `isApplicationInReview` function can be used which checks that the given `_applicationIndex` is on PENDING status on the round contract and flagged as 1 on `inReviewApplicationsBitMap` in this contract.
 
 ## Payout Flows
 

@@ -70,6 +70,28 @@ function generateTransferHash(address _allowanceModule, address _roundOperator, 
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### inReviewApplicationsBitMap
+
+```solidity
+function inReviewApplicationsBitMap(uint256) external view returns (uint256)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | uint256 | undefined |
+
 ### init
 
 ```solidity
@@ -164,13 +186,13 @@ RoundImplementation address
 |---|---|---|
 | _0 | address payable | undefined |
 
-### setApplicationInReview
+### setApplicationsInReview
 
 ```solidity
-function setApplicationInReview(uint256 _applicationIndex) external nonpayable
+function setApplicationsInReview(DirectPayoutStrategyImplementation.ApplicationStatus[] statuses) external nonpayable
 ```
 
-Invoked by a round operator to make signal that a pending application turns to IN REVIEW status.*
+
 
 
 
@@ -178,7 +200,7 @@ Invoked by a round operator to make signal that a pending application turns to I
 
 | Name | Type | Description |
 |---|---|---|
-| _applicationIndex | uint256 | Application index |
+| statuses | DirectPayoutStrategyImplementation.ApplicationStatus[] | undefined |
 
 ### setReadyForPayout
 
@@ -245,13 +267,13 @@ Funds vault address
 
 ## Events
 
-### ApplicationInReview
+### ApplicationInReviewUpdated
 
 ```solidity
-event ApplicationInReview(uint256 indexed applicationIndex, address indexed operator)
+event ApplicationInReviewUpdated(uint256 indexed index, uint256 indexed status)
 ```
 
-Emitted when a Round wallet address is updated
+Emitted when a Application statuses are updated
 
 
 
@@ -259,8 +281,8 @@ Emitted when a Round wallet address is updated
 
 | Name | Type | Description |
 |---|---|---|
-| applicationIndex `indexed` | uint256 | undefined |
-| operator `indexed` | address | undefined |
+| index `indexed` | uint256 | undefined |
+| status `indexed` | uint256 | undefined |
 
 ### Initialized
 
@@ -348,17 +370,6 @@ error DirectStrategy__payout_ApplicationNotAccepted()
 
 ```solidity
 error DirectStrategy__payout_NativeTokenNotAllowed()
-```
-
-
-
-
-
-
-### DirectStrategy__setApplicationInReview_applicationInWrongStatus
-
-```solidity
-error DirectStrategy__setApplicationInReview_applicationInWrongStatus()
 ```
 
 
