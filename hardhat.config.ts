@@ -152,10 +152,7 @@ const config: HardhatUserConfig = {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
-    excludeContracts: [
-      "contracts/mocks",
-      "contracts/dummy"
-    ],
+    excludeContracts: ["contracts/mocks", "contracts/dummy"],
   },
   etherscan: {
     apiKey: {
@@ -166,12 +163,22 @@ const config: HardhatUserConfig = {
       // @ts-ignore
       optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
       // @ts-ignore
-      pgnMainnet: process.env.PGN_API_KEY,
-      // @ts-ignore
       ftmTestnet: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
       opera: process.env.FTMSCAN_API_KEY,
+      // @ts-ignore
+      "pgn-mainnet": process.env.PGNSCAN_API_KEY,
     },
+    customChains: [
+      {
+        network: "pgn-mainnet",
+        chainId: chainIds["pgn-mainnet"],
+        urls: {
+          apiURL: "https://rpc.publicgoods.network",
+          browserURL: "https://explorer.publicgoods.network/",
+        },
+      },
+    ],
   },
   abiExporter: abiExporter,
   dodoc: dodoc,
