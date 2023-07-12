@@ -32,5 +32,10 @@ export const QFVotingParams: DeployParams = {
     factory: '0x545B282A50EaeA01A619914d44105437036CbB36',
     implementation: '0x2AFA4bE0f2468347A2F086c2167630fb1E58b725',
     contract: ''
-  }
+  },
+  "pgn-mainnet": {
+    factory: '0x2AFA4bE0f2468347A2F086c2167630fb1E58b725',
+    implementation: '0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143',
+    contract: ''
+  },
 };

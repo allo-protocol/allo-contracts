@@ -128,6 +128,7 @@ const config: HardhatUserConfig = {
       accounts: [deployPrivateKey],
       chainId: chainIds["pgn-mainnet"],
       url: "https://rpc.publicgoods.network",
+      gasPrice: 20000000000,
     },
     "fantom-mainnet": createMainnetConfig(
       "fantom-mainnet",
