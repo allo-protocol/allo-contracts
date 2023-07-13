@@ -35,4 +35,9 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
     roundContract: "",
   },
+  "pgn-mainnet": {
+    roundFactoryContract: "0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3",
+    roundImplementationContract: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
+    roundContract: "",
+  },
 };

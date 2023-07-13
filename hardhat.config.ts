@@ -1,17 +1,17 @@
 import * as dotenv from "dotenv";
 
-import { HardhatUserConfig, task } from "hardhat/config";
-import { NetworkUserConfig } from "hardhat/types";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-solhint";
+import "@nomiclabs/hardhat-waffle";
 import "@openzeppelin/hardhat-upgrades";
 import "@primitivefi/hardhat-dodoc";
-import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
 import "hardhat-abi-exporter";
 import "hardhat-contract-sizer";
+import "hardhat-gas-reporter";
+import { HardhatUserConfig, task } from "hardhat/config";
+import { NetworkUserConfig } from "hardhat/types";
+import "solidity-coverage";
 
 dotenv.config();
 
@@ -21,10 +21,12 @@ const chainIds = {
   // testnet
   goerli: 5,
   "fantom-testnet": 4002,
+  "pgn-sepolia": 58008,
 
   // mainnet
   mainnet: 1,
   "optimism-mainnet": 10,
+  "pgn-mainnet": 424,
   "fantom-mainnet": 250,
 };
 
@@ -122,6 +124,12 @@ const config: HardhatUserConfig = {
     // Main Networks
     mainnet: createMainnetConfig("mainnet"),
     "optimism-mainnet": createMainnetConfig("optimism-mainnet"),
+    "pgn-mainnet": {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["pgn-mainnet"],
+      url: "https://rpc.publicgoods.network",
+      gasPrice: 20000000000,
+    },
     "fantom-mainnet": createMainnetConfig(
       "fantom-mainnet",
       "https://rpc.ftm.tools"
@@ -133,16 +141,18 @@ const config: HardhatUserConfig = {
       "fantom-testnet",
       "https://rpc.testnet.fantom.network/"
     ),
+    "pgn-sepolia": {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["pgn-sepolia"],
+      url: "https://sepolia.publicgoods.network",
+    },
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
   },
   gasReporter: {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
-    excludeContracts: [
-      "contracts/mocks",
-      "contracts/dummy"
-    ],
+    excludeContracts: ["contracts/mocks", "contracts/dummy"],
   },
   etherscan: {
     apiKey: {
@@ -156,7 +166,19 @@ const config: HardhatUserConfig = {
       ftmTestnet: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
       opera: process.env.FTMSCAN_API_KEY,
+      // @ts-ignore
+      "pgn-mainnet": process.env.PGNSCAN_API_KEY,
     },
+    customChains: [
+      {
+        network: "pgn-mainnet",
+        chainId: chainIds["pgn-mainnet"],
+        urls: {
+          apiURL: "https://rpc.publicgoods.network",
+          browserURL: "https://explorer.publicgoods.network/",
+        },
+      },
+    ],
   },
   abiExporter: abiExporter,
   dodoc: dodoc,

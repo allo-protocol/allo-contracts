@@ -20,5 +20,8 @@ export const projectRegistryParams: DeployParams = {
   },
   "fantom-testnet": {
     proxyContactAddress: '0x5e5b7D871efDE8224390a334045e1dcb7daAf4E2',
-  }
+  },
+  "pgn-mainnet": {
+    proxyContactAddress: '0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e',
+  },
 };

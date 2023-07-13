@@ -33,4 +33,9 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "",
   },
+  "pgn-mainnet": {
+    alloSettingsContract: "0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0x3e364ebc92AA057C10597EF3D30C0201d84F03E8",
+  },
 };

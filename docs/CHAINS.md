@@ -174,3 +174,31 @@ These are contracts that are created/deployed for every round created on fantom 
 | QFVotingContract                      |  |
 | MerklePayoutContract                  |  |
 | Round                                 |  |
+
+## PGN Mainnet
+
+These are contracts that are created/deployed once for fantom testnet
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        | 0xd07D54b0231088Ca9BF7DA6291c911B885cBC140 |
+| ProgramImplementation                 | 0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921 |
+| QuadraticFundingVotingStrategyFactory | 0x2AFA4bE0f2468347A2F086c2167630fb1E58b725 |
+| QFVotingStrategyImplementation        | 0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143 |
+| RoundFactory                          | 0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3 |
+| RoundImplementation                   | 0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1 |
+| ProjectRegistry                       | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e |
+| MerklePayoutStrategyFactory           | 0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb |
+| MerklePayouStrategyImplementation     | 0xc1a26b0789C3E93b07713e90596Cad8d0442C826 |
+| AlloSettings                          | 0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90 |
+
+**Sample contracts unique to a round **
+
+These are contracts that are created/deployed for every round created on fantom testnet
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| Program                               |  |
+| QFVotingContract                      |  |
+| MerklePayoutContract                  |  |
+| Round                                 |  |

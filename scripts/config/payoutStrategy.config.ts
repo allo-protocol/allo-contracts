@@ -33,4 +33,9 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
     contract: "",
   },
+  "pgn-mainnet": {
+    factory: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
+    implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    contract: "",
+  },
 };
