@@ -2,7 +2,7 @@
 
 This project is built using [hardhat](https://hardhat.org).
 All the contracts required to run / manage a round can be found here.
-If you come across any vulnerabilties, do create an issue / raise a PR to help improve the contracts. ^_^
+If you come across any vulnerabilities, do create an issue / raise a PR to help improve the contracts. ^_^
 
 ## Directory Structure
 
@@ -39,7 +39,7 @@ If you come across any vulnerabilties, do create an issue / raise a PR to help i
 - **Program**: maintained by Program Operators which together form a team
 - **Round Operators**: wallets that have the permission to create & manage the round
 - **Round**: created by a Program and deal with everything relating to running a round
-- **Voter** : wallet who cast a vote to a grant during the round
+- **Voter**: wallet who cast a vote to a grant during the round
 
 
 ##### Deploy Steps

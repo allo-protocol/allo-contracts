@@ -8,7 +8,7 @@ This document covers how a
 
 ### Application Form Schema
 
-During round creation, the operator will asked to define a list of questions of which round manager would generate a schema, store it in a decentralized storage and save the storage protcol and hash into the round contract
+During round creation, the operator will ask to define a list of questions of which round manager would generate a schema, store it in a decentralized storage and save the storage protocol and hash into the round contract
 
 The application schema would be in the format as listed below:
 
@@ -37,7 +37,7 @@ Grants Hub can query the contract & retrieve the metaPtr via the `getApplication
 
 ### Notifying The Round of the Application
 
-Once the project owner applies, GrantsHub would then upload the application form to a storage of it's choice and invoke `applyToRound` function passing the `metaPtr` where the filled application is stored.
+Once the project owner applies, GrantsHub would then upload the application form to a storage of its choice and invoke `applyToRound` function passing the `metaPtr` where the filled application is stored.
 The schema of the filled application form is defined HERE
 
 // TODO: get schema from hub team
@@ -71,6 +71,6 @@ Instead of using 1 bit for each application status, we use 2 bits to allow 4 sta
 
 // TODO : add an example
 
-### How does the graph update the project indexing ?
+### How does the graph update the project indexing?
 
-The subgraph on recieving the `ProjectsMetaPtrUpdated` event would then fetch the `projectsMetaPtr` and update the project indexes and update the status from `pending` -> `approved` / `rejected`
+The subgraph on receiving the `ProjectsMetaPtrUpdated` event would then fetch the `projectsMetaPtr` and update the project indexes and update the status from `pending` -> `approved` / `rejected`
