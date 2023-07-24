@@ -167,15 +167,15 @@ const config: HardhatUserConfig = {
       // @ts-ignore
       opera: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
-      "pgn-mainnet": process.env.PGNSCAN_API_KEY,
+      "pgn-mainnet": "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
     },
     customChains: [
       {
         network: "pgn-mainnet",
         chainId: chainIds["pgn-mainnet"],
         urls: {
-          apiURL: "https://rpc.publicgoods.network",
-          browserURL: "https://explorer.publicgoods.network/",
+          apiURL: "https://explorer.publicgoods.network/api",
+          browserURL: "https://explorer.publicgoods.network",
         },
       },
     ],
