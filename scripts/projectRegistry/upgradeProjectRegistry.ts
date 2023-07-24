@@ -18,7 +18,7 @@ async function main() {
     throw new Error(`Invalid network ${network.name}`);
   }
 
-  const PROXY_ADDRESS = networkParams.proxyContactAddress;
+  const PROXY_ADDRESS = networkParams.proxyContractAddress;
 
   if (!PROXY_ADDRESS) {
     throw new Error(`error: missing PROXY_ADDRESS`);
