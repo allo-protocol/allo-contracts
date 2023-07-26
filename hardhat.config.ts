@@ -22,6 +22,7 @@ const chainIds = {
   goerli: 5,
   "fantom-testnet": 4002,
   "pgn-sepolia": 58008,
+  "celo-testnet": 44787,
 
   // mainnet
   mainnet: 1,
@@ -146,6 +147,10 @@ const config: HardhatUserConfig = {
       chainId: chainIds["pgn-sepolia"],
       url: "https://sepolia.publicgoods.network",
     },
+    "celo-testnet": createTestnetConfig(
+      "celo-testnet",
+      "https://alfajores-forno.celo-testnet.org"
+    ),
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
   },
   gasReporter: {
@@ -168,6 +173,8 @@ const config: HardhatUserConfig = {
       opera: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
       "pgn-mainnet": process.env.PGNSCAN_API_KEY,
+      // @ts-ignore
+      "celoAlfajores": process.env.ALFAJORES_API_KEY,
     },
     customChains: [
       {
