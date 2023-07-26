@@ -177,7 +177,7 @@ These are contracts that are created/deployed for every round created on fantom 
 
 ## PGN Mainnet
 
-These are contracts that are created/deployed once for fantom testnet
+These are contracts that are created/deployed once for PGN testnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
@@ -191,6 +191,34 @@ These are contracts that are created/deployed once for fantom testnet
 | MerklePayoutStrategyFactory           | 0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb |
 | MerklePayouStrategyImplementation     | 0xc1a26b0789C3E93b07713e90596Cad8d0442C826 |
 | AlloSettings                          | 0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90 |
+
+**Sample contracts unique to a round **
+
+These are contracts that are created/deployed for every round created on fantom testnet
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| Program                               |  |
+| QFVotingContract                      |  |
+| MerklePayoutContract                  |  |
+| Round                                 |  |
+
+## Celo Alfajores Testnet
+
+These are contracts that are created/deployed once for Celo Alfajores testnet
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        |  |
+| ProgramImplementation                 |  |
+| QuadraticFundingVotingStrategyFactory |  |
+| QFVotingStrategyImplementation        |  |
+| RoundFactory                          |  |
+| RoundImplementation                   |  |
+| ProjectRegistry                       | 0x3f672343fC458E5de55D5bB46130a8119231DA50 |
+| MerklePayoutStrategyFactory           |  |
+| MerklePayouStrategyImplementation     |  |
+| AlloSettings                          |  |
 
 **Sample contracts unique to a round **
 
