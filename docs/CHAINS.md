@@ -218,7 +218,7 @@ These are contracts that are created/deployed once for Celo Alfajores testnet
 | ProjectRegistry                       | 0x3f672343fC458E5de55D5bB46130a8119231DA50 |
 | MerklePayoutStrategyFactory           | 0x2700edcA6A1937be0a4A6A1F5585dDeE515b4f9D |
 | MerklePayouStrategyImplementation     | 0x10ff75f84237542BF354bBFE33F6B7208507e3A6 |
-| AlloSettings                          |  |
+| AlloSettings                          | 0x78ea83045d4A2207b9Ae351c948b5f108db7B3D1 |
 
 **Sample contracts unique to a round **
 
