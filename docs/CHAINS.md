@@ -214,7 +214,7 @@ These are contracts that are created/deployed once for Celo Alfajores testnet
 | QuadraticFundingVotingStrategyFactory | 0xdb064d7645b050C82065dAb95E1f29351407885E |
 | QFVotingStrategyImplementation        | 0x6d9E48380F7eA5D78986945D4e133b50b0f0Db02 |
 | RoundFactory                          | 0x149150d9dE6d73103F648f3C601850E9BfBb614d |
-| RoundImplementation                   |  |
+| RoundImplementation                   | 0xFAdf9ae17F74881674C78230D65F29BF89d606d1 |
 | ProjectRegistry                       | 0x3f672343fC458E5de55D5bB46130a8119231DA50 |
 | MerklePayoutStrategyFactory           | 0x2700edcA6A1937be0a4A6A1F5585dDeE515b4f9D |
 | MerklePayouStrategyImplementation     | 0x10ff75f84237542BF354bBFE33F6B7208507e3A6 |
@@ -222,7 +222,7 @@ These are contracts that are created/deployed once for Celo Alfajores testnet
 
 **Sample contracts unique to a round **
 
-These are contracts that are created/deployed for every round created on fantom testnet
+These are contracts that are created/deployed for every round created on Celo Alfajores testnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
