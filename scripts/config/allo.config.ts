@@ -38,4 +38,9 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0x3e364ebc92AA057C10597EF3D30C0201d84F03E8",
   },
+  "celo-testnet": {
+    alloSettingsContract: "0x78ea83045d4A2207b9Ae351c948b5f108db7B3D1",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0x6E0748Ce64745eE1c7CD3a8BcD80fb560329a6fd",
+  },
 };
