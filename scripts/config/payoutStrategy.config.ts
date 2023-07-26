@@ -38,4 +38,9 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     contract: "",
   },
+  "celo-testnet": {
+    factory: "0x2700edcA6A1937be0a4A6A1F5585dDeE515b4f9D",
+    implementation: "0x10ff75f84237542BF354bBFE33F6B7208507e3A6",
+    contract: "",
+  },
 };
