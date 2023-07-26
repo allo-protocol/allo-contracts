@@ -40,4 +40,9 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
     roundContract: "",
   },
+  "celo-testnet": {
+    roundFactoryContract: "0x149150d9dE6d73103F648f3C601850E9BfBb614d",
+    roundImplementationContract: "0xFAdf9ae17F74881674C78230D65F29BF89d606d1",
+    roundContract: "",
+  },
 };
