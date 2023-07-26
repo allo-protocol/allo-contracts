@@ -216,7 +216,7 @@ These are contracts that are created/deployed once for Celo Alfajores testnet
 | RoundFactory                          |  |
 | RoundImplementation                   |  |
 | ProjectRegistry                       | 0x3f672343fC458E5de55D5bB46130a8119231DA50 |
-| MerklePayoutStrategyFactory           |  |
+| MerklePayoutStrategyFactory           | 0x2700edcA6A1937be0a4A6A1F5585dDeE515b4f9D |
 | MerklePayouStrategyImplementation     |  |
 | AlloSettings                          |  |
 
