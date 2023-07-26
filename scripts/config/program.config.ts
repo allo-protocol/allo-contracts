@@ -38,4 +38,9 @@ export const programParams: DeployParams = {
     programImplementationContract: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
     programContract: ""
   },
+  "celo-testnet": {
+    programFactoryContract: "0x6f29F6E5731ea8707E90FAe7e5cC6Bc92B603b3d",
+    programImplementationContract: "0xD3eF0f64EbAC26B6C61EBd3b4728a705315E7E8C",
+    programContract: ""
+  }
 };
