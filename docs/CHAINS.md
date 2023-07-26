@@ -213,7 +213,7 @@ These are contracts that are created/deployed once for Celo Alfajores testnet
 | ProgramImplementation                 | 0xD3eF0f64EbAC26B6C61EBd3b4728a705315E7E8C |
 | QuadraticFundingVotingStrategyFactory | 0xdb064d7645b050C82065dAb95E1f29351407885E |
 | QFVotingStrategyImplementation        | 0x6d9E48380F7eA5D78986945D4e133b50b0f0Db02 |
-| RoundFactory                          |  |
+| RoundFactory                          | 0x149150d9dE6d73103F648f3C601850E9BfBb614d |
 | RoundImplementation                   |  |
 | ProjectRegistry                       | 0x3f672343fC458E5de55D5bB46130a8119231DA50 |
 | MerklePayoutStrategyFactory           | 0x2700edcA6A1937be0a4A6A1F5585dDeE515b4f9D |
