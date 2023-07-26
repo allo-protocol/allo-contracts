@@ -209,7 +209,7 @@ These are contracts that are created/deployed once for Celo Alfajores testnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        |  |
+| ProgramFactory                        | 0x6f29F6E5731ea8707E90FAe7e5cC6Bc92B603b3d |
 | ProgramImplementation                 |  |
 | QuadraticFundingVotingStrategyFactory |  |
 | QFVotingStrategyImplementation        |  |
