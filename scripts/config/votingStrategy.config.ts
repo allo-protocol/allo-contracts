@@ -38,4 +38,9 @@ export const QFVotingParams: DeployParams = {
     implementation: '0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143',
     contract: ''
   },
+  "celo-testnet": {
+    factory: '0xdb064d7645b050C82065dAb95E1f29351407885E',
+    implementation: '0x6d9E48380F7eA5D78986945D4e133b50b0f0Db02',
+    contract: ''
+  },
 };
