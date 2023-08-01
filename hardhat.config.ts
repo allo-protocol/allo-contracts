@@ -180,8 +180,8 @@ const config: HardhatUserConfig = {
         network: "pgn-mainnet",
         chainId: chainIds["pgn-mainnet"],
         urls: {
-          apiURL: "https://rpc.publicgoods.network",
-          browserURL: "https://explorer.publicgoods.network/",
+          apiURL: "https://explorer.publicgoods.network/api",
+          browserURL: "https://explorer.publicgoods.network",
         },
       },
     ],

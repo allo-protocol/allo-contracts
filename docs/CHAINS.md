@@ -177,7 +177,7 @@ These are contracts that are created/deployed for every round created on fantom 
 
 ## PGN Mainnet
 
-These are contracts that are created/deployed once for fantom testnet
+These are contracts that are created/deployed once for pgn mainnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
@@ -194,7 +194,7 @@ These are contracts that are created/deployed once for fantom testnet
 
 **Sample contracts unique to a round **
 
-These are contracts that are created/deployed for every round created on fantom testnet
+These are contracts that are created/deployed for every round created on pgn
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
