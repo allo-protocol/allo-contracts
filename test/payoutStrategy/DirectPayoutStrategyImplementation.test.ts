@@ -1,21 +1,21 @@
 import { AddressZero } from "@ethersproject/constants";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { Wallet, BigNumberish, BigNumber } from 'ethers';
+import { BigNumber, BigNumberish, Wallet } from 'ethers';
 import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
-import {takeSnapshot, restoreSnapshot, currentTime, signHash, executeTx, advanceTimeTo} from "../utils";
-import { ApplicationStatus, buildStatusRow } from "../../utils/applicationStatus";
 import {
+  AlloSettings,
   DirectPayoutStrategyFactory,
   DirectPayoutStrategyImplementation,
-  AlloSettings,
-  MockRoundImplementation,
-  MockERC20,
-  GnosisSafeProxyFactory,
+  DummyVotingStrategy,
   GnosisSafe,
+  GnosisSafeProxyFactory,
   IAllowanceModule,
-  DummyVotingStrategy
+  MockERC20,
+  MockRoundImplementation
 } from "../../typechain";
+import { ApplicationStatus, buildStatusRow } from "../../utils/applicationStatus";
+import { advanceTimeTo, currentTime, executeTx, restoreSnapshot, signHash, takeSnapshot } from "../utils";
 
 import { encodeRoundParameters } from "../../scripts/utils";
 
@@ -55,7 +55,7 @@ export function buildInReviewStatusRow(
   return newRow.toString();
 };
 
-describe.only("DirectPayoutStrategyImplementation", () => {
+describe("DirectPayoutStrategyImplementation", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
