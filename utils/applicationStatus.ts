@@ -27,4 +27,3 @@ export function buildStatusRow(
 
   return newRow.toString();
 };
-

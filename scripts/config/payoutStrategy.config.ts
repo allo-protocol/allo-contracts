@@ -1,11 +1,11 @@
 // Update this file any time a new Payout Strategy contract has been added
-type MerklePayoutParams = {
+type PayoutParams = {
   factory: string;
   implementation: string;
   contract: string;
 };
 
-type DeployParams = Record<string, MerklePayoutParams>;
+type DeployParams = Record<string, PayoutParams>;
 
 export const MerklePayoutParams: DeployParams = {
   mainnet: {
@@ -16,7 +16,7 @@ export const MerklePayoutParams: DeployParams = {
   goerli: {
     factory: "0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe",
     implementation: "0xC808c9Ea4020E0F6Ec20715EEA0642fA6870B5Cc",
-    contract: "0x3172a6cCE26529e7DD2B533e7c3622a0b544f349",
+    contract: "0xCB64FFd025384E6353C1923Ce5Bda511229e2E92",
   },
   "optimism-mainnet": {
     factory: "0xB5365543cdDa2C795AD104F4cB784EF3DB1CD383",
@@ -36,6 +36,34 @@ export const MerklePayoutParams: DeployParams = {
   "pgn-mainnet": {
     factory: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
     implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    contract: "",
+  },
+};
+
+export const DirectPayoutParams: DeployParams = {
+  mainnet: {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
+  goerli: {
+    factory: "0x0077551e24bfB910aBABedC4336246e34B5fB0A2",
+    implementation: "0xBd0Cf00aF5A5086d61777CC8704947242FC20629",
+    contract: "",
+  },
+  "optimism-mainnet": {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
+  "fantom-mainnet": {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
+  "fantom-testnet": {
+    factory: "",
+    implementation: "",
     contract: "",
   },
 };

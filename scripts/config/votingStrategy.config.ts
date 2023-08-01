@@ -39,3 +39,21 @@ export const QFVotingParams: DeployParams = {
     contract: ''
   },
 };
+
+export const DummyVotingParams: Record<string, {contract: string}> = {
+  "mainnet": {
+    contract: ''
+  },
+  "goerli": {
+    contract: '0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46'
+  },
+  "optimism-mainnet": {
+    contract: ''
+  },
+  "fantom-mainnet": {
+    contract: ''
+  },
+  "fantom-testnet": {
+    contract: ''
+  }
+};

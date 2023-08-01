@@ -171,7 +171,7 @@ describe("RoundImplementation", function () {
         roundFeePercentage,
         roundFeeAddress,
         initMetaPtr,
-        initRoles,
+        initRoles
       ];
 
       await roundImplementation.initialize(
@@ -327,7 +327,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -376,7 +376,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -425,7 +425,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -474,7 +474,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -523,7 +523,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -559,7 +559,7 @@ describe("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -1194,7 +1194,7 @@ describe("RoundImplementation", function () {
         );
 
       });
-    })  
+    })
 
     describe("test: setApplicationStatuses", () => {
       let _currentBlockTimestamp: number;
@@ -1537,7 +1537,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           expect(Number(payoutContractBalance)).to.be.equal(0);
 
@@ -1654,7 +1654,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
@@ -1752,7 +1752,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
@@ -1855,7 +1855,7 @@ describe("RoundImplementation", function () {
             encodeDistributionParameters(
               hexlify(randomBytes(32)), 1, "metaPointer"
             )
-          ); 
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
