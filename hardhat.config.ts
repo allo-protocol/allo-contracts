@@ -167,7 +167,7 @@ const config: HardhatUserConfig = {
       // @ts-ignore
       opera: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
-      "pgn-mainnet": "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
+      "pgn-mainnet": process.env.PGNSCAN_API_KEY,
     },
     customChains: [
       {
