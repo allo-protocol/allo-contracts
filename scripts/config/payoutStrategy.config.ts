@@ -40,6 +40,7 @@ export const MerklePayoutParams: DeployParams = {
   },
 };
 
+// TODO: Update this file any time a new dummy voting contract has been deployed
 export const DirectPayoutParams: DeployParams = {
   mainnet: {
     factory: "",
@@ -49,6 +50,21 @@ export const DirectPayoutParams: DeployParams = {
   goerli: {
     factory: "0x0077551e24bfB910aBABedC4336246e34B5fB0A2",
     implementation: "0xBd0Cf00aF5A5086d61777CC8704947242FC20629",
+    contract: "",
+  },
+  "pgn-mainnet": {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
+  "pgn-sepolia": {
+    factory: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
+    implementation: "0xC3A195EEa198e74D67671732E1B8F8A23781D735",
+    contract: "",
+  },
+  sepolia: {
+    factory: "",
+    implementation: "",
     contract: "",
   },
   "optimism-mainnet": {
@@ -62,8 +78,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "fantom-testnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912",
+    implementation: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
     contract: "",
   },
 };

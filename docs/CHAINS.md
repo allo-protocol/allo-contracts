@@ -30,6 +30,13 @@ These are contracts that are created/deployed for every round created on ethereu
 | MerklePayoutContract                  |  |
 | Round                                 |  |
 
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy |  | [🔗]() |
+| DirectPayoutStrategyFactory | | [🔗]() |
+| DirectPayoutStrategyImplementation | | [🔗]() |
+
 ## Optimism Mainnet
 
 These are contracts that are created/deployed once for optimism mainnet
@@ -61,6 +68,13 @@ These are contracts that are created/deployed for every round created on optimis
 | MerklePayoutStrategyFactory           |  |
 | MerklePayouStrategyImplementation     |  |
 
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy |  | [🔗]() |
+| DirectPayoutStrategyFactory | | [🔗]() |
+| DirectPayoutStrategyImplementation | | [🔗]() |
+
 ## Fantom Mainnet
 
 These are contracts that are created/deployed once for fantom mainnet
@@ -88,6 +102,13 @@ These are contracts that are created/deployed for every round created on fantom 
 | QFVotingContract                      |  |
 | MerklePayoutContract                  |  |
 | Round                                 |  |
+
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy |  | [🔗]() |
+| DirectPayoutStrategyFactory | | [🔗]() |
+| DirectPayoutStrategyImplementation | | [🔗]() |
 
 ## Goerli Network
 
@@ -118,6 +139,48 @@ These are contracts that are created/deployed for every round created on goerli
 | MerklePayoutContract                  | 0x3172a6cCE26529e7DD2B533e7c3622a0b544f349 |
 | Round                                 | 0xF7b7d21257DEaC12F75D901309026913429C9bdF |
 
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy | 0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46 | [🔗](https://goerli.etherscan.io/address/0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46#code) |
+| DirectPayoutStrategyFactory | 0x0077551e24bfB910aBABedC4336246e34B5fB0A2 | [🔗](https://goerli.etherscan.io/address/0x0077551e24bfB910aBABedC4336246e34B5fB0A2#code) |
+| DirectPayoutStrategyImplementation | 0xBd0Cf00aF5A5086d61777CC8704947242FC20629 | [🔗](https://goerli.etherscan.io/address/0xBd0Cf00aF5A5086d61777CC8704947242FC20629#code) |
+
+## Sepolia
+
+These are contracts that are created/deployed once for pgn mainnet
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        |  |
+| ProgramImplementation                 |  |
+| QuadraticFundingVotingStrategyFactory |  |
+| QFVotingStrategyImplementation        |  |
+| RoundFactory                          |  |
+| RoundImplementation                   |  |
+| ProjectRegistry                       |  |
+| MerklePayoutStrategyFactory           |  |
+| MerklePayouStrategyImplementation     |  |
+| AlloSettings                          |  |
+
+**Sample contracts unique to a round **
+
+These are contracts that are created/deployed for every round created on pgn
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| Program                               |  |
+| QFVotingContract                      |  |
+| MerklePayoutContract                  |  |
+| Round                                 |  |
+
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy | 0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921 | [🔗](https://explorer.sepolia.publicgoods.network/address/0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921#code) |
+| DirectPayoutStrategyFactory | | [🔗]() |
+| DirectPayoutStrategyImplementation | | [🔗]() |
+
 
 ## Fantom Testnet
 
@@ -147,6 +210,13 @@ These are contracts that are created/deployed for every round created on fantom 
 | MerklePayoutContract                  |  |
 | Round                                 |  |
 
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy | 0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab | [🔗](https://testnet.ftmscan.com/address/0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab#code) |
+| DirectPayoutStrategyFactory | 0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912 | [🔗](https://testnet.ftmscan.com/address/0x04b194b14532070F5cc8D3A760c9a0957D85ad5B#code) |
+| DirectPayoutStrategyImplementation | 0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA | [🔗](https://testnet.ftmscan.com/address/0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA#code) |
+
 ## Fantom Mainnet
 
 These are contracts that are created/deployed once for fantom testnet
@@ -175,6 +245,13 @@ These are contracts that are created/deployed for every round created on fantom 
 | MerklePayoutContract                  |  |
 | Round                                 |  |
 
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy |  | [🔗]() |
+| DirectPayoutStrategyFactory | | [🔗]() |
+| DirectPayoutStrategyImplementation | | [🔗]() |
+
 ## PGN Mainnet
 
 These are contracts that are created/deployed once for pgn mainnet
@@ -194,7 +271,7 @@ These are contracts that are created/deployed once for pgn mainnet
 
 **Sample contracts unique to a round **
 
-These are contracts that are created/deployed for every round created on pgn
+> These are contracts that are created/deployed for every round created on pgn mainnet
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
@@ -202,3 +279,47 @@ These are contracts that are created/deployed for every round created on pgn
 | QFVotingContract                      |  |
 | MerklePayoutContract                  |  |
 | Round                                 |  |
+
+** Direct Grants Deployment **
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy |  | [🔗]() |
+| DirectPayoutStrategyFactory | | [🔗]() |
+| DirectPayoutStrategyImplementation | | [🔗]() |
+
+## PGN Testnet/Sepolia
+
+These are contracts that are created/deployed once for pgn mainnet
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        |  |
+| ProgramImplementation                 |  |
+| QuadraticFundingVotingStrategyFactory |  |
+| QFVotingStrategyImplementation        |  |
+| RoundFactory                          |  |
+| RoundImplementation                   |  |
+| ProjectRegistry                       |  |
+| MerklePayoutStrategyFactory           |  |
+| MerklePayouStrategyImplementation     |  |
+| AlloSettings                          |  |
+
+**Sample contracts unique to a round **
+
+> These are contracts that are created/deployed for every round created on pgn sepolia
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| Program                               |  |
+| QFVotingContract                      |  |
+| MerklePayoutContract                  |  |
+| Round                                 |  |
+
+** Direct Grants Deployment **
+
+| Contract                              | Address                                    | 🔗 |
+|---------------------------------------|--------------------------------------------|------|
+| DummyVotingStrategy | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e | [🔗](https://explorer.sepolia.publicgoods.network/address/0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e#code) |
+| DirectPayoutStrategyFactory | 0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921 | [🔗](https://explorer.sepolia.publicgoods.network/address/0xC3A195EEa198e74D67671732E1B8F8A23781D735?tab=contract) |
+| DirectPayoutStrategyImplementation | 0xC3A195EEa198e74D67671732E1B8F8A23781D735 | [🔗](https://explorer.sepolia.publicgoods.network/address/0xC3A195EEa198e74D67671732E1B8F8A23781D735?tab=contract) |
+🔗

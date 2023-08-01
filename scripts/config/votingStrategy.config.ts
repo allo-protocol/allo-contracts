@@ -2,58 +2,68 @@
 type QFVotingParams = {
   factory: string;
   implementation: string;
-  contract: string
+  contract: string;
 };
 
 type DeployParams = Record<string, QFVotingParams>;
 
 export const QFVotingParams: DeployParams = {
-  "mainnet": {
-    factory: '0x4a850F463D1C4842937c5Bc9540dBc803D744c9F',
-    implementation: '0xDdC143f736f912Ae6AAF2fceF2C78b267745B0f2',
-    contract: ''
+  mainnet: {
+    factory: "0x4a850F463D1C4842937c5Bc9540dBc803D744c9F",
+    implementation: "0xDdC143f736f912Ae6AAF2fceF2C78b267745B0f2",
+    contract: "",
   },
-  "goerli": {
-    factory: '0x06A6Cc566c5A88E77B1353Cdc3110C2e6c828e38',
-    implementation: '0x08186fEEa8115D1cf57bBE227e2C9bEa350cF40d',
-    contract: '0x818A3C8F82667bd222faF84a954F35d2b0Eb6a78'
+  goerli: {
+    factory: "0x06A6Cc566c5A88E77B1353Cdc3110C2e6c828e38",
+    implementation: "0x08186fEEa8115D1cf57bBE227e2C9bEa350cF40d",
+    contract: "0x818A3C8F82667bd222faF84a954F35d2b0Eb6a78",
   },
   "optimism-mainnet": {
-    factory: '0x838C5e10dcc1e54d62761d994722367BA167AC22',
-    implementation: '0x27C43Ee6b8deF6Ad804Ca9106736a43FF9dFB6F1',
-    contract: ''
+    factory: "0x838C5e10dcc1e54d62761d994722367BA167AC22",
+    implementation: "0x27C43Ee6b8deF6Ad804Ca9106736a43FF9dFB6F1",
+    contract: "",
   },
   "fantom-mainnet": {
-    factory: '0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB',
-    implementation: '0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f',
-    contract: ''
+    factory: "0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB",
+    implementation: "0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f",
+    contract: "",
   },
   "fantom-testnet": {
-    factory: '0x545B282A50EaeA01A619914d44105437036CbB36',
-    implementation: '0x2AFA4bE0f2468347A2F086c2167630fb1E58b725',
-    contract: ''
+    factory: "0x545B282A50EaeA01A619914d44105437036CbB36",
+    implementation: "0x2AFA4bE0f2468347A2F086c2167630fb1E58b725",
+    contract: "",
   },
   "pgn-mainnet": {
-    factory: '0x2AFA4bE0f2468347A2F086c2167630fb1E58b725',
-    implementation: '0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143',
-    contract: ''
+    factory: "0x2AFA4bE0f2468347A2F086c2167630fb1E58b725",
+    implementation: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
+    contract: "",
   },
 };
 
-export const DummyVotingParams: Record<string, {contract: string}> = {
-  "mainnet": {
-    contract: ''
+// TODO: Update this file any time a new dummy voting contract has been deployed
+export const DummyVotingParams: Record<string, { contract: string }> = {
+  mainnet: {
+    contract: "",
   },
-  "goerli": {
-    contract: '0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46'
+  goerli: {
+    contract: "0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46",
+  },
+  "pgn-mainnet": {
+    contract: "",
+  },
+  "pgn-sepolia": {
+    contract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
+  },
+  sepolia: {
+    contract: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
   },
   "optimism-mainnet": {
-    contract: ''
+    contract: "",
   },
   "fantom-mainnet": {
-    contract: ''
+    contract: "",
   },
   "fantom-testnet": {
-    contract: ''
-  }
+    contract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
+  },
 };

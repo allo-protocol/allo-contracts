@@ -21,6 +21,7 @@ const chainIds = {
   // testnet
   goerli: 5,
   "fantom-testnet": 4002,
+  sepolia: 11155111,
   "pgn-sepolia": 58008,
 
   // mainnet
@@ -137,6 +138,7 @@ const config: HardhatUserConfig = {
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
+    sepolia: createTestnetConfig("sepolia"),
     "fantom-testnet": createTestnetConfig(
       "fantom-testnet",
       "https://rpc.testnet.fantom.network/"
@@ -145,11 +147,12 @@ const config: HardhatUserConfig = {
       accounts: [deployPrivateKey],
       chainId: chainIds["pgn-sepolia"],
       url: "https://sepolia.publicgoods.network",
+      gasPrice: 20000000000,
     },
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
       forking: {
-        url: process.env.FORK_RPC_URL || "",
+        url: `https://goerli.infura.io/v3/${infuraIdKey}`,
         blockNumber: 9188740 // A recent block where both AllowanceModule an Safe factory exist
       }
     }
@@ -165,6 +168,8 @@ const config: HardhatUserConfig = {
       // @ts-ignore
       mainnet: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
+      sepolia: process.env.ETHERSCAN_API_KEY,
+      // @ts-ignore
       goerli: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
       optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
@@ -174,6 +179,8 @@ const config: HardhatUserConfig = {
       opera: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
       "pgn-mainnet": process.env.PGNSCAN_API_KEY,
+      // @ts-ignore
+      "pgn-sepolia": process.env.PGNSCAN_API_KEY,
     },
     customChains: [
       {
@@ -182,6 +189,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://explorer.publicgoods.network/api",
           browserURL: "https://explorer.publicgoods.network",
+        },
+      },
+      {
+        network: "pgn-sepolia",
+        chainId: chainIds["pgn-sepolia"],
+        urls: {
+          apiURL: "https://explorer.sepolia.publicgoods.network/api",
+          browserURL: "https://explorer.sepolia.publicgoods.network",
         },
       },
     ],

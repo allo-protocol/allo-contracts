@@ -6,6 +6,7 @@
     "node": ">=16.15.0"
   },
   "scripts": {
+    "chain": "pnpm hardhat node",
     "compile": "pnpm hardhat compile",
     "build": "pnpm compile",
     "clean": "pnpm hardhat clean",
