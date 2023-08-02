@@ -73,8 +73,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "fantom-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x9B1Ee60B539a3761E328a621A3d980EE9385679a",
+    implementation: "0xf78DCed8BA0baAeb982D068b786588d6B8D181cd",
     contract: "",
   },
   "fantom-testnet": {

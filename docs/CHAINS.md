@@ -227,16 +227,16 @@ These are contracts that are created/deployed once for fantom testnet
 
 | Contract                              | Address                                    | 🔗 |
 |---------------------------------------|--------------------------------------------|----|
-| ProgramFactory                        | 0x4d1f64c7920262c8F78e989C9E7Bf48b7eC02Eb5 | [🔗]() |
-| ProgramImplementation                 | 0x5c1EDa32B5d2F8048a709f8b18B02AbEC68601D8 | [🔗]() |
-| QuadraticFundingVotingStrategyFactory | 0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB | [🔗]() |
-| QFVotingStrategyImplementation        | 0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f | [🔗]() |
-| RoundFactory                          | 0xfb08d1fD3a7c693677eB096E722ABf4Ae63B0B95 | [🔗]() |
-| RoundImplementation                   | 0x43F24E777A2a3717690784633c01c9F9122352BB | [🔗]() |
-| ProjectRegistry                       | 0xAdcB64860902A29c3e408586C782A2221d595B55 | [🔗]() |
-| MerklePayoutStrategyFactory           | 0xFA1D9FF7F885757fc20Fdd9D78B72F88B00Cff77 | [🔗]() |
-| MerklePayouStrategyImplementation     | 0x5FFc749cb926349fAf05EA81D157AA9E94Dd6301 | [🔗]() |
-| AlloSettings                          | 0xFa6464A1CfA5FC5319C1112Bde7D8AC02A2AB743 | [🔗]() |
+| ProgramFactory                        | 0x4d1f64c7920262c8F78e989C9E7Bf48b7eC02Eb5 | [🔗](https://ftmscan.com/address/0x4d1f64c7920262c8F78e989C9E7Bf48b7eC02Eb5#code) |
+| ProgramImplementation                 | 0x5c1EDa32B5d2F8048a709f8b18B02AbEC68601D8 | [🔗](https://ftmscan.com/address/0x5c1EDa32B5d2F8048a709f8b18B02AbEC68601D8#code) |
+| QuadraticFundingVotingStrategyFactory | 0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB | [🔗](https://ftmscan.com/address/0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB#code) |
+| QFVotingStrategyImplementation        | 0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f | [🔗](https://ftmscan.com/address/0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f#code) |
+| RoundFactory                          | 0xfb08d1fD3a7c693677eB096E722ABf4Ae63B0B95 | [🔗](https://ftmscan.com/address/0xfb08d1fD3a7c693677eB096E722ABf4Ae63B0B95#code) |
+| RoundImplementation                   | 0x43F24E777A2a3717690784633c01c9F9122352BB | [🔗](https://ftmscan.com/address/0x43F24E777A2a3717690784633c01c9F9122352BB#code) |
+| ProjectRegistry                       | 0xAdcB64860902A29c3e408586C782A2221d595B55 | [🔗](https://ftmscan.com/address/0xAdcB64860902A29c3e408586C782A2221d595B55#code) |
+| MerklePayoutStrategyFactory           | 0xFA1D9FF7F885757fc20Fdd9D78B72F88B00Cff77 | [🔗](https://ftmscan.com/address/0xFA1D9FF7F885757fc20Fdd9D78B72F88B00Cff77#code) |
+| MerklePayouStrategyImplementation     | 0x5FFc749cb926349fAf05EA81D157AA9E94Dd6301 | [🔗](https://ftmscan.com/address/0x5FFc749cb926349fAf05EA81D157AA9E94Dd6301#code) |
+| AlloSettings                          | 0xFa6464A1CfA5FC5319C1112Bde7D8AC02A2AB743 | [🔗](https://ftmscan.com/address/0xFa6464A1CfA5FC5319C1112Bde7D8AC02A2AB743#code) |
 
 **Sample contracts unique to a round **
 
@@ -252,9 +252,9 @@ These are contracts that are created/deployed for every round created on fantom 
 ** Direct Grants Deployment **
 | Contract                              | Address                                    | 🔗 |
 |---------------------------------------|--------------------------------------------|------|
-| DummyVotingStrategy |  | [🔗]() |
-| DirectPayoutStrategyFactory | | [🔗]() |
-| DirectPayoutStrategyImplementation | | [🔗]() |
+| DummyVotingStrategy | 0xB91749077A0dE932a4AE2b882d846ef9C53b9505 | [🔗](https://ftmscan.com/address/0xB91749077A0dE932a4AE2b882d846ef9C53b9505#code) |
+| DirectPayoutStrategyFactory | 0x9B1Ee60B539a3761E328a621A3d980EE9385679a | [🔗](https://ftmscan.com/address/0x9B1Ee60B539a3761E328a621A3d980EE9385679a#code) |
+| DirectPayoutStrategyImplementation | 0xf78DCed8BA0baAeb982D068b786588d6B8D181cd | [🔗](https://ftmscan.com/address/0xf78DCed8BA0baAeb982D068b786588d6B8D181cd#code) |
 
 ## PGN Mainnet
 
