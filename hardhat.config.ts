@@ -20,6 +20,7 @@ const chainIds = {
   localhost: 31337,
   // testnet
   goerli: 5,
+  "optimism-goerli": 420,
   "fantom-testnet": 4002,
   sepolia: 11155111,
   "pgn-sepolia": 58008,
@@ -124,7 +125,7 @@ const config: HardhatUserConfig = {
   networks: {
     // Main Networks
     mainnet: createMainnetConfig("mainnet"),
-    "optimism-mainnet": createMainnetConfig("optimism-mainnet"),
+    optimisticEthereum: createMainnetConfig("optimism-mainnet"),
     "pgn-mainnet": {
       accounts: [deployPrivateKey],
       chainId: chainIds["pgn-mainnet"],
@@ -139,6 +140,12 @@ const config: HardhatUserConfig = {
     // Test Networks
     goerli: createTestnetConfig("goerli"),
     sepolia: createTestnetConfig("sepolia"),
+    optimisticGoerli: {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["optimism-goerli"],
+      url: "https://goerli.optimism.io",
+      gasPrice: 15000000,
+    },
     "fantom-testnet": createTestnetConfig(
       "fantom-testnet",
       "https://rpc.testnet.fantom.network/"
@@ -147,7 +154,7 @@ const config: HardhatUserConfig = {
       accounts: [deployPrivateKey],
       chainId: chainIds["pgn-sepolia"],
       url: "https://sepolia.publicgoods.network",
-      gasPrice: 20000000000,
+      gasPrice: 15000000,
     },
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
@@ -173,6 +180,8 @@ const config: HardhatUserConfig = {
       goerli: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
       optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+      // @ts-ignore
+      optimisticGoerli: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
       // @ts-ignore
       ftmTestnet: process.env.FTMSCAN_API_KEY,
       // @ts-ignore

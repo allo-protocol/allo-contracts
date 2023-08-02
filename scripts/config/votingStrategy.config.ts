@@ -54,6 +54,9 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   "pgn-sepolia": {
     contract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
   },
+  "optimism-goerli": {
+    contract: "0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D",
+  },
   sepolia: {
     contract: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
   },
