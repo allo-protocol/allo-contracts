@@ -43,7 +43,7 @@ export const QFVotingParams: DeployParams = {
 // TODO: Update this file any time a new dummy voting contract has been deployed
 export const DummyVotingParams: Record<string, { contract: string }> = {
   mainnet: {
-    contract: "",
+    contract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
   },
   goerli: {
     contract: "0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46",

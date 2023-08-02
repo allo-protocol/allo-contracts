@@ -43,8 +43,8 @@ export const MerklePayoutParams: DeployParams = {
 // TODO: Update this file any time a new dummy voting contract has been deployed
 export const DirectPayoutParams: DeployParams = {
   mainnet: {
-    factory: "",
-    implementation: "",
+    factory: "0xd07D54b0231088Ca9BF7DA6291c911B885cBC140",
+    implementation: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
     contract: "",
   },
   goerli: {

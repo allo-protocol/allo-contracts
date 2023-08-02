@@ -33,9 +33,9 @@ These are contracts that are created/deployed for every round created on ethereu
 ** Direct Grants Deployment **
 | Contract                              | Address                                    | 🔗 |
 |---------------------------------------|--------------------------------------------|------|
-| DummyVotingStrategy |  | [🔗]() |
-| DirectPayoutStrategyFactory | | [🔗]() |
-| DirectPayoutStrategyImplementation | | [🔗]() |
+| DummyVotingStrategy | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e | [🔗](https://etherscan.io/address/0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e#code) |
+| DirectPayoutStrategyFactory | 0xd07D54b0231088Ca9BF7DA6291c911B885cBC140 | [🔗](https://etherscan.io/address/0xd07D54b0231088Ca9BF7DA6291c911B885cBC140#code) |
+| DirectPayoutStrategyImplementation | 0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921 | [🔗](https://etherscan.io/address/0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921#code) |
 
 ## Optimism Mainnet
 
