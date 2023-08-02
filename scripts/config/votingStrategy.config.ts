@@ -61,7 +61,7 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
     contract: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
   },
   "optimism-mainnet": {
-    contract: "",
+    contract: "0xB9fd0d433d2ca03D26A182Dc709bA1EccA3B00cC",
   },
   "fantom-mainnet": {
     contract: "",

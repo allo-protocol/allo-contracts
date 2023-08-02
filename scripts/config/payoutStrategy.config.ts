@@ -68,8 +68,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "optimism-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x2Bb670C3ffC763b691062d671b386E51Cf1840f0",
+    implementation: "0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB",
     contract: "",
   },
   "fantom-mainnet": {

@@ -125,7 +125,7 @@ const config: HardhatUserConfig = {
   networks: {
     // Main Networks
     mainnet: createMainnetConfig("mainnet"),
-    optimisticEthereum: createMainnetConfig("optimism-mainnet"),
+    "optimism-mainnet": createMainnetConfig("optimism-mainnet"),
     "pgn-mainnet": {
       accounts: [deployPrivateKey],
       chainId: chainIds["pgn-mainnet"],
@@ -140,7 +140,7 @@ const config: HardhatUserConfig = {
     // Test Networks
     goerli: createTestnetConfig("goerli"),
     sepolia: createTestnetConfig("sepolia"),
-    optimisticGoerli: {
+    "optimism-goerli": {
       accounts: [deployPrivateKey],
       chainId: chainIds["optimism-goerli"],
       url: "https://goerli.optimism.io",

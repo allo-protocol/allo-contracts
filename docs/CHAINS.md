@@ -71,9 +71,9 @@ These are contracts that are created/deployed for every round created on optimis
 ** Direct Grants Deployment **
 | Contract                              | Address                                    | 🔗 |
 |---------------------------------------|--------------------------------------------|------|
-| DummyVotingStrategy |  | [🔗]() |
-| DirectPayoutStrategyFactory | | [🔗]() |
-| DirectPayoutStrategyImplementation | | [🔗]() |
+| DummyVotingStrategy | 0xB9fd0d433d2ca03D26A182Dc709bA1EccA3B00cC | [🔗](https://optimistic.etherscan.io/address/0xB9fd0d433d2ca03D26A182Dc709bA1EccA3B00cC#code) |
+| DirectPayoutStrategyFactory | 0x2Bb670C3ffC763b691062d671b386E51Cf1840f0 | [🔗](https://optimistic.etherscan.io/address/0x2Bb670C3ffC763b691062d671b386E51Cf1840f0#code) |
+| DirectPayoutStrategyImplementation | 0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB | [🔗](https://optimistic.etherscan.io/address/0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB#code) |
 
 ## Goerli Network
 
