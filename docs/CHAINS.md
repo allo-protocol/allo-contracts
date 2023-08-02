@@ -75,41 +75,6 @@ These are contracts that are created/deployed for every round created on optimis
 | DirectPayoutStrategyFactory | | [🔗]() |
 | DirectPayoutStrategyImplementation | | [🔗]() |
 
-## Fantom Mainnet
-
-These are contracts that are created/deployed once for fantom mainnet
-
-| Contract                              | Address                                    | 🔗 |
-|---------------------------------------|--------------------------------------------|----|
-| ProgramFactory                        |  | [🔗]() |
-| ProgramImplementation                 |  | [🔗]() |
-| QuadraticFundingVotingStrategyFactory |  | [🔗]() |
-| QFVotingStrategyImplementation        |  | [🔗]() |
-| RoundFactory                          |  | [🔗]() |
-| RoundImplementation                   |  | [🔗]() |
-| ProjectRegistry                       |  | [🔗]() |
-| MerklePayoutStrategyFactory           |  | [🔗]() |
-| MerklePayouStrategyImplementation     |  | [🔗]() |
-| AlloSettings                          |  | [🔗]() |
-
-**Sample contracts unique to a round **
-
-These are contracts that are created/deployed for every round created on fantom mainnet
-
-| Contract                              | Address                                    | 🔗 |
-|---------------------------------------|--------------------------------------------|----|
-| Program                               |  | [🔗]() |
-| QFVotingContract                      |  | [🔗]() |
-| MerklePayoutContract                  |  | [🔗]() |
-| Round                                 |  | [🔗]() |
-
-** Direct Grants Deployment **
-| Contract                              | Address                                    | 🔗 |
-|---------------------------------------|--------------------------------------------|------|
-| DummyVotingStrategy |  | [🔗]() |
-| DirectPayoutStrategyFactory | | [🔗]() |
-| DirectPayoutStrategyImplementation | | [🔗]() |
-
 ## Goerli Network
 
 These are contracts that are created/deployed once for goerli
@@ -322,9 +287,9 @@ These are contracts that are created/deployed once for pgn mainnet
 ** Direct Grants Deployment **
 | Contract                              | Address                                    | 🔗 |
 |---------------------------------------|--------------------------------------------|------|
-| DummyVotingStrategy |  | [🔗]() |
-| DirectPayoutStrategyFactory | | [🔗]() |
-| DirectPayoutStrategyImplementation | | [🔗]() |
+| DummyVotingStrategy | 0xcE7c30DbcEC2a98B516E4C64fA4E3256AB813b10 | [🔗](https://explorer.publicgoods.network/address/0xcE7c30DbcEC2a98B516E4C64fA4E3256AB813b10#code) |
+| DirectPayoutStrategyFactory | 0x0c33c9dEF7A3d9961b802C6C6402d306b7D48135 | [🔗](https://explorer.publicgoods.network/address/0x0c33c9dEF7A3d9961b802C6C6402d306b7D48135#code) |
+| DirectPayoutStrategyImplementation | 0x9A606A7E4A2eeD3649C1830A8c5B90cDB9859e9c | [🔗](https://explorer.publicgoods.network/address/0x9A606A7E4A2eeD3649C1830A8c5B90cDB9859e9c#code) |
 
 ## PGN Testnet/Sepolia
 

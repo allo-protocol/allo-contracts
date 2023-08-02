@@ -49,7 +49,7 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
     contract: "0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46",
   },
   "pgn-mainnet": {
-    contract: "",
+    contract: "0xcE7c30DbcEC2a98B516E4C64fA4E3256AB813b10",
   },
   "pgn-sepolia": {
     contract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",

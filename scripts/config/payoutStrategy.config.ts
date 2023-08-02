@@ -53,8 +53,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "pgn-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x0c33c9dEF7A3d9961b802C6C6402d306b7D48135",
+    implementation: "0x9A606A7E4A2eeD3649C1830A8c5B90cDB9859e9c",
     contract: "",
   },
   "pgn-sepolia": {
