@@ -552,6 +552,9 @@ describe("MerklePayoutStrategyImplementation", function () {
           "bytes32",
         ]);
 
+        console.log("distributions", distributions);
+        console.log("tree.root", tree.root)
+
         /* Set the merkle root */
         await merklePayoutStrategyImplementation.updateDistribution(
           encodeDistributionParameters(tree.root, 1, "test")
@@ -568,6 +571,8 @@ describe("MerklePayoutStrategyImplementation", function () {
 
         // Prepare Payout
         const validMerkleProof = tree.getProof(distributions[1]);
+
+        console.log("proof.root", validMerkleProof)
         const payouts = [
           [
             1,
