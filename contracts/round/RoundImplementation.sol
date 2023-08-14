@@ -18,7 +18,7 @@ import "../payoutStrategy/IPayoutStrategy.sol";
 import "../utils/MetaPtr.sol";
 
 /**
- * @notice Contract deployed per Round which would managed by
+ * @notice Contract deployed per Round which would be managed by
  * a group of ROUND_OPERATOR via the RoundFactory
  *
  */
@@ -83,7 +83,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
      _;
   }
 
-  /// @notice modifier to check if round has not ended.
+  /// @notice modifier to check if round has ended.
   modifier roundHasEnded() {
     // slither-disable-next-line timestamp
     require(block.timestamp > roundEndTime, "Round: Round has not ended");
@@ -182,7 +182,7 @@ contract RoundImplementation is IRoundImplementation, AccessControlEnumerable, I
   // 1: approved
   // 2: rejected
   // 3: canceled
-  // Since it's a mapping the storage it's pre-allocated with zero values,
+  // Since it's a mapping, the storage is pre-allocated with zero values,
   // so if we check the status of an existing application, the value is by default 0 (pending).
   // If we want to check the status of an application, we take its index from the `applications` array
   // and convert it to the 2-bits position in the bitmap.
