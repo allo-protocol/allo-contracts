@@ -45,10 +45,11 @@ export const MerklePayoutParams: DeployParams = {
   },
 };
 
+// TODO: Update this file any time a new dummy voting contract has been deployed
 export const DirectPayoutParams: DeployParams = {
   mainnet: {
-    factory: "",
-    implementation: "",
+    factory: "0xd07D54b0231088Ca9BF7DA6291c911B885cBC140",
+    implementation: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
     contract: "",
   },
   goerli: {
@@ -56,19 +57,34 @@ export const DirectPayoutParams: DeployParams = {
     implementation: "0xBd0Cf00aF5A5086d61777CC8704947242FC20629",
     contract: "",
   },
-  "optimism-mainnet": {
+  "pgn-mainnet": {
+    factory: "0x0c33c9dEF7A3d9961b802C6C6402d306b7D48135",
+    implementation: "0x9A606A7E4A2eeD3649C1830A8c5B90cDB9859e9c",
+    contract: "",
+  },
+  "pgn-sepolia": {
+    factory: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
+    implementation: "0xC3A195EEa198e74D67671732E1B8F8A23781D735",
+    contract: "",
+  },
+  sepolia: {
     factory: "",
     implementation: "",
+    contract: "",
+  },
+  "optimism-mainnet": {
+    factory: "0x2Bb670C3ffC763b691062d671b386E51Cf1840f0",
+    implementation: "0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB",
     contract: "",
   },
   "fantom-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x9B1Ee60B539a3761E328a621A3d980EE9385679a",
+    implementation: "0xf78DCed8BA0baAeb982D068b786588d6B8D181cd",
     contract: "",
   },
   "fantom-testnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912",
+    implementation: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
     contract: "",
   },
   "arbitrumGoerli": {
