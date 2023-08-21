@@ -186,6 +186,8 @@ const config: HardhatUserConfig = {
       opera: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
       "pgn-mainnet": process.env.PGNSCAN_API_KEY,
+      // @ts-ignore
+      arbitrumGoerli: process.env.ARBITRUM_API_KEY,
     },
     customChains: [
       {

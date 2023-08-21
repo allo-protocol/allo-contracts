@@ -71,4 +71,9 @@ export const DirectPayoutParams: DeployParams = {
     implementation: "",
     contract: "",
   },
+  "arbitrumGoerli": {
+    factory: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
+    implementation: "0xE1F4A28299966686c689223Ee7803258Dbde0942",
+    contract: "",
+  },
 };

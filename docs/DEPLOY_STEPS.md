@@ -110,7 +110,7 @@ export const QFVotingParams: DeployParams = {
 pnpm run link-qf-implementation goerli
 ```
 
-### PayoutStrategy Setup
+### Merkle PayoutStrategy Setup
 
 The section here shows how to deploy the payout strategy contract. Ideally these would be done before creating a round. In this example, we would be deploying the MerklePayoutStrategy contract on goerli. This would have to be done before creating a round
 so that round is aware and store a reference to the voting contract during its creation.
@@ -134,7 +134,7 @@ pnpm run deploy-merkle-implementation goerli
 
 4. Update `payoutStrategy.config.ts` with deployed contract based on your network
 ```javascript
-export const PayoutParams: DeployParams = {
+export const MerklePayoutParams: DeployParams = {
   "goerli": {
     factory: 'DEPLOYED_MERKLE_FACTORY_CONTRACT',
     implementation: 'DEPLOYED_MERKLE_IMPLEMENTATION_CONTRACT',
@@ -147,6 +147,40 @@ export const PayoutParams: DeployParams = {
 5. Update `MerklePayoutStrategyFactory` to reference the `MerklePayoutStrategyImplementation` contract
 ```shell
 pnpm run link-merkle-implementation goerli
+```
+
+### DirectGrants Setup
+
+The section here shows how to deploy the payout strategy contract. Ideally these would be done before creating a round. In this example, we would be deploying the DirectPayoutStrategy contract on goerli. This would have to be done before creating a round
+so that round is aware and store a reference to the voting contract during its creation.
+
+
+1. Create an `.env` file and fill out
+    - `INFURA_ID`               : Infura ID for deploying contract
+    - `DEPLOYER_PRIVATE_KEY`    : address which deploys the contract
+    - `ETHERSCAN_API_KEY`       : API key for etherscan verification
+
+
+2. Deploy the `DirectPayoutStrategyFactory` contract
+```shell
+pnpm run deploy-direct-factory goerli
+```
+
+3. Deploy the `DirectPayoutStrategyImplementation` contract
+```shell
+pnpm run deploy-direct-implementation goerli
+```
+
+4. Update `payoutStrategy.config.ts` with deployed contract based on your network
+```javascript
+export const DirectPayoutParams: DeployParams = {
+  "goerli": {
+    factory: 'DEPLOYED_DIRECT_FACTORY_CONTRACT',
+    implementation: 'DEPLOYED_DIRECT_IMPLEMENTATION_CONTRACT',
+    ...
+  },
+  ...
+};
 ```
 
 
@@ -214,6 +248,13 @@ pnpm run link-qf-implementation goerli
 pnpm run deploy-merkle-factory goerli
 pnpm run deploy-merkle-implementation goerli
 pnpm run link-merkle-implementation goerli
+
+
+# direct grants
+pnpm run deploy-direct-factory goerli
+pnpm run deploy-direct-implementation goerli
+pnpm run link-direct-implementation goerli
+
 
 # AlloSettings
 pnpm run deploy-allo-settings goerli
