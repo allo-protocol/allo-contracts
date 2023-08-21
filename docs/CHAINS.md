@@ -228,4 +228,4 @@ These are contracts that are created/deployed once for goerli
 | RoundFactory                          | 0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59 |
 | RoundImplementation                   | 0xfF94fAfC740Be8D2010304108266E7b90ed232fc |
 | ProjectRegistry                       | 0x0CD135777dEaB6D0Bb150bDB0592aC9Baa4d0871 |
-| DummyVotingStrategy                   |  |
+| DummyVotingStrategy                   | 0x809E751e5C5bB1446e9ab2Ac37c687a35DE53BC6 |
