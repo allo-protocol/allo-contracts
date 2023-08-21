@@ -38,4 +38,9 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0x3e364ebc92AA057C10597EF3D30C0201d84F03E8",
   },
+  "arbitrumGoerli": {
+    alloSettingsContract: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
+  }
 };

@@ -38,4 +38,9 @@ export const programParams: DeployParams = {
     programImplementationContract: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
     programContract: ""
   },
+  "arbitrumGoerli": {
+    programFactoryContract: "0xd39b40aC9279EeeB86FBbDeb2C9acDF16e16cF89",
+    programImplementationContract: "0x9fcC854b145Bd3640a01c49Aa2Cfa725Ed0B4210",
+    programContract: ""
+  }
 };

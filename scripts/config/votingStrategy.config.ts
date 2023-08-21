@@ -38,6 +38,11 @@ export const QFVotingParams: DeployParams = {
     implementation: '0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143',
     contract: ''
   },
+  "arbitrumGoerli": {
+    factory: '0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8',
+    implementation: '0x00CD233ae7F31DC3664401cb040f24f6bf615668',
+    contract: ''
+  }
 };
 
 export const DummyVotingParams: Record<string, {contract: string}> = {

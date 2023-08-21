@@ -227,7 +227,7 @@ pnpm run link-allo-settings goerli
 pnpm run create-round goerli
 
 # Project Registry
-pnpm run deploy-builder goerli
+pnpm run deploy-project-registry goerli
 
 # These scripts would be used to create a test round
 pnpm run create-program goerli
