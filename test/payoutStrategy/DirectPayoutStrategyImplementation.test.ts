@@ -55,7 +55,7 @@ export function buildInReviewStatusRow(
   return newRow.toString();
 };
 
-describe.only("DirectPayoutStrategyImplementation", () => {
+describe("DirectPayoutStrategyImplementation", () => {
   let snapshot: number;
   let admin: SignerWithAddress;
   let roundOperator: SignerWithAddress;
