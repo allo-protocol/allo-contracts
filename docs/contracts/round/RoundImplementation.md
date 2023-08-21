@@ -4,7 +4,7 @@
 
 
 
-Contract deployed per Round which would managed by a group of ROUND_OPERATOR via the RoundFactory
+Contract deployed per Round which would be managed by a group of ROUND_OPERATOR via the RoundFactory
 
 
 

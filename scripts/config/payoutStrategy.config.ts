@@ -38,6 +38,11 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     contract: "",
   },
+  "arbitrumGoerli": {
+    factory: "0x8F8d78f119Aa722453d33d6881f4D400D67D054F",
+    implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
+    contract: "",
+  },
 };
 
 export const DirectPayoutParams: DeployParams = {
@@ -64,6 +69,11 @@ export const DirectPayoutParams: DeployParams = {
   "fantom-testnet": {
     factory: "",
     implementation: "",
+    contract: "",
+  },
+  "arbitrumGoerli": {
+    factory: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
+    implementation: "0xE1F4A28299966686c689223Ee7803258Dbde0942",
     contract: "",
   },
 };
