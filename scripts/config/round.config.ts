@@ -44,5 +44,10 @@ export const roundParams: DeployParams = {
     roundFactoryContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
     roundImplementationContract: "0xfF94fAfC740Be8D2010304108266E7b90ed232fc",
     roundContract: "",
-  }
+  },
+  "arbitrumOne": {
+    roundFactoryContract: "0xF2a07728107B04266015E67b1468cA0a536956C8",
+    roundImplementationContract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
+    roundContract: "",
+  },
 };

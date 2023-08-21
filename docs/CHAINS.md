@@ -50,19 +50,19 @@ These are contracts that are created/deployed once for goerli
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        |  |
-| ProgramImplementation                 |  |
-| QuadraticFundingVotingStrategyFactory |  |
-| QFVotingStrategyImplementation        |  |
-| MerklePayoutStrategyFactory           |  |
-| MerklePayouStrategyImplementation     |  |
-| DirectPayoutStrategyFactory           |  |
-| DirectPayoutStrategyImplementation    |  |
-| AlloSettings                          |  |
-| RoundFactory                          |  |
-| RoundImplementation                   |  |
-| ProjectRegistry                       |  |
-| DummyVotingStrategy                   |  |
+| ProgramFactory                        | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e |
+| ProgramImplementation                 | 0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D |
+| QuadraticFundingVotingStrategyFactory | 0xC3A195EEa198e74D67671732E1B8F8A23781D735 |
+| QFVotingStrategyImplementation        | 0x545B282A50EaeA01A619914d44105437036CbB36 |
+| MerklePayoutStrategyFactory           | 0x04b194b14532070F5cc8D3A760c9a0957D85ad5B |
+| MerklePayouStrategyImplementation     | 0x5b55728e41154562ee80027C1247B13382692e5C |
+| DirectPayoutStrategyFactory           | 0xc1a26b0789C3E93b07713e90596Cad8d0442C826 |
+| DirectPayoutStrategyImplementation    | 0x74c3665540FC8B92Dd06a7e56a51eCa038C18180 |
+| AlloSettings                          | 0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c |
+| RoundFactory                          | 0xF2a07728107B04266015E67b1468cA0a536956C8 |
+| RoundImplementation                   | 0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab |
+| ProjectRegistry                       | 0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27 |
+| DummyVotingStrategy                   | 0x5ab68dCdcA37A1C2b09c5218e28eB0d9cc3FEb03 |
 
 ## Goerli Network
 

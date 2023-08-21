@@ -1,16 +1,15 @@
 // This is a helper script to create a round.
 // This should be created via the frontend and this script is meant to be used for quick test
 // NOTE: this script deploys a round with a QF voting strategy an Merkle payout strategy
-import { ethers } from "hardhat";
-import hre from "hardhat";
-import { confirmContinue } from "../../utils/script-utils";
-import { roundParams } from '../config/round.config';
-import { programParams } from "../config/program.config";
-import { QFVotingParams } from "../config/votingStrategy.config";
-import { MerklePayoutParams } from "../config/payoutStrategy.config";
-import { encodeRoundParameters } from "../utils";
-import * as utils from "../utils";
 import { AddressZero } from "@ethersproject/constants";
+import hre, { ethers } from "hardhat";
+import { confirmContinue } from "../../utils/script-utils";
+import { MerklePayoutParams } from "../config/payoutStrategy.config";
+import { programParams } from "../config/program.config";
+import { roundParams } from '../config/round.config';
+import { QFVotingParams } from "../config/votingStrategy.config";
+import * as utils from "../utils";
+import { encodeRoundParameters } from "../utils";
 
 utils.assertEnvironment();
 
@@ -66,7 +65,7 @@ export async function main() {
   const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutContract);
 
   const roundTx = await roundFactory.create(
-    encodedParameters,
+    await encodedParameters,
     programContract, // _ownedBy (Program)
   );
 

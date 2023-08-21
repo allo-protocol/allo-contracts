@@ -265,7 +265,8 @@ pnpm run deploy-round-factory goerli
 pnpm run deploy-round-implementation goerli
 pnpm run link-round-implementation goerli
 pnpm run link-allo-settings goerli
-pnpm run create-round goerli
+pnpm run deploy-dummy-voting-strategy goerli
+pnpm run create-round goerli # Note: Do we want this here?
 
 # Project Registry
 pnpm run deploy-project-registry goerli

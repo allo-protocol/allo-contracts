@@ -204,6 +204,8 @@ const config: HardhatUserConfig = {
       "pgn-sepolia": process.env.PGNSCAN_API_KEY,
       // @ts-ignore
       arbitrumGoerli: process.env.ARBITRUM_API_KEY,
+      // @ts-ignore
+      arbitrumOne: process.env.ARBITRUM_API_KEY,
     },
     customChains: [
       {
