@@ -42,5 +42,10 @@ export const AlloSettingsParams: DeployParams = {
     alloSettingsContract: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
-  }
+  },
+  arbitrumOne: {
+    alloSettingsContract: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0xC60fCf320fC8FE79b3f2F7a1B5E04f31dFC13DbD",
+  },
 };

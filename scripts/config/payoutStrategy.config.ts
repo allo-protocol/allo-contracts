@@ -43,6 +43,11 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
     contract: "",
   },
+  "arbitrumOne": {
+    factory: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
+    implementation: "0x5b55728e41154562ee80027C1247B13382692e5C",
+    contract: "0xE8536d29e5325cB5cce0c1799caE80D6d0fAFDf3",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -90,6 +95,11 @@ export const DirectPayoutParams: DeployParams = {
   "arbitrumGoerli": {
     factory: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
     implementation: "0xE1F4A28299966686c689223Ee7803258Dbde0942",
+    contract: "",
+  },
+  "arbitrumOne": {
+    factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
     contract: "",
   },
 };

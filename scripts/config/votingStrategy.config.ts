@@ -38,11 +38,16 @@ export const QFVotingParams: DeployParams = {
     implementation: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
     contract: "",
   },
-  "arbitrumGoerli": {
-    factory: '0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8',
-    implementation: '0x00CD233ae7F31DC3664401cb040f24f6bf615668',
-    contract: ''
-  }
+  arbitrumGoerli: {
+    factory: "0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8",
+    implementation: "0x00CD233ae7F31DC3664401cb040f24f6bf615668",
+    contract: "",
+  },
+  arbitrumOne: {
+    factory: "0xC3A195EEa198e74D67671732E1B8F8A23781D735",
+    implementation: "0x545B282A50EaeA01A619914d44105437036CbB36",
+    contract: "0x3c48441e925Ee6f3B3Ddf67514902D08865424Eb",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed

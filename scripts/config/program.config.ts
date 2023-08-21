@@ -42,5 +42,10 @@ export const programParams: DeployParams = {
     programFactoryContract: "0xd39b40aC9279EeeB86FBbDeb2C9acDF16e16cF89",
     programImplementationContract: "0x9fcC854b145Bd3640a01c49Aa2Cfa725Ed0B4210",
     programContract: ""
+  },
+  "arbitrumOne": {
+    programFactoryContract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
+    programImplementationContract: "0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D",
+    programContract: ""
   }
 };
