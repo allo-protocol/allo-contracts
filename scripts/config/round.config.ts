@@ -40,4 +40,9 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
     roundContract: "",
   },
+  "arbitrumGoerli": {
+    roundFactoryContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
+    roundImplementationContract: "0xfF94fAfC740Be8D2010304108266E7b90ed232fc",
+    roundContract: "",
+  }
 };

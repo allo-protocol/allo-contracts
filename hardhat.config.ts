@@ -24,12 +24,14 @@ const chainIds = {
   "fantom-testnet": 4002,
   sepolia: 11155111,
   "pgn-sepolia": 58008,
+  "arbitrum-goerli": 421613,
 
   // mainnet
   mainnet: 1,
   "optimism-mainnet": 10,
   "pgn-mainnet": 424,
   "fantom-mainnet": 250,
+  "arbitrumOne-mainnet": 42161,
 };
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -136,6 +138,11 @@ const config: HardhatUserConfig = {
       "fantom-mainnet",
       "https://rpc.ftm.tools"
     ),
+    "arbitrumOne": {
+      accounts: [deployPrivateKey],
+      url: 'https://arb1.arbitrum.io/rpc',
+      chainId: chainIds["arbitrumOne-mainnet"],
+    },
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
@@ -155,6 +162,11 @@ const config: HardhatUserConfig = {
       chainId: chainIds["pgn-sepolia"],
       url: "https://sepolia.publicgoods.network",
       gasPrice: 15000000,
+    },
+    arbitrumGoerli: {
+      accounts: [deployPrivateKey],
+      url: 'https://goerli-rollup.arbitrum.io/rpc',
+      chainId: chainIds["arbitrum-goerli"],
     },
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
@@ -190,6 +202,8 @@ const config: HardhatUserConfig = {
       "pgn-mainnet": process.env.PGNSCAN_API_KEY,
       // @ts-ignore
       "pgn-sepolia": process.env.PGNSCAN_API_KEY,
+      // @ts-ignore
+      arbitrumGoerli: process.env.ARBITRUM_API_KEY,
     },
     customChains: [
       {

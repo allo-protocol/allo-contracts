@@ -15,27 +15,32 @@ export const MerklePayoutParams: DeployParams = {
   },
   goerli: {
     factory: "0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe",
-    implementation: "0xC808c9Ea4020E0F6Ec20715EEA0642fA6870B5Cc",
+    implementation: "0x2e86e1025605c9F2fff6851C6D5Ab04735BBfCF1",
     contract: "0xCB64FFd025384E6353C1923Ce5Bda511229e2E92",
   },
   "optimism-mainnet": {
     factory: "0xB5365543cdDa2C795AD104F4cB784EF3DB1CD383",
-    implementation: "0x0C1B55f485dF69cc10527995c48883438aD3fC4A",
+    implementation: "0x5d0fAd094C32F14315e4CaCbe7A83a7Cc5beC526",
     contract: "",
   },
   "fantom-mainnet": {
     factory: "0xFA1D9FF7F885757fc20Fdd9D78B72F88B00Cff77",
-    implementation: "0x5FFc749cb926349fAf05EA81D157AA9E94Dd6301",
+    implementation: "0x74312931C90bADE2Be38C96A61E2A41B3CE1a581",
     contract: "",
   },
   "fantom-testnet": {
     factory: "0x5b55728e41154562ee80027C1247B13382692e5C",
-    implementation: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
+    implementation: "0xeAe0848c2A2395569cAaf3598cfc06B81b9b92D7",
     contract: "",
   },
   "pgn-mainnet": {
     factory: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
     implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    contract: "",
+  },
+  "arbitrumGoerli": {
+    factory: "0x8F8d78f119Aa722453d33d6881f4D400D67D054F",
+    implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
     contract: "",
   },
 };
@@ -80,6 +85,11 @@ export const DirectPayoutParams: DeployParams = {
   "fantom-testnet": {
     factory: "0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912",
     implementation: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
+    contract: "",
+  },
+  "arbitrumGoerli": {
+    factory: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
+    implementation: "0xE1F4A28299966686c689223Ee7803258Dbde0942",
     contract: "",
   },
 };
