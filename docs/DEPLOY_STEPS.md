@@ -10,6 +10,8 @@ All the deploy scripts will expect network param to know which network the contr
 | 'fantom-mainnet'   |
 | `fantom-testnet`   |
 | `mainnet`          |
+| `zksync-mainnet`   |
+| `zksync-testnet`   |
 
 
 ### Project Registry
@@ -235,3 +237,22 @@ pnpm run create-qf-contract goerli
 pnpm run deploy-merkle-contract goerli
 pnpm run create-round goerli
 ```
+
+### zkSync Era Deployment, and Verification
+
+#### Deployment
+```bash
+npx hardhat run ./scripts/deployZkSync.ts --network zksync-testnet
+```
+
+#### Verification
+
+```bash
+yarn hardhat verify --network <network> <contract address> <constructor args>
+```
+
+> Check the status of the verification:
+```bash
+yarn hardhat verify-status --verification-id <your verification id>
+```
+
