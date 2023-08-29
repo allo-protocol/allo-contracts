@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import { ethers } from "ethers";
 import * as hre from "hardhat";
 import { Wallet } from "zksync-web3";
+import { confirmContinue } from "../utils/script-utils";
 
 dotenv.config();
 
@@ -28,6 +29,9 @@ export default async function main() {
   // await depositHandle.wait();
 
   /** Deploy Registry */
+  await confirmContinue({
+    "contract"                                : "ProjectRegistry",
+  });
 
   // Deploy the Project Registry contract
   // Load the artifact we want to deploy
@@ -58,6 +62,19 @@ export default async function main() {
     projectRegistryContractDeployment.address
   );
 
+  const registryVerifyId = await hre.run("verify:verify", {
+    address: projectRegistryContractDeployment.address,
+    contract: "contracts/projectRegistry/ProjectRegistry.sol:ProjectRegistry",
+    constructorArguments: [],
+    bytedcode:projectRegistryContractDeployment.bytecode,
+  });
+  
+  console.info("ProjectRegistry verification ID: ", registryVerifyId);
+
+  await confirmContinue({
+    "contract"                                : "ProgramFactory",
+  });
+
   // Deploy the Program Factory contract
   // Load the artifact we want to deploy
   console.info("Deploying ProgramFactory contract...");
@@ -84,6 +101,19 @@ export default async function main() {
   // Show the contract info
   console.info("ProgramFactory deployed to:", programProxy.address);
 
+  const programFactoryVerifyId = await hre.run("verify:verify", {
+    address: programProxy.address,
+    contract: "contracts/program/ProgramFactory.sol:ProgramFactory",
+    constructorArguments: [],
+    bytedcode:programProxy.bytecode,
+  });
+  
+  console.info("ProgramFactory verification ID: ", programFactoryVerifyId);
+
+  await confirmContinue({
+    "contract"                                : "ProgramImplementation",
+  });
+
   /// Deploy the Program Implementation contract
   // Load the artifact we want to deploy
   console.info("Deploying ProgramImplementation contract...");
@@ -100,15 +130,22 @@ export default async function main() {
   // Show the contract info
   console.info("ProgramImplementation deployed to:", programImplementationContractDeployment.address);
 
-  /// Deploy the Program Factory contract
-  // Load the artifact we want to deploy
-  console.info("Deploying ProgramFactory contract...");
   // Link the ProgramFactory contract with the ProgramImplementation contract
+  console.info("Linking ProgramFactory contract to ProgramImplementation contract...");
   const updateTx = await programProxy.updateProgramContract(
     programImplementationContractDeployment.address
   );
   await updateTx.wait();
   console.info("ProgramFactory contract linked to ProgramImplementation contract in tx", updateTx.hash);
+
+  const programImplementationVerifyId = await hre.run("verify:verify", {
+    address: programImplementationContractDeployment.address,
+    contract: "contracts/program/ProgramImplementation.sol:ProgramImplementation",
+    constructorArguments: [],
+    bytedcode:programProxy.bytecode,
+  });
+  
+  console.info("ProgramImplementation verification ID: ", programImplementationVerifyId);
 
   // /** Voting Strategy */
   const quadraticFundingVotingStrategy = await deployer.loadArtifact("QuadraticFundingVotingStrategyFactory");
@@ -137,8 +174,8 @@ export default async function main() {
 
   console.info("MerklePayoutStrategyFactory deployed to", MerklePayoutStrategyFactoryDeployment.address);
 
-  let payoutLinkTx = await MerklePayoutStrategyFactoryDeployment.updatePayoutImplementation(MerklePayoutStrategyFactoryDeployment.address);
-  console.info("MerklePayoutStrategyFactory linked to MerklePayoutStrategyFactory in tx", payoutLinkTx.hash);
+  // let payoutLinkTx = await MerklePayoutStrategyFactoryDeployment.updatePayoutImplementation(MerklePayoutStrategyFactoryDeployment.address);
+  // console.info("MerklePayoutStrategyFactory linked to MerklePayoutStrategyFactory in tx", payoutLinkTx.hash);
 
   // /* Round Factory */
   console.info("Deploying RoundFactory...");
@@ -170,6 +207,15 @@ export default async function main() {
   // await roundLinkTx.wait();
 
   // console.info("RoundFactory linked to RoundImplementation in tx", roundLinkTx.hash);
+
+  const roundImpId = await hre.run("verify:verify", {
+    address: RoundImplementationDeployment.address,
+    contract: "contracts/round/RoundImplementation.sol:RoundImplementation",
+    constructorArguments: [],
+    bytedcode:roundImplementation.bytecode,
+  });
+  
+  console.info("RoundImplementation verification ID: ", roundImpId);
 
   // todo: are we missing anything here?
 }
