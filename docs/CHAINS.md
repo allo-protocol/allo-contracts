@@ -18,7 +18,7 @@ These are contracts that are created/deployed once for ethereum mainnet
 | DirectPayoutStrategyImplementation    | 0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921 |
 | AlloSettings                          | 0x9fcC854b145Bd3640a01c49Aa2Cfa725Ed0B4210 |
 | RoundFactory                          | 0x9Cb7f434aD3250d1656854A9eC7A71EceC6eE1EF |
-| RoundImplementation                   | 0xbB614e55cf43842B3Ee96CfD7410E9487c627EFe |
+| RoundImplementation                   | 0x10825896637298473877b6610BB380be51D20D04 |
 | ProjectRegistry                       | 0x03506eD3f57892C85DB20C36846e9c808aFe9ef4 |
 | DummyVotingStrategy                   | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e |
 
