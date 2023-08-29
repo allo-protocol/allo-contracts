@@ -50,4 +50,14 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
     roundContract: "",
   },
+  "avalanche-mainnet": {
+    roundFactoryContract: "",
+    roundImplementationContract: "",
+    roundContract: "",
+  },
+  "fuji-testnet": {
+    roundFactoryContract: "0x3615d870d5B760cea43693ABED70Cd8A9b59b3d8",
+    roundImplementationContract: "0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0",
+    roundContract: "",
+  }
 };

@@ -229,3 +229,24 @@ These are contracts that are created/deployed once for goerli
 | RoundImplementation                   | 0xfF94fAfC740Be8D2010304108266E7b90ed232fc |
 | ProjectRegistry                       | 0x0CD135777dEaB6D0Bb150bDB0592aC9Baa4d0871 |
 | DummyVotingStrategy                   | 0x809E751e5C5bB1446e9ab2Ac37c687a35DE53BC6 |
+
+
+## Avalanche Fuji Network
+
+These are contracts that are created/deployed once for goerli
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        | 0x862D7F621409cF572f179367DdF1B7144AcE1c76 |
+| ProgramImplementation                 | 0x56296242CA408bA36393f3981879fF9692F193cC |
+| QuadraticFundingVotingStrategyFactory | 0xd39b40aC9279EeeB86FBbDeb2C9acDF16e16cF89 |
+| QFVotingStrategyImplementation        | 0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8 |
+| MerklePayoutStrategyFactory           | 0x8F8d78f119Aa722453d33d6881f4D400D67D054F |
+| MerklePayouStrategyImplementation     | 0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112 |
+| DirectPayoutStrategyFactory           | 0x0F98547e09D41e3c82086fC5Eb0E42Ab786aA763 |
+| DirectPayoutStrategyImplementation    | 0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C |
+| AlloSettings                          | 0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59 |
+| RoundFactory                          | 0x3615d870d5B760cea43693ABED70Cd8A9b59b3d8 |
+| RoundImplementation                   | 0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0 |
+| ProjectRegistry                       | 0x8918401DD47f1645fF1111D8E513c0404b84d5bB |
+| DummyVotingStrategy                   | 0xCd3618509983FE4990D7770CF6f02c7145dC365F |

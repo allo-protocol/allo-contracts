@@ -47,5 +47,15 @@ export const programParams: DeployParams = {
     programFactoryContract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
     programImplementationContract: "0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D",
     programContract: ""
+  },
+  "avalanche-mainnet": {
+    programFactoryContract: "",
+    programImplementationContract: "",
+    programContract: ""
+  },
+  "fuji-testnet": {
+    programFactoryContract: "0x862D7F621409cF572f179367DdF1B7144AcE1c76",
+    programImplementationContract: "0x56296242CA408bA36393f3981879fF9692F193cC",
+    programContract: ""
   }
 };
