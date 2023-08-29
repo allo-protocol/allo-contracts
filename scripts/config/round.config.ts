@@ -12,7 +12,7 @@ type DeployParams = Record<string, RoundParams>;
 export const roundParams: DeployParams = {
   mainnet: {
     roundFactoryContract: "0x9Cb7f434aD3250d1656854A9eC7A71EceC6eE1EF",
-    roundImplementationContract: "0xbB614e55cf43842B3Ee96CfD7410E9487c627EFe",
+    roundImplementationContract: "0x10825896637298473877b6610BB380be51D20D04",
     roundContract: "",
   },
   goerli: {
