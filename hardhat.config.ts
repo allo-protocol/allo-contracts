@@ -2,16 +2,18 @@ import * as dotenv from "dotenv";
 
 import "@matterlabs/hardhat-zksync-deploy";
 import "@matterlabs/hardhat-zksync-solc";
-import "@nomiclabs/hardhat-etherscan";
-import "@nomiclabs/hardhat-solhint";
-import "@nomiclabs/hardhat-waffle";
-import "@openzeppelin/hardhat-upgrades";
-import "@primitivefi/hardhat-dodoc";
+import "@matterlabs/hardhat-zksync-upgradable";
+import "@matterlabs/hardhat-zksync-verify";
+// import "@nomiclabs/hardhat-etherscan";
+// import "@nomiclabs/hardhat-solhint";
+// import "@nomiclabs/hardhat-waffle";
+// import "@openzeppelin/hardhat-upgrades";
+// import "@primitivefi/hardhat-dodoc";
 import "@typechain/hardhat";
-import "hardhat-abi-exporter";
-import "hardhat-contract-sizer";
-import "hardhat-gas-reporter";
-import { HardhatUserConfig, task } from "hardhat/config";
+// import "hardhat-abi-exporter";
+// import "hardhat-contract-sizer";
+// import "hardhat-gas-reporter";
+import { HardhatUserConfig } from "hardhat/config";
 import { NetworkUserConfig } from "hardhat/types";
 import "solidity-coverage";
 
@@ -34,13 +36,13 @@ const chainIds = {
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
-task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
-  const accounts = await hre.ethers.getSigners();
+// task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
+//   const accounts = await hre.ethers.getSigners();
 
-  for (const account of accounts) {
-    console.log(account.address);
-  }
-});
+//   for (const account of accounts) {
+//     console.log(account.address);
+//   }
+// });
 
 let deployPrivateKey = process.env.DEPLOYER_PRIVATE_KEY as string;
 if (!deployPrivateKey) {
@@ -122,32 +124,47 @@ const config: HardhatUserConfig = {
   },
   networks: {
     // Main Networks
-    mainnet: createMainnetConfig("mainnet"),
-    "optimism-mainnet": createMainnetConfig("optimism-mainnet"),
-    "fantom-mainnet": createMainnetConfig(
-      "fantom-mainnet",
-      "https://rpc.ftm.tools"
-    ),
+    mainnet: { ...createMainnetConfig("mainnet"), zksync: false },
+    "optimism-mainnet": {
+      ...createMainnetConfig("optimism-mainnet"),
+      zksync: false,
+    },
+    "fantom-mainnet": {
+      ...createMainnetConfig("fantom-mainnet", "https://rpc.ftm.tools"),
+      zksync: false,
+    },
     "zksync-mainnet": {
       ...createMainnetConfig(
         "zksync-mainnet",
-        "https://zksync2-mainnet.zksync.io",
-      ), zksync: true, ethNetwork: "mainnet"
+        "https://zksync2-mainnet.zksync.io"
+      ),
+      zksync: true,
+      ethNetwork: "mainnet",
     },
 
     // Test Networks
-    goerli: createTestnetConfig("goerli"),
-    "fantom-testnet": createTestnetConfig(
-      "fantom-testnet",
-      "https://rpc.testnet.fantom.network/"
-    ),
-    localhost: createTestnetConfig("localhost", "http://localhost:8545"),
+    goerli: { ...createTestnetConfig("goerli"), zksync: false },
+    "fantom-testnet": {
+      ...createTestnetConfig(
+        "fantom-testnet",
+        "https://rpc.testnet.fantom.network/"
+      ),
+      zksync: false,
+    },
+    localhost: {
+      ...createTestnetConfig("localhost", "http://localhost:8545"),
+      zksync: false,
+    },
     hardhat: { zksync: true },
     "zksync-testnet": {
       ...createTestnetConfig(
         "zksync-testnet",
         "https://zksync2-testnet.zksync.dev"
-      ), zksync: true, ethNetwork: "goerli"
+      ),
+      zksync: true,
+      ethNetwork: "goerli",
+      verifyURL:
+        "https://zksync2-testnet-explorer.zksync.dev/contract_verification",
     },
   },
   defaultNetwork: "zksync-testnet",
@@ -172,7 +189,7 @@ const config: HardhatUserConfig = {
   abiExporter: abiExporter,
   dodoc: dodoc,
   zksolc: {
-    version: "1.3.7",
+    version: "1.3.13",
     compilerSource: "binary",
     settings: {
       isSystem: true,
