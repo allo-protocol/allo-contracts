@@ -74,15 +74,15 @@ These are contracts that are created/deployed once for goerli
 | ProgramImplementation                 | 0xb4373B79bf5e2d397f81a9974ff66257B13E6c02 |
 | QuadraticFundingVotingStrategyFactory | 0x4B53418e0034CC135C9E0a54CcAe5a1F2e675a64 |
 | QFVotingStrategyImplementation        | 0x28505e861cd0a4A09B78Fd87F515148B7E359524 |
-| MerklePayoutStrategyFactory           | 0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe |
-| MerklePayouStrategyImplementation     | 0x2e86e1025605c9F2fff6851C6D5Ab04735BBfCF1 |
-| DirectPayoutStrategyFactory           | 0x0077551e24bfB910aBABedC4336246e34B5fB0A2 |
-| DirectPayoutStrategyImplementation    | 0xBd0Cf00aF5A5086d61777CC8704947242FC20629 |
-| AlloSettings                          | 0x2330b7ABA1DbC159E14113C0Ec56F273e2134F2c |
-| RoundFactory                          | 0x24F9EBFAdf095e0afe3d98635ee83CD72e49B5B0 |
-| RoundImplementation                   | 0xaac7adBa10199d1ffA883928DE7dE73e8207CbDf |
-| ProjectRegistry                       | 0xa71864fAd36439C50924359ECfF23Bb185FFDf21 |
-| DummyVotingStrategy                   | 0x717A2cCDD81944e64c8BD9BB1D179A241dE14B46 |
+| MerklePayoutStrategyFactory           | 0x2A21CB7C82f20a92e03238Cb539002919546a422 |
+| MerklePayouStrategyImplementation     | 0x7Dc9D6A6c6a1F93478eDE87d09e20Bf8d5Faf6Bd |
+| DirectPayoutStrategyFactory           | 0x9c88730986A07223176fCaaC2Dd8214B9a286780 |
+| DirectPayoutStrategyImplementation    | 0x7C9C52f09a1A362a1F0f7cd0EaCCAFEe38e6111b |
+| AlloSettings                          | 0x8eD654fcF387597B2960297244304A104A3b367D |
+| RoundFactory                          | 0x60EF85011E1480BD21dFa636FDa7F6e2e3dbbDa7 |
+| RoundImplementation                   | 0x71ffC79b386e8477A6deE69eb5abc50f7c614058 |
+| ProjectRegistry                       | 0x9C789Ad2457A605a0ea1aaBEEf16585633530069 |
+| DummyVotingStrategy                   | 0xbCfF6e2dA0c1a79e261c2C50294fc6aA57Fd29Dc |
 
 
 ## Optimism Goerli

@@ -183,6 +183,10 @@ export const DirectPayoutParams: DeployParams = {
 };
 ```
 
+5. Link the `DirectPayoutStrategyImplementation` contract to the `DirectPayoutStrategyFactory` contract
+```bash
+pnpm run link-direct-implementation goerli
+```
 
 ### Round Setup
 

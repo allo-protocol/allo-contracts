@@ -10,7 +10,7 @@ export const projectRegistryParams: DeployParams = {
     proxyContractAddress: "",
   },
   goerli: {
-    proxyContractAddress: "0xa71864fAd36439C50924359ECfF23Bb185FFDf21",
+    proxyContractAddress: "0x9C789Ad2457A605a0ea1aaBEEf16585633530069",
   },
   "optimism-mainnet": {
     proxyContractAddress: "",
