@@ -25,6 +25,7 @@ const chainIds = {
   sepolia: 11155111,
   "pgn-sepolia": 58008,
   "arbitrum-goerli": 421613,
+  "fuji-testnet": 43113,
 
   // mainnet
   mainnet: 1,
@@ -32,6 +33,7 @@ const chainIds = {
   "pgn-mainnet": 424,
   "fantom-mainnet": 250,
   "arbitrumOne-mainnet": 42161,
+  "avalanche-mainnet": 43114,
 };
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -143,6 +145,12 @@ const config: HardhatUserConfig = {
       url: 'https://arb1.arbitrum.io/rpc',
       chainId: chainIds["arbitrumOne-mainnet"],
     },
+    "avalanche-mainnet": {
+      accounts: [deployPrivateKey],
+      url: 'https://api.avax.network/ext/bc/C/rpc',
+      chainId: chainIds["avalanche-mainnet"],
+      gasPrice: 25000000000,
+    },
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
@@ -168,6 +176,13 @@ const config: HardhatUserConfig = {
       url: 'https://goerli-rollup.arbitrum.io/rpc',
       chainId: chainIds["arbitrum-goerli"],
     },
+    "fuji-testnet": {
+      accounts: [deployPrivateKey],
+      url: 'https://avalanche-fuji-c-chain.publicnode.com',
+      chainId: chainIds["fuji-testnet"],
+      gasPrice: 25000000000,
+    },
+
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
       forking: {
@@ -206,6 +221,10 @@ const config: HardhatUserConfig = {
       arbitrumGoerli: process.env.ARBITRUM_API_KEY,
       // @ts-ignore
       arbitrumOne: process.env.ARBITRUM_API_KEY,
+      // @ts-ignore
+      "avalanche-mainnet": process.env.AVALANCHE_API_KEY,
+      // @ts-ignore
+      "fuji-testnet": process.env.AVALANCHE_API_KEY,
     },
     customChains: [
       {
@@ -222,6 +241,22 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://explorer.sepolia.publicgoods.network/api",
           browserURL: "https://explorer.sepolia.publicgoods.network",
+        },
+      },
+      {
+        network: "fuji-testnet",
+        chainId: chainIds["fuji-testnet"],
+        urls: {
+          apiURL: "https://api-testnet.snowtrace.io/api",
+          browserURL: "https://testnet.snowtrace.io/"
+        },
+      },
+      {
+        network: "avalanche-mainnet",
+        chainId: chainIds["avalanche-mainnet"],
+        urls: {
+          apiURL: "https://api.snowtrace.io/api",
+          browserURL: "https://snowtrace.io/",
         },
       },
     ],

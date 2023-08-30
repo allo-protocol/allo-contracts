@@ -48,6 +48,16 @@ export const QFVotingParams: DeployParams = {
     implementation: "0x545B282A50EaeA01A619914d44105437036CbB36",
     contract: "0x3c48441e925Ee6f3B3Ddf67514902D08865424Eb",
   },
+  "avalanche-mainnet": {
+    factory: "0x2AFA4bE0f2468347A2F086c2167630fb1E58b725",
+    implementation: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
+    contract: "",
+  },
+  "fuji-testnet": {
+    factory: "0xd39b40aC9279EeeB86FBbDeb2C9acDF16e16cF89",
+    implementation: "0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8",
+    contract: "",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -78,5 +88,17 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   },
   "fantom-testnet": {
     contract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
+  },
+  "arbitrumGoerli": {
+    contract: "0x809E751e5C5bB1446e9ab2Ac37c687a35DE53BC6",
+  },
+  "arbitrumOne": {
+    contract: "0x5ab68dCdcA37A1C2b09c5218e28eB0d9cc3FEb03",
+  },
+  "avalanche-mainnet": {
+    contract: "",
+  },
+  "fuji-testnet": {
+    contract: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
   },
 };

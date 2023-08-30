@@ -48,6 +48,16 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0x5b55728e41154562ee80027C1247B13382692e5C",
     contract: "0xE8536d29e5325cB5cce0c1799caE80D6d0fAFDf3",
   },
+  "avalanche-mainnet": {
+    factory: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
+    implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    contract: "",
+  },
+  "fuji-testnet": {
+    factory: "0x8F8d78f119Aa722453d33d6881f4D400D67D054F",
+    implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
+    contract: "",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -100,6 +110,16 @@ export const DirectPayoutParams: DeployParams = {
   "arbitrumOne": {
     factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
+    contract: "",
+  },
+  "avalanche-mainnet": {
+    factory: "0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3",
+    implementation: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
+    contract: "",
+  },
+  "fuji-testnet": {
+    factory: "0x0F98547e09D41e3c82086fC5Eb0E42Ab786aA763",
+    implementation: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
     contract: "",
   },
 };

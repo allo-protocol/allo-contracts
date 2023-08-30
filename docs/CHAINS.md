@@ -229,3 +229,44 @@ These are contracts that are created/deployed once for goerli
 | RoundImplementation                   | 0xfF94fAfC740Be8D2010304108266E7b90ed232fc |
 | ProjectRegistry                       | 0x0CD135777dEaB6D0Bb150bDB0592aC9Baa4d0871 |
 | DummyVotingStrategy                   | 0x809E751e5C5bB1446e9ab2Ac37c687a35DE53BC6 |
+
+
+## Avalanche Fuji Network
+
+These are contracts that are created/deployed once for goerli
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        | 0x862D7F621409cF572f179367DdF1B7144AcE1c76 |
+| ProgramImplementation                 | 0x56296242CA408bA36393f3981879fF9692F193cC |
+| QuadraticFundingVotingStrategyFactory | 0xd39b40aC9279EeeB86FBbDeb2C9acDF16e16cF89 |
+| QFVotingStrategyImplementation        | 0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8 |
+| MerklePayoutStrategyFactory           | 0x8F8d78f119Aa722453d33d6881f4D400D67D054F |
+| MerklePayouStrategyImplementation     | 0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112 |
+| DirectPayoutStrategyFactory           | 0x0F98547e09D41e3c82086fC5Eb0E42Ab786aA763 |
+| DirectPayoutStrategyImplementation    | 0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C |
+| AlloSettings                          | 0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59 |
+| RoundFactory                          | 0x3615d870d5B760cea43693ABED70Cd8A9b59b3d8 |
+| RoundImplementation                   | 0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0 |
+| ProjectRegistry                       | 0x8918401DD47f1645fF1111D8E513c0404b84d5bB |
+| DummyVotingStrategy                   | 0xCd3618509983FE4990D7770CF6f02c7145dC365F |
+
+## Avalanche Mainnet
+
+These are contracts that are created/deployed once for goerli
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        | 0xd07D54b0231088Ca9BF7DA6291c911B885cBC140 |
+| ProgramImplementation                 | 0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921 |
+| QuadraticFundingVotingStrategyFactory | 0x2AFA4bE0f2468347A2F086c2167630fb1E58b725 |
+| QFVotingStrategyImplementation        | 0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143 |
+| MerklePayoutStrategyFactory           | 0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb |
+| MerklePayouStrategyImplementation     | 0xc1a26b0789C3E93b07713e90596Cad8d0442C826 |
+| DirectPayoutStrategyFactory           | 0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3 |
+| DirectPayoutStrategyImplementation    | 0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1 |
+| AlloSettings                          | 0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90 |
+| RoundFactory                          | 0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912 |
+| RoundImplementation                   | 0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA |
+| ProjectRegistry                       | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e |
+| DummyVotingStrategy                   | 0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918 |

@@ -43,9 +43,19 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
   },
-  arbitrumOne: {
+  "arbitrumOne": {
     alloSettingsContract: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xC60fCf320fC8FE79b3f2F7a1B5E04f31dFC13DbD",
   },
+  "avalanche-mainnet": {
+    alloSettingsContract: "0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0x42c307aFD2826d2B98FF4EFfE7D8070F76FfA116",
+  },
+  "fuji-testnet": {
+    alloSettingsContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123"
+  }
 };
