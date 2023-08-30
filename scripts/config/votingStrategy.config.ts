@@ -14,8 +14,8 @@ export const QFVotingParams: DeployParams = {
     contract: "",
   },
   goerli: {
-    factory: "0x06A6Cc566c5A88E77B1353Cdc3110C2e6c828e38",
-    implementation: "0x08186fEEa8115D1cf57bBE227e2C9bEa350cF40d",
+    factory: "0x4B53418e0034CC135C9E0a54CcAe5a1F2e675a64",
+    implementation: "0x28505e861cd0a4A09B78Fd87F515148B7E359524",
     contract: "0x818A3C8F82667bd222faF84a954F35d2b0Eb6a78",
   },
   "optimism-mainnet": {

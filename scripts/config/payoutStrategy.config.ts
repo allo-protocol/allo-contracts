@@ -14,9 +14,9 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   goerli: {
-    factory: "0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe",
-    implementation: "0x2e86e1025605c9F2fff6851C6D5Ab04735BBfCF1",
-    contract: "0xCB64FFd025384E6353C1923Ce5Bda511229e2E92",
+    factory: "0x2A21CB7C82f20a92e03238Cb539002919546a422",
+    implementation: "0x7Dc9D6A6c6a1F93478eDE87d09e20Bf8d5Faf6Bd",
+    contract: "",
   },
   "optimism-mainnet": {
     factory: "0xB5365543cdDa2C795AD104F4cB784EF3DB1CD383",
@@ -58,8 +58,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   goerli: {
-    factory: "0x0077551e24bfB910aBABedC4336246e34B5fB0A2",
-    implementation: "0xBd0Cf00aF5A5086d61777CC8704947242FC20629",
+    factory: "0x9c88730986A07223176fCaaC2Dd8214B9a286780",
+    implementation: "0x7C9C52f09a1A362a1F0f7cd0EaCCAFEe38e6111b",
     contract: "",
   },
   "pgn-mainnet": {
