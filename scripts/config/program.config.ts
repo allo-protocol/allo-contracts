@@ -49,8 +49,8 @@ export const programParams: DeployParams = {
     programContract: ""
   },
   "avalanche-mainnet": {
-    programFactoryContract: "",
-    programImplementationContract: "",
+    programFactoryContract: "0xd07D54b0231088Ca9BF7DA6291c911B885cBC140",
+    programImplementationContract: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
     programContract: ""
   },
   "fuji-testnet": {

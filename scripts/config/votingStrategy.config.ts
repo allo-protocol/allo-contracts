@@ -49,8 +49,8 @@ export const QFVotingParams: DeployParams = {
     contract: "0x3c48441e925Ee6f3B3Ddf67514902D08865424Eb",
   },
   "avalanche-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x2AFA4bE0f2468347A2F086c2167630fb1E58b725",
+    implementation: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
     contract: "",
   },
   "fuji-testnet": {

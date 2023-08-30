@@ -10,6 +10,8 @@ All the deploy scripts will expect network param to know which network the contr
 | `fantom-mainnet`   |
 | `fantom-testnet`   |
 | `mainnet`          |
+| `fuji-testnet`     |
+| `avalanche-mainnet`|
 
 
 ### Project Registry

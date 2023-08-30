@@ -49,8 +49,8 @@ export const MerklePayoutParams: DeployParams = {
     contract: "0xE8536d29e5325cB5cce0c1799caE80D6d0fAFDf3",
   },
   "avalanche-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
+    implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     contract: "",
   },
   "fuji-testnet": {
@@ -113,8 +113,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "avalanche-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3",
+    implementation: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
     contract: "",
   },
   "fuji-testnet": {

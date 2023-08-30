@@ -30,4 +30,10 @@ export const projectRegistryParams: DeployParams = {
   arbitrumOne: {
     proxyContractAddress: "0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27",
   },
+  "fuji-testnet": {
+    proxyContractAddress: "0x8918401DD47f1645fF1111D8E513c0404b84d5bB",
+  },
+  "avalanche-mainnet": {
+    proxyContractAddress: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
+  },
 };
