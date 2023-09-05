@@ -58,6 +58,16 @@ export const QFVotingParams: DeployParams = {
     implementation: "0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8",
     contract: "",
   },
+  mumbai: {
+    factory: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
+    implementation: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
+    contract: "",
+  },
+  polygon: {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -100,5 +110,11 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   },
   "fuji-testnet": {
     contract: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
+  },
+  mumbai: {
+    contract: "0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918",
+  },
+  polygon: {
+    contract: "",
   },
 };

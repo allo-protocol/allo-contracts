@@ -58,6 +58,16 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
     contract: "",
   },
+  "mumbai": {
+    factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
+    contract: "",
+  },
+  polygon: {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -80,11 +90,6 @@ export const DirectPayoutParams: DeployParams = {
   "pgn-sepolia": {
     factory: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
     implementation: "0xC3A195EEa198e74D67671732E1B8F8A23781D735",
-    contract: "",
-  },
-  sepolia: {
-    factory: "",
-    implementation: "",
     contract: "",
   },
   "optimism-mainnet": {
@@ -120,6 +125,16 @@ export const DirectPayoutParams: DeployParams = {
   "fuji-testnet": {
     factory: "0x0F98547e09D41e3c82086fC5Eb0E42Ab786aA763",
     implementation: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
+    contract: "",
+  },
+  "mumbai": {
+    factory: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
+    implementation: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
+    contract: "",
+  },
+  polygon: {
+    factory: "",
+    implementation: "",
     contract: "",
   },
 };

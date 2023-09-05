@@ -57,5 +57,15 @@ export const AlloSettingsParams: DeployParams = {
     alloSettingsContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123"
-  }
+  },
+  "mumbai": {
+    alloSettingsContract: "0xF2a07728107B04266015E67b1468cA0a536956C8",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0x1fd06f088c720ba3b7a3634a8f021fdd485dca42",
+  },
+  "polygon": {
+    alloSettingsContract: "",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0xbF91bfa8c0Bcd130cDf0a7d9C01A4Db4842B1532",
+  },
 };

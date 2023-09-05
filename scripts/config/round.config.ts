@@ -59,5 +59,15 @@ export const roundParams: DeployParams = {
     roundFactoryContract: "0x3615d870d5B760cea43693ABED70Cd8A9b59b3d8",
     roundImplementationContract: "0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0",
     roundContract: "",
-  }
+  },
+  "mumbai": {
+    roundFactoryContract: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
+    roundImplementationContract: "0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC",
+    roundContract: "",
+  },
+  polygon: {
+    roundFactoryContract: "",
+    roundImplementationContract: "",
+    roundContract: "",
+  },
 };

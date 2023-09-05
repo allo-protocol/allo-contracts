@@ -22,10 +22,10 @@ const chainIds = {
   goerli: 5,
   "optimism-goerli": 420,
   "fantom-testnet": 4002,
-  sepolia: 11155111,
   "pgn-sepolia": 58008,
   "arbitrum-goerli": 421613,
   "fuji-testnet": 43113,
+  polygon: 137,
 
   // mainnet
   mainnet: 1,
@@ -34,6 +34,7 @@ const chainIds = {
   "fantom-mainnet": 250,
   "arbitrumOne-mainnet": 42161,
   "avalanche-mainnet": 43114,
+  mumbai: 80001,
 };
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -54,6 +55,7 @@ if (!deployPrivateKey) {
 }
 
 const infuraIdKey = process.env.INFURA_ID as string;
+const alchemyKey = process.env.ALCHEMY_API_KEY as string;
 
 /**
  * Generates hardhat network configuration the test networks.
@@ -140,21 +142,25 @@ const config: HardhatUserConfig = {
       "fantom-mainnet",
       "https://rpc.ftm.tools"
     ),
-    "arbitrumOne": {
+    arbitrumOne: {
       accounts: [deployPrivateKey],
-      url: 'https://arb1.arbitrum.io/rpc',
+      url: "https://arb1.arbitrum.io/rpc",
       chainId: chainIds["arbitrumOne-mainnet"],
     },
     "avalanche-mainnet": {
       accounts: [deployPrivateKey],
-      url: 'https://api.avax.network/ext/bc/C/rpc',
+      url: "https://api.avax.network/ext/bc/C/rpc",
       chainId: chainIds["avalanche-mainnet"],
       gasPrice: 25000000000,
+    },
+    polygon: {
+      accounts: [deployPrivateKey],
+      url: "https://rpc.maticvigil.com",
+      chainId: chainIds["polygon"],
     },
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
-    sepolia: createTestnetConfig("sepolia"),
     "optimism-goerli": {
       accounts: [deployPrivateKey],
       chainId: chainIds["optimism-goerli"],
@@ -173,23 +179,28 @@ const config: HardhatUserConfig = {
     },
     arbitrumGoerli: {
       accounts: [deployPrivateKey],
-      url: 'https://goerli-rollup.arbitrum.io/rpc',
+      url: "https://goerli-rollup.arbitrum.io/rpc",
       chainId: chainIds["arbitrum-goerli"],
     },
     "fuji-testnet": {
       accounts: [deployPrivateKey],
-      url: 'https://avalanche-fuji-c-chain.publicnode.com',
+      url: "https://avalanche-fuji-c-chain.publicnode.com",
       chainId: chainIds["fuji-testnet"],
       gasPrice: 25000000000,
+    },
+    mumbai: {
+      accounts: [deployPrivateKey],
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${alchemyKey}`,
+      chainId: chainIds["mumbai"],
     },
 
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
       forking: {
         url: `https://goerli.infura.io/v3/${infuraIdKey}`,
-        blockNumber: 9188740 // A recent block where both AllowanceModule an Safe factory exist
-      }
-    }
+        blockNumber: 9188740, // A recent block where both AllowanceModule an Safe factory exist
+      },
+    },
   },
   gasReporter: {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
@@ -201,8 +212,6 @@ const config: HardhatUserConfig = {
     apiKey: {
       // @ts-ignore
       mainnet: process.env.ETHERSCAN_API_KEY,
-      // @ts-ignore
-      sepolia: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
       goerli: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
@@ -225,6 +234,10 @@ const config: HardhatUserConfig = {
       "avalanche-mainnet": process.env.AVALANCHE_API_KEY,
       // @ts-ignore
       "fuji-testnet": process.env.AVALANCHE_API_KEY,
+      // @ts-ignore
+      polygon: process.env.POLYGONSCAN_API_KEY,
+      // @ts-ignore
+      mumbai: process.env.POLYGONSCAN_API_KEY,
     },
     customChains: [
       {
@@ -248,7 +261,7 @@ const config: HardhatUserConfig = {
         chainId: chainIds["fuji-testnet"],
         urls: {
           apiURL: "https://api-testnet.snowtrace.io/api",
-          browserURL: "https://testnet.snowtrace.io/"
+          browserURL: "https://testnet.snowtrace.io/",
         },
       },
       {
@@ -257,6 +270,22 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://api.snowtrace.io/api",
           browserURL: "https://snowtrace.io/",
+        },
+      },
+      {
+        network: "mumbai",
+        chainId: chainIds["mumbai"],
+        urls: {
+          apiURL: "https://api-testnet.polygonscan.com/api",
+          browserURL: "https://mumbai.polygonscan.com/",
+        },
+      },
+      {
+        network: "polygon",
+        chainId: chainIds["polygon"],
+        urls: {
+          apiURL: "https://api.polygonscan.com/api",
+          browserURL: "https://polygonscan.com/",
         },
       },
     ],
