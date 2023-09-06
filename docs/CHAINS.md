@@ -270,3 +270,27 @@ These are contracts that are created/deployed once for goerli
 | RoundImplementation                   | 0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA |
 | ProjectRegistry                       | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e |
 | DummyVotingStrategy                   | 0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918 |
+
+
+## ZkSync Testnet
+
+These are contracts that are created/deployed once for goerli
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        | 0x993abb247BAA8b450BD88Ab212F3F3f9D05BdAE8 |
+| ProgramImplementation                 | 0xA32A2e8c77b3ad879a837B4766ceE247FBf6E8df |
+| QuadraticFundingVotingStrategyFactory | 0x68a14AF71BFa0FE09fC937033f6Ea5153c0e75e4 |
+| QFVotingStrategyImplementation        | 0x94cB638556d3991363102431d8cE9e839C734677 |
+| MerklePayoutStrategyFactory           | 0x41A8F19C6CB88C9Cc98d29Cb7A4015629910fFc0 |
+| MerklePayouStrategyImplementation     |  |
+| DirectPayoutStrategyFactory           |  |
+| DirectPayoutStrategyImplementation    |  |
+| AlloSettings                          | 0x7423451F93F8AA5324F61C36fAa76896E58ACd18 |
+| RoundFactory                          | 0xF3B5a0d59C6292BD0e4f8Cf735EEF52b98f428E6 |
+| RoundImplementation                   | 0x787D662D19C9528EB33FdaBb3cBEcBeAb2a7F15a |
+| ProjectRegistry                       | 0xe6CCEe93c97E20644431647B306F48e278aFFdb9 |
+| DummyVotingStrategy                   |  |
+
+
+MerklePayoutStrategyImplementation linked to MerklePayoutStrategyFactory in tx 0x4d2f4fefb4c0c6d6b994f385ddf3c741c4f4982df8eb06a3e1ddb4fb614c4600

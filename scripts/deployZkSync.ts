@@ -239,6 +239,11 @@ export default async function main() {
   await MerklePayoutStrategyImplementationDeployment.deployed();
   await MerklePayoutStrategyImplementationDeployment.initialize();
 
+  console.info(
+    "MerklePayoutStrategyImplementation deployed to",
+    MerklePayoutStrategyImplementationDeployment.address
+  );
+
   let payoutLinkTx =
     await MerklePayoutStrategyFactoryDeployment.updatePayoutImplementation(
       MerklePayoutStrategyImplementationDeployment.address
