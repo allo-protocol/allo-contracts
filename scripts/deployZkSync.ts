@@ -416,7 +416,6 @@ export default async function main() {
           address: programProxy.address, // this should be the implementation and not the proxy
           constructorArguments: [
             projectRegistryContractDeployment.address,
-
           ],
         });
 

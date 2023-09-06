@@ -74,8 +74,8 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   "zksync-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0xE3710C11A5E06E987657A8ce665961362C079De3",
+    implementation: "0x252E749Dca5bE43C5257577E6d37dB12419a1773",
     contract: "",
   },
 };
@@ -153,8 +153,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "zksync-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x5A7ea8C03C40e02A97B1901101e415Fdfc1aE64d",
+    implementation: "0xB0c9320F2176bc69bf808FA9B5C816713dC6A44C",
     contract: "",
   },
 };
