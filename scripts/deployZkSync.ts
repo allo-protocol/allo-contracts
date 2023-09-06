@@ -253,6 +253,55 @@ export default async function main() {
     payoutLinkTx.hash
   );
 
+  // /** Direct Payout Strategy */
+   await confirmContinue({
+    contract: "DirectPayoutStrategyFactory",
+  });
+  console.info("Deploying DirectPayoutStrategyFactory...");
+  const directPayoutStrategyFactory = await deployer.loadArtifact(
+    "DirectPayoutStrategyFactory"
+  );
+  const DirectPayoutStrategyFactoryDeployment = await deployer.deploy(
+    directPayoutStrategyFactory,
+    []
+  );
+
+  await DirectPayoutStrategyFactoryDeployment.deployed();
+  await DirectPayoutStrategyFactoryDeployment.initialize();
+
+  console.info(
+    "DirectPayoutStrategyFactory deployed to",
+    DirectPayoutStrategyFactoryDeployment.address
+  );
+
+  await confirmContinue({
+    contract: "DirectPayoutStrategyImplementation",
+  });
+  const directPayoutStrategyImplementation = await deployer.loadArtifact(
+    "DirectPayoutStrategyImplementation"
+  );
+  const DirectPayoutStrategyImplementationDeployment = await deployer.deploy(
+    directPayoutStrategyImplementation,
+    []
+  );
+
+  await DirectPayoutStrategyImplementationDeployment.deployed();
+  await DirectPayoutStrategyImplementationDeployment.initialize();
+
+  console.info(
+    "DirectPayoutStrategyImplementation deployed to",
+    DirectPayoutStrategyImplementationDeployment.address
+  );
+
+  let payoutLinkTx =
+    await DirectPayoutStrategyFactoryDeployment.updatePayoutImplementation(
+      DirectPayoutStrategyImplementationDeployment.address
+    );
+  console.info(
+    "DirectPayoutStrategyImplementation linked to DirectPayoutStrategyFactory in tx",
+    payoutLinkTx.hash
+  );
+
   // /* Round Factory */
   await confirmContinue({
     contract: "RoundFactory",
