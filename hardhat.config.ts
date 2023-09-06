@@ -198,8 +198,8 @@ const config: HardhatUserConfig = {
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
       forking: {
-        url: `https://goerli.infura.io/v3/${infuraIdKey}`,
-        blockNumber: 9188740, // A recent block where both AllowanceModule an Safe factory exist
+        url: `${process.env.FORK_RPC_URL}`,
+        // blockNumber: 9188740, // A recent block where both AllowanceModule an Safe factory exist
       },
     },
   },
