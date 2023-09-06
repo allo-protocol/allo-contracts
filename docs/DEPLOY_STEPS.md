@@ -12,6 +12,8 @@ All the deploy scripts will expect network param to know which network the contr
 | `mainnet`          |
 | `fuji-testnet`     |
 | `avalanche-mainnet`|
+| `mumbai`           |
+| `polygon`          |
 | `zksync-mainnet`   |
 | `zksync-testnet`   |
 
@@ -257,12 +259,10 @@ pnpm run deploy-merkle-factory goerli
 pnpm run deploy-merkle-implementation goerli
 pnpm run link-merkle-implementation goerli
 
-
 # direct grants
 pnpm run deploy-direct-factory goerli
 pnpm run deploy-direct-implementation goerli
 pnpm run link-direct-implementation goerli
-
 
 # AlloSettings
 pnpm run deploy-allo-settings goerli

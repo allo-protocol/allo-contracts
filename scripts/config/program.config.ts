@@ -56,6 +56,16 @@ export const programParams: DeployParams = {
   "fuji-testnet": {
     programFactoryContract: "0x862D7F621409cF572f179367DdF1B7144AcE1c76",
     programImplementationContract: "0x56296242CA408bA36393f3981879fF9692F193cC",
+    programContract: ""
+  },
+  "mumbai": {
+    programFactoryContract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
+    programImplementationContract: "0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D",
+    programContract: ""
+  },
+  polygon: {
+    programFactoryContract: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
+    programImplementationContract: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
     programContract: "",
   },
   "zksync-testnet": {

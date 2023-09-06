@@ -58,14 +58,24 @@ export const QFVotingParams: DeployParams = {
     implementation: "0x0BFA0AAF5f2D81f859e85C8E82A3fc5b624fc6E8",
     contract: "",
   },
+  mumbai: {
+    factory: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
+    implementation: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
+    contract: "",
+  },
+  polygon: {
+    factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
+    contract: "",
+  },
   "zksync-testnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x7DA751bb567D37fbd5311f8e37629c3355675bEe",
+    implementation: "0xB061F5a7359B11320d554b6Cfb450b6fd5Fc70bF",
     contract: "",
   },
   "zksync-mainnet": {
-    factory: "0x7DA751bb567D37fbd5311f8e37629c3355675bEe",
-    implementation: "0xB061F5a7359B11320d554b6Cfb450b6fd5Fc70bF",
+    factory: "",
+    implementation: "",
     contract: "",
   },
 };
@@ -110,6 +120,12 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   },
   "fuji-testnet": {
     contract: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
+  },
+  mumbai: {
+    contract: "0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918",
+  },
+  polygon: {
+    contract: "0x8142cAa6dED9F63434B1ED862d53E06332874570",
   },
   "zksync-testnet": {
     contract: "0x1127EF659bF29bBe05C892D0Bd683a07AB350A09",

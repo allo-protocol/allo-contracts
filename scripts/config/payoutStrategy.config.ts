@@ -58,9 +58,24 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
     contract: "",
   },
+  "mumbai": {
+    factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
+    contract: "",
+  },
+  polygon: {
+    factory: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
+    implementation: "0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4",
+    contract: "",
+  },
   "zksync-testnet": {
     factory: "0x898126eA2A581b94a7C08F828DF68B54e2063B7c",
     implementation: "0x1D51B2796cF001239d9F0BFcE2b3C4EC1a0Be18F",
+    contract: "",
+  },
+  "zksync-mainnet": {
+    factory: "",
+    implementation: "",
     contract: "",
   },
 };
@@ -85,11 +100,6 @@ export const DirectPayoutParams: DeployParams = {
   "pgn-sepolia": {
     factory: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
     implementation: "0xC3A195EEa198e74D67671732E1B8F8A23781D735",
-    contract: "",
-  },
-  sepolia: {
-    factory: "",
-    implementation: "",
     contract: "",
   },
   "optimism-mainnet": {
@@ -125,6 +135,16 @@ export const DirectPayoutParams: DeployParams = {
   "fuji-testnet": {
     factory: "0x0F98547e09D41e3c82086fC5Eb0E42Ab786aA763",
     implementation: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
+    contract: "",
+  },
+  "mumbai": {
+    factory: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
+    implementation: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
+    contract: "",
+  },
+  polygon: {
+    factory: "0xF2a07728107B04266015E67b1468cA0a536956C8",
+    implementation: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
     contract: "",
   },
   "zksync-testnet": {

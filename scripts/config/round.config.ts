@@ -60,6 +60,16 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0",
     roundContract: "",
   },
+  "mumbai": {
+    roundFactoryContract: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
+    roundImplementationContract: "0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC",
+    roundContract: "",
+  },
+  polygon: {
+    roundFactoryContract: "0x5ab68dCdcA37A1C2b09c5218e28eB0d9cc3FEb03",
+    roundImplementationContract: "0xcE7c30DbcEC2a98B516E4C64fA4E3256AB813b10",
+    roundContract: "",
+  },
   "zksync-testnet": {
     roundFactoryContract: "0x35E5f2abfaCdbe1bc7C2E09Fbe2e051Ea574Dd3b",
     roundImplementationContract: "0xcB0f55a192f0d504490eA5d14eaeE0600F956bb5",
