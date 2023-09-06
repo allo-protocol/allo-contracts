@@ -199,7 +199,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       forking: {
         url: `https://goerli.infura.io/v3/${infuraIdKey}`,
-        blockNumber: 9188740, // A recent block where both AllowanceModule an Safe factory exist
+        // blockNumber: 9188740, // A recent block where both AllowanceModule an Safe factory exist
       },
     },
   },
