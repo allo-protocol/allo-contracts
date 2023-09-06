@@ -64,8 +64,8 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   polygon: {
-    factory: "",
-    implementation: "",
+    factory: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
+    implementation: "0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4",
     contract: "",
   },
 };
@@ -133,8 +133,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   polygon: {
-    factory: "",
-    implementation: "",
+    factory: "0xF2a07728107B04266015E67b1468cA0a536956C8",
+    implementation: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
     contract: "",
   },
 };

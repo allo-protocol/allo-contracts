@@ -64,8 +64,8 @@ export const programParams: DeployParams = {
     programContract: ""
   },
   polygon: {
-    programFactoryContract: "",
-    programImplementationContract: "",
+    programFactoryContract: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
+    programImplementationContract: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
     programContract: ""
   }
 };

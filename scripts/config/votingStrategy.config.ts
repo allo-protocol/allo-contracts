@@ -64,8 +64,8 @@ export const QFVotingParams: DeployParams = {
     contract: "",
   },
   polygon: {
-    factory: "",
-    implementation: "",
+    factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
     contract: "",
   },
 };
@@ -115,6 +115,6 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
     contract: "0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918",
   },
   polygon: {
-    contract: "",
+    contract: "0x8142cAa6dED9F63434B1ED862d53E06332874570",
   },
 };

@@ -66,8 +66,8 @@ export const roundParams: DeployParams = {
     roundContract: "",
   },
   polygon: {
-    roundFactoryContract: "",
-    roundImplementationContract: "",
+    roundFactoryContract: "0x5ab68dCdcA37A1C2b09c5218e28eB0d9cc3FEb03",
+    roundImplementationContract: "0xcE7c30DbcEC2a98B516E4C64fA4E3256AB813b10",
     roundContract: "",
   },
 };

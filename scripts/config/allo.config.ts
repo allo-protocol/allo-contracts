@@ -64,7 +64,7 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolTreasury: "0x1fd06f088c720ba3b7a3634a8f021fdd485dca42",
   },
   "polygon": {
-    alloSettingsContract: "",
+    alloSettingsContract: "0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xbF91bfa8c0Bcd130cDf0a7d9C01A4Db4842B1532",
   },
