@@ -40,6 +40,6 @@ export const projectRegistryParams: DeployParams = {
     proxyContractAddress: "0x545B282A50EaeA01A619914d44105437036CbB36",
   },
   polygon: {
-    proxyContractAddress: "",
+    proxyContractAddress: "0x5C5E2D94b107C7691B08E43169fDe76EAAB6D48b",
   },
 };

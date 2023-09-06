@@ -155,8 +155,9 @@ const config: HardhatUserConfig = {
     },
     polygon: {
       accounts: [deployPrivateKey],
-      url: "https://rpc.maticvigil.com",
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${alchemyKey}`,
       chainId: chainIds["polygon"],
+      gas: "auto",
     },
 
     // Test Networks

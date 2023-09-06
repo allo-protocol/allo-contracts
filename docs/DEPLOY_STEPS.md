@@ -12,6 +12,8 @@ All the deploy scripts will expect network param to know which network the contr
 | `mainnet`          |
 | `fuji-testnet`     |
 | `avalanche-mainnet`|
+| `mumbai`           |
+| `polygon`          |
 
 
 ### Project Registry

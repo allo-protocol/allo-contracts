@@ -81,7 +81,7 @@ These are contracts that are created/deployed once for polygon
 | AlloSettings                          |  |
 | RoundFactory                          |  |
 | RoundImplementation                   |  |
-| ProjectRegistry                       |  |
+| ProjectRegistry                       | 0x5C5E2D94b107C7691B08E43169fDe76EAAB6D48b |
 | DummyVotingStrategy                   |  |
 
 ## Polygon PoS Mumbai
