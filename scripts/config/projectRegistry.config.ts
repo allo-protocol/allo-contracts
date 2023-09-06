@@ -42,4 +42,11 @@ export const projectRegistryParams: DeployParams = {
   polygon: {
     proxyContractAddress: "0x5C5E2D94b107C7691B08E43169fDe76EAAB6D48b",
   },
+  "zksync-testnet": {
+    proxyContractAddress: "0x2C17D0FAb47bD87333714dC35f84BB669951cea6",
+  },
+  "zksync-mainnet": {
+    proxyContractAddress: "",
+  },
 };
+

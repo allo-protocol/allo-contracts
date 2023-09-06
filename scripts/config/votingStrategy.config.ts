@@ -68,6 +68,16 @@ export const QFVotingParams: DeployParams = {
     implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
     contract: "",
   },
+  "zksync-testnet": {
+    factory: "0x7DA751bb567D37fbd5311f8e37629c3355675bEe",
+    implementation: "0xB061F5a7359B11320d554b6Cfb450b6fd5Fc70bF",
+    contract: "",
+  },
+  "zksync-mainnet": {
+    factory: "",
+    implementation: "",
+    contract: "",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -99,10 +109,10 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   "fantom-testnet": {
     contract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
   },
-  "arbitrumGoerli": {
+  arbitrumGoerli: {
     contract: "0x809E751e5C5bB1446e9ab2Ac37c687a35DE53BC6",
   },
-  "arbitrumOne": {
+  arbitrumOne: {
     contract: "0x5ab68dCdcA37A1C2b09c5218e28eB0d9cc3FEb03",
   },
   "avalanche-mainnet": {
@@ -117,4 +127,11 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   polygon: {
     contract: "0x8142cAa6dED9F63434B1ED862d53E06332874570",
   },
+  "zksync-testnet": {
+    contract: "0x1127EF659bF29bBe05C892D0Bd683a07AB350A09",
+  },
+  "zksync-mainnet": {
+    contract: "",
+  },
 };
+
