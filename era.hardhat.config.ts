@@ -142,6 +142,9 @@ const config: HardhatUserConfig = {
       isSystem: true,
     },
   },
+  contractsToIgnore: [
+    "contracts/payoutStrategy/DirectPayoutStrategy/**/*.sol"
+  ]
 };
 
 export default config;
