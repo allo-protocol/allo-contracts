@@ -38,12 +38,12 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     contract: "",
   },
-  "arbitrumGoerli": {
+  arbitrumGoerli: {
     factory: "0x8F8d78f119Aa722453d33d6881f4D400D67D054F",
     implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
     contract: "",
   },
-  "arbitrumOne": {
+  arbitrumOne: {
     factory: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
     implementation: "0x5b55728e41154562ee80027C1247B13382692e5C",
     contract: "0xE8536d29e5325cB5cce0c1799caE80D6d0fAFDf3",
@@ -56,6 +56,11 @@ export const MerklePayoutParams: DeployParams = {
   "fuji-testnet": {
     factory: "0x8F8d78f119Aa722453d33d6881f4D400D67D054F",
     implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
+    contract: "",
+  },
+  "zksync-testnet": {
+    factory: "0x898126eA2A581b94a7C08F828DF68B54e2063B7c",
+    implementation: "0x1D51B2796cF001239d9F0BFcE2b3C4EC1a0Be18F",
     contract: "",
   },
 };
@@ -102,12 +107,12 @@ export const DirectPayoutParams: DeployParams = {
     implementation: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
     contract: "",
   },
-  "arbitrumGoerli": {
+  arbitrumGoerli: {
     factory: "0xCd3618509983FE4990D7770CF6f02c7145dC365F",
     implementation: "0xE1F4A28299966686c689223Ee7803258Dbde0942",
     contract: "",
   },
-  "arbitrumOne": {
+  arbitrumOne: {
     factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
     contract: "",
@@ -123,8 +128,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "zksync-testnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x5e3E56F81588220bC0b3827C49A9e9Babb3D8228",
+    implementation: "0x4Fc8AF1AE0197acB87BB6376d16666C4946E9030",
     contract: "",
   },
   "zksync-mainnet": {

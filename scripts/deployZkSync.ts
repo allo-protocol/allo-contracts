@@ -18,6 +18,8 @@ export default async function main() {
   // Create a deployer object
   const deployer = new Deployer(hre, zkWallet);
 
+  const networkName = hre.network.name;
+
   // OPTIONAL: Deposit funds to L2
   // Comment this block if you already have funds on zkSync.
   // const depositHandle = await deployer.zkWallet.deposit({
@@ -193,7 +195,9 @@ export default async function main() {
     QfVotingImpFactoryDeployment.address
   );
 
-  console.info("Linking QuadraticFundingVotingStrategyFactory to implementation");
+  console.info(
+    "Linking QuadraticFundingVotingStrategyFactory to implementation"
+  );
   let qfLink =
     await QuadraticFundingVotingStrategyFactoryDeployment.updateVotingContract(
       QfVotingImpFactoryDeployment.address
@@ -202,7 +206,9 @@ export default async function main() {
     "QuadraticFundingVotingStrategyFactory linked to QuadraticFundingVotingStrategyImplementation in tx",
     qfLink.hash
   );
-  console.info("Linked QuadraticFundingVotingStrategyFactory to implementation");
+  console.info(
+    "Linked QuadraticFundingVotingStrategyFactory to implementation"
+  );
 
   // /** Merkle Payout Strategy */
   await confirmContinue({
@@ -231,47 +237,47 @@ export default async function main() {
   const merklePayoutStrategyImplementation = await deployer.loadArtifact(
     "MerklePayoutStrategyImplementation"
   );
-  const MerklePayoutStrategyImplementationDeployment = await deployer.deploy(
+  const merklePayoutStrategyImplementationDeployment = await deployer.deploy(
     merklePayoutStrategyImplementation,
     []
   );
 
-  await MerklePayoutStrategyImplementationDeployment.deployed();
-  await MerklePayoutStrategyImplementationDeployment.initialize();
+  await merklePayoutStrategyImplementationDeployment.deployed();
+  await merklePayoutStrategyImplementationDeployment.initialize();
 
   console.info(
     "MerklePayoutStrategyImplementation deployed to",
-    MerklePayoutStrategyImplementationDeployment.address
+    merklePayoutStrategyImplementationDeployment.address
   );
 
-  let payoutLinkTx =
+  let merkleLinkTx =
     await MerklePayoutStrategyFactoryDeployment.updatePayoutImplementation(
-      MerklePayoutStrategyImplementationDeployment.address
+      merklePayoutStrategyImplementationDeployment.address
     );
   console.info(
     "MerklePayoutStrategyImplementation linked to MerklePayoutStrategyFactory in tx",
-    payoutLinkTx.hash
+    merkleLinkTx.hash
   );
 
   // /** Direct Payout Strategy */
-   await confirmContinue({
+  await confirmContinue({
     contract: "DirectPayoutStrategyFactory",
   });
   console.info("Deploying DirectPayoutStrategyFactory...");
   const directPayoutStrategyFactory = await deployer.loadArtifact(
     "DirectPayoutStrategyFactory"
   );
-  const DirectPayoutStrategyFactoryDeployment = await deployer.deploy(
+  const directPayoutStrategyFactoryDeployment = await deployer.deploy(
     directPayoutStrategyFactory,
     []
   );
 
-  await DirectPayoutStrategyFactoryDeployment.deployed();
-  await DirectPayoutStrategyFactoryDeployment.initialize();
+  await directPayoutStrategyFactoryDeployment.deployed();
+  await directPayoutStrategyFactoryDeployment.initialize();
 
   console.info(
     "DirectPayoutStrategyFactory deployed to",
-    DirectPayoutStrategyFactoryDeployment.address
+    directPayoutStrategyFactoryDeployment.address
   );
 
   await confirmContinue({
@@ -280,22 +286,22 @@ export default async function main() {
   const directPayoutStrategyImplementation = await deployer.loadArtifact(
     "DirectPayoutStrategyImplementation"
   );
-  const DirectPayoutStrategyImplementationDeployment = await deployer.deploy(
+  const directPayoutStrategyImplementationDeployment = await deployer.deploy(
     directPayoutStrategyImplementation,
     []
   );
 
-  await DirectPayoutStrategyImplementationDeployment.deployed();
-  await DirectPayoutStrategyImplementationDeployment.initialize();
+  await directPayoutStrategyImplementationDeployment.deployed();
+  await directPayoutStrategyImplementationDeployment.initialize();
 
   console.info(
     "DirectPayoutStrategyImplementation deployed to",
-    DirectPayoutStrategyImplementationDeployment.address
+    directPayoutStrategyImplementationDeployment.address
   );
 
   let payoutLinkTx =
-    await DirectPayoutStrategyFactoryDeployment.updatePayoutImplementation(
-      DirectPayoutStrategyImplementationDeployment.address
+    await directPayoutStrategyFactoryDeployment.updatePayoutImplementation(
+      directPayoutStrategyImplementationDeployment.address
     );
   console.info(
     "DirectPayoutStrategyImplementation linked to DirectPayoutStrategyFactory in tx",
@@ -308,12 +314,12 @@ export default async function main() {
   });
   console.info("Deploying RoundFactory...");
   const roundFactory = await deployer.loadArtifact("RoundFactory");
-  const RoundFactoryDeployment = await deployer.deploy(roundFactory, []);
+  const roundFactoryDeployment = await deployer.deploy(roundFactory, []);
 
-  await RoundFactoryDeployment.deployed();
-  await RoundFactoryDeployment.initialize();
+  await roundFactoryDeployment.deployed();
+  await roundFactoryDeployment.initialize();
 
-  console.info("RoundFactory deployed to", RoundFactoryDeployment.address);
+  console.info("RoundFactory deployed to", roundFactoryDeployment.address);
 
   /* Deploy Allo Settings */
   await confirmContinue({
@@ -321,18 +327,18 @@ export default async function main() {
   });
   console.info("Deploying AlloSettings...");
   const alloSettingsContract = await deployer.loadArtifact("AlloSettings");
-  const AlloSettingsDeployment = await deployer.deploy(
+  const alloSettingsDeployment = await deployer.deploy(
     alloSettingsContract,
     []
   );
 
-  await AlloSettingsDeployment.deployed();
-  console.info("AlloSettings deployed to", AlloSettingsDeployment.address);
-  await AlloSettingsDeployment.initialize();
+  await alloSettingsDeployment.deployed();
+  console.info("AlloSettings deployed to", alloSettingsDeployment.address);
+  await alloSettingsDeployment.initialize();
   console.info("AlloSettings initialized");
 
-  const alloLinkTx = await RoundFactoryDeployment.updateAlloSettings(
-    AlloSettingsDeployment.address
+  const alloLinkTx = await roundFactoryDeployment.updateAlloSettings(
+    alloSettingsDeployment.address
   );
   await alloLinkTx.wait();
   console.info("RoundFactory linked to AlloSettings in tx", alloLinkTx.hash);
@@ -344,20 +350,20 @@ export default async function main() {
   const roundImplementation = await deployer.loadArtifact(
     "RoundImplementation"
   );
-  const RoundImplementationDeployment = await deployer.deploy(
+  const roundImplementationDeployment = await deployer.deploy(
     roundImplementation,
     []
   );
 
-  await RoundImplementationDeployment.deployed();
+  await roundImplementationDeployment.deployed();
 
   console.info(
     "RoundImplementation deployed to",
-    RoundImplementationDeployment.address
+    roundImplementationDeployment.address
   );
 
-  const roundLinkTx = await RoundFactoryDeployment.updateRoundImplementation(
-    RoundImplementationDeployment.address
+  const roundLinkTx = await roundFactoryDeployment.updateRoundImplementation(
+    roundImplementationDeployment.address
   );
   await roundLinkTx.wait();
 
@@ -367,89 +373,244 @@ export default async function main() {
   );
 
   await confirmContinue({
-    verify: "verify all deployed contracts",
+    contract: "DummyVotingStrategy",
   });
+
+  const dummyFactory = await deployer.loadArtifact("DummyVotingStrategy");
+
+  // Estimate Fee
+  const dummyFactoryDeploymentFee = await deployer.estimateDeployFee(
+    dummyFactory,
+    []
+  );
+
+  const parsedDummyFactoryFee = ethers.utils.formatEther(
+    dummyFactoryDeploymentFee.toString()
+  );
+
+  console.info(`Estimated deployment fee: ${parsedDummyFactoryFee} ETH`);
+
+  const dummyVotingStrategy = await deployer.deploy(dummyFactory, []);
+
+  await dummyVotingStrategy.deployed();
+
+  console.info(
+    "DummyVotingStrategy deployed to",
+    dummyVotingStrategy.address
+  );
+
+  // ====> VERIFICATION
+
+    await confirmContinue({
+      verify: "verify all deployed contracts",
+    });
+
 
   console.info("Waiting for 30 seconds for the blocks to mine...");
   setTimeout(async () => {
     try {
+      //// new
       try {
-        const registryVerifyId = await hre.run("verify:verify", {
-          address: projectRegistryContractDeployment.address,
-          contract:
-            "contracts/projectRegistry/ProjectRegistry.sol:ProjectRegistry",
-          constructorArguments: [],
-          bytedcode: projectRegistryContractDeployment.bytecode,
+        console.log("Verify ProgramFactory");
+        await hre.run("verify:verify", {
+          address: programProxy.address, // this should be the implementation and not the proxy
+          constructorArguments: [
+            projectRegistryContractDeployment.address,
+
+          ],
         });
 
-        console.info("ProjectRegistry verification ID: ", registryVerifyId);
-      } catch (error) {
-        console.error("ProjectRegistry verification", error);
-      }
-
-      //! fixme: ProgramFactory verify is not working for some reason... need to investigate cc: @thelostone-mc
-      try {
-        const programFactoryVerifyId = await hre.run("verify:verify", {
-          address: programProxy.address,
-          constructorArguments: [],
-          bytedcode: programProxy.bytecode,
-        });
-
-        console.info(
-          "ProgramFactory verification ID: ",
-          programFactoryVerifyId
-        );
       } catch (error) {
         console.error("ProgramFactory verification", error);
       }
 
       try {
-        const programImplementationVerifyId = await hre.run("verify:verify", {
+        console.log("Verify ProgramImplementation");
+        await hre.run("verify:verify", {
           address: programImplementationContractDeployment.address,
-          contract:
-            "contracts/program/ProgramImplementation.sol:ProgramImplementation",
           constructorArguments: [],
-          bytedcode: programImplementationContractDeployment.bytecode,
         });
-
-        console.info(
-          "ProgramImplementation verification ID: ",
-          programImplementationVerifyId
-        );
       } catch (error) {
         console.error("ProgramImplementation verification", error);
       }
 
       try {
-        const roundImpId = await hre.run("verify:verify", {
-          address: RoundImplementationDeployment.address,
-          contract:
-            "contracts/round/RoundImplementation.sol:RoundImplementation",
+        console.log("Verify QuadraticFundingVotingStrategyFactory");
+        await hre.run("verify:verify", {
+          address: QuadraticFundingVotingStrategyFactoryDeployment.address,
           constructorArguments: [],
-          bytedcode: roundImplementation.bytecode,
         });
+      } catch (error) {
+        console.error(
+          "QuadraticFundingVotingStrategyFactory verification",
+          error
+        );
+      }
 
-        console.info("RoundImplementation verification ID: ", roundImpId);
+      try {
+        console.log("Verify QuadraticFundingVotingStrategyImplementation");
+        await hre.run("verify:verify", {
+          address: QfVotingImpFactoryDeployment.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error(
+          "QuadraticFundingVotingStrategyImplementation verification",
+          error
+        );
+      }
+
+      try {
+        console.log("Verify MerklePayoutStrategyFactory");
+        await hre.run("verify:verify", {
+          address: MerklePayoutStrategyFactoryDeployment.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error("MerklePayoutStrategyFactory verification", error);
+      }
+
+      try {
+        console.log("Verify MerklePayoutStrategyImplementation");
+        await hre.run("verify:verify", {
+          address: merklePayoutStrategyImplementationDeployment.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error("MerklePayoutStrategyImplementation verification", error);
+      }
+
+      try {
+        console.log("Verify DirectPayoutStrategyFactory");
+        await hre.run("verify:verify", {
+          address: directPayoutStrategyFactoryDeployment.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error("DirectPayoutStrategyFactory verification", error);
+      }
+
+      try {
+        console.log("Verify DirectPayoutStrategyImplementation");
+        await hre.run("verify:verify", {
+          address: directPayoutStrategyImplementationDeployment.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error("DirectPayoutStrategyImplementation verification", error);
+      }
+
+      try {
+        console.log("Verify AlloSettings");
+        await hre.run("verify:verify", {
+          address: alloSettingsDeployment.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error("AlloSettings verification", error);
+      }
+
+      try {
+        console.log("Verify RoundFactory");
+        await hre.run("verify:verify", {
+          address: roundFactoryDeployment.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error("RoundFactory verification", error);
+      }
+
+      try {
+        console.log("Verify RoundImplementation");
+        await hre.run("verify:verify", {
+          address: roundImplementationDeployment.address,
+          constructorArguments: [],
+        });
       } catch (error) {
         console.error("RoundImplementation verification", error);
       }
 
       try {
-        const settingsId = await hre.run("verify:verify", {
-          address: AlloSettingsDeployment.address,
-          contract: "contracts/settings/AlloSettings.sol:AlloSettings",
+        console.log("Verify ProjectRegistry");
+        await hre.run("verify:verify", {
+          address: projectRegistryContractDeployment.address,
           constructorArguments: [],
-          bytedcode: alloSettingsContract.bytecode,
         });
-
-        console.info("Allo Settings verification ID: ", settingsId);
       } catch (error) {
-        console.error("Allo Settings verification", error);
+        console.error("ProjectRegistry verification", error);
       }
+
+      try {
+        console.log("Verify DummyVotingStrategy");
+        await hre.run("verify:verify", {
+          address: dummyVotingStrategy.address,
+          constructorArguments: [],
+        });
+      } catch (error) {
+        console.error("DummyVotingStrategy verification", error);
+      }
+
     } catch (error) {
       console.error(error);
     }
   }, 30000);
+
+  // Print the markdown table.
+
+  console.log(`## ${formatNetworkName(networkName)} \n`);
+  console.log(
+    "| Contract                              | Address                                    |"
+  );
+  console.log(
+    "|---------------------------------------|--------------------------------------------|"
+  );
+  console.log(
+    `| ProgramFactory                        | ${programProxy.address} |`
+  );
+  console.log(
+    `| ProgramImplementation                 | ${programImplementationContractDeployment.address} |`
+  );
+  console.log(
+    `| QuadraticFundingVotingStrategyFactory | ${QuadraticFundingVotingStrategyFactoryDeployment.address} |`
+  );
+  console.log(
+    `| QFVotingStrategyImplementation        | ${QfVotingImpFactoryDeployment.address} |`
+  );
+  console.log(
+    `| MerklePayoutStrategyFactory           | ${MerklePayoutStrategyFactoryDeployment.address} |`
+  );
+  console.log(
+    `| MerklePayouStrategyImplementation     | ${merklePayoutStrategyImplementationDeployment.address} |`
+  );
+  console.log(
+    `| DirectPayoutStrategyFactory           | ${directPayoutStrategyFactoryDeployment.address} |`
+  );
+  console.log(
+    `| DirectPayoutStrategyImplementation    | ${directPayoutStrategyImplementationDeployment.address} |`
+  );
+  console.log(
+    `| AlloSettings                          | ${alloSettingsDeployment.address} |`
+  );
+  console.log(
+    `| RoundFactory                          | ${roundFactoryDeployment.address} |`
+  );
+  console.log(
+    `| RoundImplementation                   | ${roundImplementationDeployment.address} |`
+  );
+  console.log(
+    `| ProjectRegistry                       | ${projectRegistryContractDeployment.address} |`
+  );
+  console.log(
+    `| DummyVotingStrategy                   | ${dummyVotingStrategy.address} |`
+  );
+}
+
+function formatNetworkName(networkName: string) {
+  const words = networkName.split("-");
+  const capitalizedWords = words.map(
+    (word) => word.charAt(0).toUpperCase() + word.slice(1)
+  );
+  return capitalizedWords.join(" ");
 }
 
 main().catch((error) => {

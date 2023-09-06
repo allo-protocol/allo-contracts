@@ -38,12 +38,12 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0x3e364ebc92AA057C10597EF3D30C0201d84F03E8",
   },
-  "arbitrumGoerli": {
+  arbitrumGoerli: {
     alloSettingsContract: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
   },
-  "arbitrumOne": {
+  arbitrumOne: {
     alloSettingsContract: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xC60fCf320fC8FE79b3f2F7a1B5E04f31dFC13DbD",
@@ -56,12 +56,12 @@ export const AlloSettingsParams: DeployParams = {
   "fuji-testnet": {
     alloSettingsContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123"
+    newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
   },
   "zksync-testnet": {
-    alloSettingsContract: "",
+    alloSettingsContract: "0x0FD600678475C03f28baE59A2d55f7a911383e2B",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: "",
+    newProtocolTreasury: "0x0000000000000000000000000000000000000000",
   },
   "zksync-mainnet": {
     alloSettingsContract: "",

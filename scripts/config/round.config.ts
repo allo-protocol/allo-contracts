@@ -40,12 +40,12 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
     roundContract: "",
   },
-  "arbitrumGoerli": {
+  arbitrumGoerli: {
     roundFactoryContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
     roundImplementationContract: "0xfF94fAfC740Be8D2010304108266E7b90ed232fc",
     roundContract: "",
   },
-  "arbitrumOne": {
+  arbitrumOne: {
     roundFactoryContract: "0xF2a07728107B04266015E67b1468cA0a536956C8",
     roundImplementationContract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
     roundContract: "",
@@ -61,8 +61,8 @@ export const roundParams: DeployParams = {
     roundContract: "",
   },
   "zksync-testnet": {
-    roundFactoryContract: "",
-    roundImplementationContract: "",
+    roundFactoryContract: "0x35E5f2abfaCdbe1bc7C2E09Fbe2e051Ea574Dd3b",
+    roundImplementationContract: "0xcB0f55a192f0d504490eA5d14eaeE0600F956bb5",
     roundContract: "",
   },
   "zksync-mainnet": {

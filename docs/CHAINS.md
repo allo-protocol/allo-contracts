@@ -272,25 +272,20 @@ These are contracts that are created/deployed once for goerli
 | DummyVotingStrategy                   | 0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918 |
 
 
-## ZkSync Testnet
-
-These are contracts that are created/deployed once for goerli
+## ZkSync Testnet 
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        | 0x993abb247BAA8b450BD88Ab212F3F3f9D05BdAE8 |
-| ProgramImplementation                 | 0xA32A2e8c77b3ad879a837B4766ceE247FBf6E8df |
-| QuadraticFundingVotingStrategyFactory | 0x68a14AF71BFa0FE09fC937033f6Ea5153c0e75e4 |
-| QFVotingStrategyImplementation        | 0x94cB638556d3991363102431d8cE9e839C734677 |
-| MerklePayoutStrategyFactory           | 0x41A8F19C6CB88C9Cc98d29Cb7A4015629910fFc0 |
-| MerklePayouStrategyImplementation     |  |
-| DirectPayoutStrategyFactory           |  |
-| DirectPayoutStrategyImplementation    |  |
-| AlloSettings                          | 0x7423451F93F8AA5324F61C36fAa76896E58ACd18 |
-| RoundFactory                          | 0xF3B5a0d59C6292BD0e4f8Cf735EEF52b98f428E6 |
-| RoundImplementation                   | 0x787D662D19C9528EB33FdaBb3cBEcBeAb2a7F15a |
-| ProjectRegistry                       | 0xe6CCEe93c97E20644431647B306F48e278aFFdb9 |
-| DummyVotingStrategy                   |  |
-
-
-MerklePayoutStrategyImplementation linked to MerklePayoutStrategyFactory in tx 0x4d2f4fefb4c0c6d6b994f385ddf3c741c4f4982df8eb06a3e1ddb4fb614c4600
+| ProgramFactory                        | 0x1c58945a9A61a3390c56a24d42fEab7106E48d03 |
+| ProgramImplementation                 | 0x708DeC2fAC60D669066878dBe1229168c0e02E67 |
+| QuadraticFundingVotingStrategyFactory | 0x7DA751bb567D37fbd5311f8e37629c3355675bEe |
+| QFVotingStrategyImplementation        | 0xB061F5a7359B11320d554b6Cfb450b6fd5Fc70bF |
+| MerklePayoutStrategyFactory           | 0x898126eA2A581b94a7C08F828DF68B54e2063B7c |
+| MerklePayouStrategyImplementation     | 0x1D51B2796cF001239d9F0BFcE2b3C4EC1a0Be18F |
+| DirectPayoutStrategyFactory           | 0x5e3E56F81588220bC0b3827C49A9e9Babb3D8228 |
+| DirectPayoutStrategyImplementation    | 0x4Fc8AF1AE0197acB87BB6376d16666C4946E9030 |
+| AlloSettings                          | 0x0FD600678475C03f28baE59A2d55f7a911383e2B |
+| RoundFactory                          | 0x35E5f2abfaCdbe1bc7C2E09Fbe2e051Ea574Dd3b |
+| RoundImplementation                   | 0xcB0f55a192f0d504490eA5d14eaeE0600F956bb5 |
+| ProjectRegistry                       | 0x2C17D0FAb47bD87333714dC35f84BB669951cea6 |
+| DummyVotingStrategy                   | 0x1127EF659bF29bBe05C892D0Bd683a07AB350A09 |
