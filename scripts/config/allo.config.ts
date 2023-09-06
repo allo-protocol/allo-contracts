@@ -74,7 +74,7 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolTreasury: "0x0000000000000000000000000000000000000000",
   },
   "zksync-mainnet": {
-    alloSettingsContract: "",
+    alloSettingsContract: "0xA86824AB3038daCfeB61e03f45CA1a02b77f1081",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "",
   },

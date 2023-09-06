@@ -118,6 +118,8 @@ const config: HardhatUserConfig = {
       ),
       zksync: true,
       ethNetwork: "mainnet",
+      verifyURL:
+        "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
     },
 
     // Test Networks

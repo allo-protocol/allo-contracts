@@ -74,8 +74,8 @@ export const programParams: DeployParams = {
     programContract: "",
   },
   "zksync-mainnet": {
-    programFactoryContract: "",
-    programImplementationContract: "",
+    programFactoryContract: "0xe1b01395986bd93Cc9Fa62290987793c150a1AB2",
+    programImplementationContract: "0x08Bfe6ec7831d4bbd48873fCDc89Ef3d2d8c2C4E",
     programContract: "",
   },
 };
