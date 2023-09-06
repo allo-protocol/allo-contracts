@@ -73,7 +73,7 @@ function initialize() external nonpayable
 
 Initializes the contract after an upgrade
 
-*In future deploys of the implementation, an higher version should be passed to reinitializer*
+*In future deploys of the implementation, a higher version should be passed to reinitializer*
 
 
 ### projectOwnersCount

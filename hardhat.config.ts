@@ -1,19 +1,15 @@
 import * as dotenv from "dotenv";
 
-import "@matterlabs/hardhat-zksync-deploy";
-import "@matterlabs/hardhat-zksync-solc";
-import "@matterlabs/hardhat-zksync-upgradable";
-import "@matterlabs/hardhat-zksync-verify";
-// import "@nomiclabs/hardhat-etherscan";
-// import "@nomiclabs/hardhat-solhint";
-// import "@nomiclabs/hardhat-waffle";
-// import "@openzeppelin/hardhat-upgrades";
-// import "@primitivefi/hardhat-dodoc";
+import "@nomiclabs/hardhat-etherscan";
+import "@nomiclabs/hardhat-solhint";
+import "@nomiclabs/hardhat-waffle";
+import "@openzeppelin/hardhat-upgrades";
+import "@primitivefi/hardhat-dodoc";
 import "@typechain/hardhat";
-// import "hardhat-abi-exporter";
-// import "hardhat-contract-sizer";
-// import "hardhat-gas-reporter";
-import { HardhatUserConfig } from "hardhat/config";
+import "hardhat-abi-exporter";
+import "hardhat-contract-sizer";
+import "hardhat-gas-reporter";
+import { HardhatUserConfig, task } from "hardhat/config";
 import { NetworkUserConfig } from "hardhat/types";
 import "solidity-coverage";
 
@@ -24,30 +20,37 @@ const chainIds = {
   localhost: 31337,
   // testnet
   goerli: 5,
+  "optimism-goerli": 420,
   "fantom-testnet": 4002,
-  "zksync-testnet": 280,
+  sepolia: 11155111,
+  "pgn-sepolia": 58008,
+  "arbitrum-goerli": 421613,
+  "fuji-testnet": 43113,
 
   // mainnet
   mainnet: 1,
   "optimism-mainnet": 10,
+  "pgn-mainnet": 424,
   "fantom-mainnet": 250,
-  "zksync-mainnet": 324,
+  "arbitrumOne-mainnet": 42161,
+  "avalanche-mainnet": 43114,
 };
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
-// task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
-//   const accounts = await hre.ethers.getSigners();
+task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
+  const accounts = await hre.ethers.getSigners();
 
-//   for (const account of accounts) {
-//     console.log(account.address);
-//   }
-// });
+  for (const account of accounts) {
+    console.log(account.address);
+  }
+});
 
 let deployPrivateKey = process.env.DEPLOYER_PRIVATE_KEY as string;
 if (!deployPrivateKey) {
+  // default first account deterministically created by local nodes like `npx hardhat node` or `anvil`
   deployPrivateKey =
-    "0x0000000000000000000000000000000000000000000000000000000000000001";
+    "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 }
 
 const infuraIdKey = process.env.INFURA_ID as string;
@@ -121,80 +124,145 @@ const config: HardhatUserConfig = {
         runs: 400,
       },
     },
+    // @ts-ignore
   },
   networks: {
     // Main Networks
-    mainnet: { ...createMainnetConfig("mainnet"), zksync: false },
-    "optimism-mainnet": {
-      ...createMainnetConfig("optimism-mainnet"),
-      zksync: false,
+    mainnet: createMainnetConfig("mainnet"),
+    "optimism-mainnet": createMainnetConfig("optimism-mainnet"),
+    "pgn-mainnet": {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["pgn-mainnet"],
+      url: "https://rpc.publicgoods.network",
+      gasPrice: 20000000000,
     },
-    "fantom-mainnet": {
-      ...createMainnetConfig("fantom-mainnet", "https://rpc.ftm.tools"),
-      zksync: false,
+    "fantom-mainnet": createMainnetConfig(
+      "fantom-mainnet",
+      "https://rpc.ftm.tools"
+    ),
+    "arbitrumOne": {
+      accounts: [deployPrivateKey],
+      url: 'https://arb1.arbitrum.io/rpc',
+      chainId: chainIds["arbitrumOne-mainnet"],
     },
-    "zksync-mainnet": {
-      ...createMainnetConfig(
-        "zksync-mainnet",
-        "https://zksync2-mainnet.zksync.io"
-      ),
-      zksync: true,
-      ethNetwork: "mainnet",
+    "avalanche-mainnet": {
+      accounts: [deployPrivateKey],
+      url: 'https://api.avax.network/ext/bc/C/rpc',
+      chainId: chainIds["avalanche-mainnet"],
+      gasPrice: 25000000000,
     },
 
     // Test Networks
-    goerli: { ...createTestnetConfig("goerli"), zksync: false },
-    "fantom-testnet": {
-      ...createTestnetConfig(
-        "fantom-testnet",
-        "https://rpc.testnet.fantom.network/"
-      ),
-      zksync: false,
+    goerli: createTestnetConfig("goerli"),
+    sepolia: createTestnetConfig("sepolia"),
+    "optimism-goerli": {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["optimism-goerli"],
+      url: "https://goerli.optimism.io",
+      gasPrice: 15000000,
     },
-    localhost: {
-      ...createTestnetConfig("localhost", "http://localhost:8545"),
-      zksync: false,
+    "fantom-testnet": createTestnetConfig(
+      "fantom-testnet",
+      "https://rpc.testnet.fantom.network/"
+    ),
+    "pgn-sepolia": {
+      accounts: [deployPrivateKey],
+      chainId: chainIds["pgn-sepolia"],
+      url: "https://sepolia.publicgoods.network",
+      gasPrice: 15000000,
     },
-    hardhat: { zksync: true },
-    "zksync-testnet": {
-      ...createTestnetConfig(
-        "zksync-testnet",
-        "https://zksync2-testnet.zksync.dev"
-      ),
-      zksync: true,
-      ethNetwork: "goerli",
-      verifyURL:
-        "https://zksync2-testnet-explorer.zksync.dev/contract_verification",
+    arbitrumGoerli: {
+      accounts: [deployPrivateKey],
+      url: 'https://goerli-rollup.arbitrum.io/rpc',
+      chainId: chainIds["arbitrum-goerli"],
     },
+    "fuji-testnet": {
+      accounts: [deployPrivateKey],
+      url: 'https://avalanche-fuji-c-chain.publicnode.com',
+      chainId: chainIds["fuji-testnet"],
+      gasPrice: 25000000000,
+    },
+
+    localhost: createTestnetConfig("localhost", "http://localhost:8545"),
+    hardhat: {
+      forking: {
+        url: `https://goerli.infura.io/v3/${infuraIdKey}`,
+        blockNumber: 9188740 // A recent block where both AllowanceModule an Safe factory exist
+      }
+    }
   },
-  defaultNetwork: "zksync-testnet",
   gasReporter: {
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
+    excludeContracts: ["contracts/mocks", "contracts/dummy"],
   },
   etherscan: {
     apiKey: {
       // @ts-ignore
       mainnet: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
+      sepolia: process.env.ETHERSCAN_API_KEY,
+      // @ts-ignore
       goerli: process.env.ETHERSCAN_API_KEY,
       // @ts-ignore
       optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
       // @ts-ignore
+      optimisticGoerli: process.env.OPTIMISTIC_ETHERSCAN_API_KEY,
+      // @ts-ignore
       ftmTestnet: process.env.FTMSCAN_API_KEY,
       // @ts-ignore
       opera: process.env.FTMSCAN_API_KEY,
+      // @ts-ignore
+      "pgn-mainnet": process.env.PGNSCAN_API_KEY,
+      // @ts-ignore
+      "pgn-sepolia": process.env.PGNSCAN_API_KEY,
+      // @ts-ignore
+      arbitrumGoerli: process.env.ARBITRUM_API_KEY,
+      // @ts-ignore
+      arbitrumOne: process.env.ARBITRUM_API_KEY,
+      // @ts-ignore
+      "avalanche-mainnet": process.env.AVALANCHE_API_KEY,
+      // @ts-ignore
+      "fuji-testnet": process.env.AVALANCHE_API_KEY,
     },
+    customChains: [
+      {
+        network: "pgn-mainnet",
+        chainId: chainIds["pgn-mainnet"],
+        urls: {
+          apiURL: "https://explorer.publicgoods.network/api",
+          browserURL: "https://explorer.publicgoods.network",
+        },
+      },
+      {
+        network: "pgn-sepolia",
+        chainId: chainIds["pgn-sepolia"],
+        urls: {
+          apiURL: "https://explorer.sepolia.publicgoods.network/api",
+          browserURL: "https://explorer.sepolia.publicgoods.network",
+        },
+      },
+      {
+        network: "fuji-testnet",
+        chainId: chainIds["fuji-testnet"],
+        urls: {
+          apiURL: "https://api-testnet.snowtrace.io/api",
+          browserURL: "https://testnet.snowtrace.io/"
+        },
+      },
+      {
+        network: "avalanche-mainnet",
+        chainId: chainIds["avalanche-mainnet"],
+        urls: {
+          apiURL: "https://api.snowtrace.io/api",
+          browserURL: "https://snowtrace.io/",
+        },
+      },
+    ],
   },
   abiExporter: abiExporter,
   dodoc: dodoc,
-  zksolc: {
-    version: "1.3.13",
-    compilerSource: "binary",
-    settings: {
-      isSystem: true,
-    },
-  },
 };
 
 export default config;

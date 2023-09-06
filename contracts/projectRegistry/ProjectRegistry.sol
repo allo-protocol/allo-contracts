@@ -10,7 +10,7 @@ import "../utils/MetaPtr.sol";
 contract ProjectRegistry is Initializable {
     // Types
 
-    // The project structs contains the minimal data we need for a project
+    // The project structs contain the minimal data we need for a project
     struct Project {
         uint256 id;
         MetaPtr metadata;
@@ -64,7 +64,7 @@ contract ProjectRegistry is Initializable {
 
     /**
      * @notice Initializes the contract after an upgrade
-     * @dev In future deploys of the implementation, an higher version should be passed to reinitializer
+     * @dev In future deploys of the implementation, a higher version should be passed to reinitializer
      */
     function initialize() public reinitializer(1) {
     }
@@ -89,7 +89,7 @@ contract ProjectRegistry is Initializable {
     }
 
     /**
-     * @notice Updates Metadata for singe project
+     * @notice Updates Metadata for single project
      * @param projectID ID of previously created project
      * @param metadata Updated pointer to external metadata
      */

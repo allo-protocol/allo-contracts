@@ -19,7 +19,7 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
 
   using SafeERC20Upgradeable for IERC20Upgradeable;
 
-  string public constant VERSION = "0.2.0";
+  string public constant VERSION = "0.2.1";
 
   // --- Event ---
 
@@ -27,9 +27,11 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
   event Voted(
     address token,                    // voting token
     uint256 amount,                   // voting amount
+    address origin,                   // voter origin
     address indexed voter,            // voter address
     address grantAddress,             // grant address
     bytes32 indexed projectId,        // project id
+    uint256 applicationIndex,         // application index
     address indexed roundAddress      // round address
   );
 
@@ -53,29 +55,30 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
    * @param voterAddress voter address
    */
   function vote(bytes[] calldata encodedVotes, address voterAddress) external override payable nonReentrant isRoundContract {
-
+    uint256 msgValue = 0;
     /// @dev iterate over multiple donations and transfer funds
     for (uint256 i = 0; i < encodedVotes.length; i++) {
-
       /// @dev decode encoded vote
       (
         address _token,
         uint256 _amount,
         address _grantAddress,
-        bytes32 _projectId
+        bytes32 _projectId,
+        uint256 _applicationIndex
       ) = abi.decode(encodedVotes[i], (
         address,
         uint256,
         address,
-        bytes32
+        bytes32,
+        uint256
       ));
 
       if (_token == address(0)) {
         /// @dev native token transfer to grant address
         // slither-disable-next-line reentrancy-events
+        msgValue += _amount;
         AddressUpgradeable.sendValue(payable(_grantAddress), _amount);
       } else {
-
         /// @dev erc20 transfer to grant address
         // slither-disable-next-line arbitrary-send-erc20,reentrancy-events,
         SafeERC20Upgradeable.safeTransferFrom(
@@ -84,20 +87,21 @@ contract QuadraticFundingVotingStrategyImplementation is IVotingStrategy, Initia
           _grantAddress,
           _amount
         );
-
       }
 
       /// @dev emit event for transfer
       emit Voted(
         _token,
         _amount,
+        tx.origin,
         voterAddress,
         _grantAddress,
         _projectId,
+        _applicationIndex,
         msg.sender
       );
-
     }
 
+    require(msgValue == msg.value, "msg.value does not match vote amount");
   }
 }

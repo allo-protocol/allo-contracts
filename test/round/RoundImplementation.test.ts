@@ -2,13 +2,16 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { deployContract } from "ethereum-waffle";
 import { BigNumber, BigNumberish, Wallet } from "ethers";
-import { BytesLike, formatBytes32String, isAddress } from "ethers/lib/utils";
+import { BytesLike, formatBytes32String, hexlify, isAddress } from "ethers/lib/utils";
 import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import { encodeRoundParameters } from "../../scripts/utils";
+import { buildStatusRow, ApplicationStatus } from "../../utils/applicationStatus";
 import {
   MockERC20,
+  MerklePayoutStrategyFactory,
   MerklePayoutStrategyImplementation,
+  QuadraticFundingVotingStrategyFactory,
   QuadraticFundingVotingStrategyImplementation,
   RoundFactory,
   RoundFactory__factory,
@@ -16,20 +19,15 @@ import {
   AlloSettings__factory,
   AlloSettings,
 } from "../../typechain";
+import { encodeDistributionParameters } from "../payoutStrategy/MerklePayoutStrategyImplementation.test";
+import { randomBytes } from "crypto";
 
 type MetaPtr = {
   protocol: BigNumberish;
   pointer: string;
 };
 
-const STATUS = {
-  PENDING: 0,
-  ACCEPTED: 1,
-  REJECTED: 2,
-  CANCELED: 3,
-};
-
-describe.only("RoundImplementation", function () {
+describe("RoundImplementation", function () {
   let user: SignerWithAddress;
 
   // Allotment Settings
@@ -44,13 +42,13 @@ describe.only("RoundImplementation", function () {
   let roundImplementation: RoundImplementation;
   let roundImplementationArtifact: Artifact;
 
-  // Voting Strategy
-  let votingStrategyContract: QuadraticFundingVotingStrategyImplementation;
-  let votingStrategyArtifact: Artifact;
+  // Voting Strategy Factory
+  let votingStrategyFactoryContract: QuadraticFundingVotingStrategyFactory;
+  let votingStrategyFactoryArtifact: Artifact;
 
-  // Payout Strategy
-  let payoutStrategyContract: MerklePayoutStrategyImplementation;
-  let payoutStrategyArtifact: Artifact;
+  // Payout Strategy Factory
+  let payoutStrategyFactoryContract: MerklePayoutStrategyFactory;
+  let payoutStrategyFactoryArtifact: Artifact;
 
   // Variable declarations
   let matchAmount: BigNumberish;
@@ -85,20 +83,20 @@ describe.only("RoundImplementation", function () {
       await upgrades.deployProxy(roundContractFactory)
     );
 
-    // Deploy VotingStrategy contract
-    votingStrategyArtifact = await artifacts.readArtifact(
-      "QuadraticFundingVotingStrategyImplementation"
+    // Deploy VotingStrategyFactory contract
+    votingStrategyFactoryArtifact = await artifacts.readArtifact(
+      "QuadraticFundingVotingStrategyFactory"
     );
-    votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-      await deployContract(user, votingStrategyArtifact, [])
+    votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+      await deployContract(user, votingStrategyFactoryArtifact, [])
     );
 
-    // Deploy PayoutStrategy contract
-    payoutStrategyArtifact = await artifacts.readArtifact(
-      "MerklePayoutStrategyImplementation"
+    // Deploy PayoutStrategyFactory contract
+    payoutStrategyFactoryArtifact = await artifacts.readArtifact(
+      "MerklePayoutStrategyFactory"
     );
-    payoutStrategyContract = <MerklePayoutStrategyImplementation>(
-      await deployContract(user, payoutStrategyArtifact, [])
+    payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+      await deployContract(user, payoutStrategyFactoryArtifact, [])
     );
   });
 
@@ -134,13 +132,13 @@ describe.only("RoundImplementation", function () {
           ? overrides.token
           : tokenContract.address;
 
-      // Deploy voting strategy
-      votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-        await deployContract(user, votingStrategyArtifact, [])
+      // Deploy voting strategy factory
+      votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+        await deployContract(user, votingStrategyFactoryArtifact, [])
       );
-      // Deploy PayoutStrategy contract
-      payoutStrategyContract = <MerklePayoutStrategyImplementation>(
-        await deployContract(user, payoutStrategyArtifact, [])
+      // Deploy PayoutStrategy factory contract
+      payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+        await deployContract(user, payoutStrategyFactoryArtifact, [])
       );
 
       let matchAmount = overrides && overrides.hasOwnProperty('matchAmount') ? overrides.matchAmount : 100;
@@ -150,8 +148,8 @@ describe.only("RoundImplementation", function () {
       roundFeePercentage = roundFeePercentage * (denominator / 100);
 
       const initAddress = [
-        votingStrategyContract.address, // votingStrategy
-        payoutStrategyContract.address, // payoutStrategy
+        votingStrategyFactoryContract.address, // votingStrategyFactory
+        payoutStrategyFactoryContract.address, // payoutStrategyFactory
       ];
 
       const initRoundTime = [
@@ -173,7 +171,7 @@ describe.only("RoundImplementation", function () {
         roundFeePercentage,
         roundFeeAddress,
         initMetaPtr,
-        initRoles,
+        initRoles
       ];
 
       await roundImplementation.initialize(
@@ -237,11 +235,11 @@ describe.only("RoundImplementation", function () {
           DEFAULT_ADMIN_ROLE
         );
 
-        expect(await roundImplementation.votingStrategy()).equals(
-          votingStrategyContract.address
+        expect(await roundImplementation.votingStrategyFactory()).equals(
+          votingStrategyFactoryContract.address
         );
-        expect(await roundImplementation.payoutStrategy()).equals(
-          payoutStrategyContract.address
+        expect(await roundImplementation.payoutStrategyFactory()).equals(
+          payoutStrategyFactoryContract.address
         );
 
         expect(await roundImplementation.applicationsStartTime()).equals(
@@ -292,13 +290,13 @@ describe.only("RoundImplementation", function () {
       });
 
       it("SHOULD revert when applicationsStartTime is in the past", async () => {
-        // Deploy voting strategy
-        votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-          await deployContract(user, votingStrategyArtifact, [])
+        // Deploy voting strategy factory
+        votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+          await deployContract(user, votingStrategyFactoryArtifact, [])
         );
-        // Deploy PayoutStrategy contract
-        payoutStrategyContract = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, payoutStrategyArtifact, [])
+        // Deploy PayoutStrategy factory contract
+        payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+          await deployContract(user, payoutStrategyFactoryArtifact, [])
         );
 
         const newRoundImplementation = <RoundImplementation>(
@@ -306,8 +304,8 @@ describe.only("RoundImplementation", function () {
         );
 
         const initAddress = [
-          votingStrategyContract.address, // votingStrategy
-          payoutStrategyContract.address, // payoutStrategy
+          votingStrategyFactoryContract.address, // votingStrategyFactory
+          payoutStrategyFactoryContract.address, // payoutStrategyFactory
         ];
 
         const initRoundTime = [
@@ -329,7 +327,7 @@ describe.only("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -341,13 +339,13 @@ describe.only("RoundImplementation", function () {
       });
 
       it("SHOULD revert when applicationsStartTime is after applicationsEndTime", async () => {
-        // Deploy voting strategy
-        votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-          await deployContract(user, votingStrategyArtifact, [])
+        // Deploy voting strategy factory
+        votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+          await deployContract(user, votingStrategyFactoryArtifact, [])
         );
-        // Deploy PayoutStrategy contract
-        payoutStrategyContract = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, payoutStrategyArtifact, [])
+        // Deploy PayoutStrategy factory contract
+        payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+          await deployContract(user, payoutStrategyFactoryArtifact, [])
         );
 
         const newRoundImplementation = <RoundImplementation>(
@@ -355,8 +353,8 @@ describe.only("RoundImplementation", function () {
         );
 
         const initAddress = [
-          votingStrategyContract.address, // votingStrategy
-          payoutStrategyContract.address, // payoutStrategy
+          votingStrategyFactoryContract.address, // votingStrategyFactory
+          payoutStrategyFactoryContract.address, // payoutStrategyFactory
         ];
 
         const initRoundTime = [
@@ -378,7 +376,7 @@ describe.only("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -390,13 +388,13 @@ describe.only("RoundImplementation", function () {
       });
 
       it("SHOULD revert if applicationsEndTime is after roundEndTime", async () => {
-        // Deploy voting strategy
-        votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-          await deployContract(user, votingStrategyArtifact, [])
+        // Deploy voting strategy factory
+        votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+          await deployContract(user, votingStrategyFactoryArtifact, [])
         );
-        // Deploy PayoutStrategy contract
-        payoutStrategyContract = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, payoutStrategyArtifact, [])
+        // Deploy PayoutStrategy factory contract
+        payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+          await deployContract(user, payoutStrategyFactoryArtifact, [])
         );
 
         const newRoundImplementation = <RoundImplementation>(
@@ -404,8 +402,8 @@ describe.only("RoundImplementation", function () {
         );
 
         const initAddress = [
-          votingStrategyContract.address, // votingStrategy
-          payoutStrategyContract.address, // payoutStrategy
+          votingStrategyFactoryContract.address, // votingStrategyFactory
+          payoutStrategyFactoryContract.address, // payoutStrategyFactory
         ];
 
         const initRoundTime = [
@@ -427,7 +425,7 @@ describe.only("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -439,13 +437,13 @@ describe.only("RoundImplementation", function () {
       });
 
       it("SHOULD revert if roundEndTime is after roundStartTime", async () => {
-        // Deploy voting strategy
-        votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-          await deployContract(user, votingStrategyArtifact, [])
+        // Deploy voting strategy factory
+        votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+          await deployContract(user, votingStrategyFactoryArtifact, [])
         );
-        // Deploy PayoutStrategy contract
-        payoutStrategyContract = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, payoutStrategyArtifact, [])
+        // Deploy PayoutStrategy factory contract
+        payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+          await deployContract(user, payoutStrategyFactoryArtifact, [])
         );
 
         const newRoundImplementation = <RoundImplementation>(
@@ -453,8 +451,8 @@ describe.only("RoundImplementation", function () {
         );
 
         const initAddress = [
-          votingStrategyContract.address, // votingStrategy
-          payoutStrategyContract.address, // payoutStrategy
+          votingStrategyFactoryContract.address, // votingStrategyFactory
+          payoutStrategyFactoryContract.address, // payoutStrategyFactory
         ];
 
         const initRoundTime = [
@@ -476,7 +474,7 @@ describe.only("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -488,13 +486,13 @@ describe.only("RoundImplementation", function () {
       });
 
       it("SHOULD revert when applicationsStartTime is after roundStartTime", async () => {
-        // Deploy voting strategy
-        votingStrategyContract = <QuadraticFundingVotingStrategyImplementation>(
-          await deployContract(user, votingStrategyArtifact, [])
+        // Deploy voting strategy factory
+        votingStrategyFactoryContract = <QuadraticFundingVotingStrategyFactory>(
+          await deployContract(user, votingStrategyFactoryArtifact, [])
         );
-        // Deploy PayoutStrategy contract
-        payoutStrategyContract = <MerklePayoutStrategyImplementation>(
-          await deployContract(user, payoutStrategyArtifact, [])
+        // Deploy PayoutStrategy factory contract
+        payoutStrategyFactoryContract = <MerklePayoutStrategyFactory>(
+          await deployContract(user, payoutStrategyFactoryArtifact, [])
         );
 
         const newRoundImplementation = <RoundImplementation>(
@@ -502,8 +500,8 @@ describe.only("RoundImplementation", function () {
         );
 
         const initAddress = [
-          votingStrategyContract.address, // votingStrategy
-          payoutStrategyContract.address, // payoutStrategy
+          votingStrategyFactoryContract.address, // votingStrategyFactory
+          payoutStrategyFactoryContract.address, // payoutStrategyFactory
         ];
 
         const initRoundTime = [
@@ -525,7 +523,7 @@ describe.only("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -538,8 +536,8 @@ describe.only("RoundImplementation", function () {
 
       it("SHOULD revert ON invoking initialize on already initialized contract ", async () => {
         const initAddress = [
-          votingStrategyContract.address, // votingStrategy
-          payoutStrategyContract.address, // payoutStrategy
+          votingStrategyFactoryContract.address, // votingStrategyFactory
+          payoutStrategyFactoryContract.address, // payoutStrategyFactory
         ];
 
         const initRoundTime = [
@@ -561,7 +559,7 @@ describe.only("RoundImplementation", function () {
           roundFeePercentage,
           roundFeeAddress,
           initMetaPtr,
-          initRoles,
+          initRoles
         ];
 
         await expect(
@@ -1078,6 +1076,126 @@ describe.only("RoundImplementation", function () {
       });
     });
 
+    describe("test: update using multicall", () => {
+      let _currentBlockTimestamp: number;
+      let newApplicationsStartTime: number;
+      let newApplicationsEndTime: number;
+      let newRoundStartTime: number;
+      let newRoundEndTime: number;
+
+      let newApplicationMetapointer: MetaPtr;
+      let newRoundMetapointer: MetaPtr;
+      let newRoundFeeAddress: string;
+
+      beforeEach(async () => {
+        _currentBlockTimestamp = (
+          await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
+        ).timestamp;
+
+        newApplicationsStartTime = _currentBlockTimestamp + 150;
+        newApplicationsEndTime = _currentBlockTimestamp + 350;
+        newRoundStartTime = _currentBlockTimestamp + 550;
+        newRoundEndTime = _currentBlockTimestamp + 750;
+
+        newApplicationMetapointer = {
+          protocol: 1,
+          pointer: "newApplicationMetapointer"
+        };
+        newRoundMetapointer ={
+          protocol: 1,
+          pointer: "newRoundMetapointer"
+        };
+
+        newRoundFeeAddress = "0x0000000000000000000000000000000000001234";
+
+        await initRound(_currentBlockTimestamp);
+      });
+
+      it("SHOULD revert if called by non-owner", async () => {
+        const [_, notRoundOperator] = await ethers.getSigners();
+
+        const updateApplicationMetaPtr =
+          roundImplementation.interface.encodeFunctionData(
+            "updateApplicationMetaPtr",
+            [newApplicationMetapointer]
+          );
+
+        await expect(
+          roundImplementation
+            .connect(notRoundOperator)
+            .multicall([updateApplicationMetaPtr])
+        ).to.be.revertedWith(
+          `AccessControl: account ${notRoundOperator.address.toLowerCase()} is missing role 0xec61da14b5abbac5c5fda6f1d57642a264ebd5d0674f35852829746dfb8174a5`
+        );
+
+      });
+
+      it("SHOULD update all values", async () => {
+        const updateStartAndEndTimes = roundImplementation.interface.encodeFunctionData(
+          "updateStartAndEndTimes",
+          [
+            newApplicationsStartTime,
+            newApplicationsEndTime,
+            newRoundStartTime,
+            newRoundEndTime,
+          ]
+        );
+
+        const updateApplicationMetaPtr = roundImplementation.interface.encodeFunctionData(
+          "updateApplicationMetaPtr",
+          [newApplicationMetapointer]
+        );
+
+        const updateRoundMetaPtr = roundImplementation.interface.encodeFunctionData(
+          "updateRoundMetaPtr",
+          [newRoundMetapointer]
+        );
+
+        const updateRoundFeeAddress = roundImplementation.interface.encodeFunctionData(
+          "updateRoundFeeAddress",
+          [newRoundFeeAddress]
+        );
+
+        const tx = await roundImplementation.multicall([
+          updateStartAndEndTimes,
+          updateApplicationMetaPtr,
+          updateRoundMetaPtr,
+          updateRoundFeeAddress,
+        ]);
+
+        await tx.wait();
+
+        expect(await roundImplementation.applicationsStartTime()).equals(
+          newApplicationsStartTime
+        );
+
+        expect(await roundImplementation.applicationsEndTime()).equals(
+          newApplicationsEndTime
+        );
+
+        expect(await roundImplementation.roundStartTime()).equals(
+          newRoundStartTime
+        );
+
+        expect(await roundImplementation.roundEndTime()).equals(
+          newRoundEndTime
+        );
+
+        const applicationMetaPtr = await roundImplementation.applicationMetaPtr();
+        expect(applicationMetaPtr.protocol).equals( newApplicationMetapointer.protocol);
+        expect(applicationMetaPtr.pointer).equals( newApplicationMetapointer.pointer);
+
+        const roundMetaPtr = await roundImplementation.roundMetaPtr();
+        expect(roundMetaPtr.protocol).equals( newRoundMetapointer.protocol);
+        expect(roundMetaPtr.pointer).equals( newRoundMetapointer.pointer);
+
+        expect(await roundImplementation.roundFeeAddress()).equals(
+          newRoundFeeAddress
+        );
+
+      });
+    })
+
     describe("test: setApplicationStatuses", () => {
       let _currentBlockTimestamp: number;
       beforeEach(async () => {
@@ -1087,20 +1205,6 @@ describe.only("RoundImplementation", function () {
 
         await initRound(_currentBlockTimestamp);
       });
-
-      const buildNewState = (current: bigint, indexes: number[], statusArray: number[]) => {
-        let newState:bigint = current;
-
-        for (let i = 0; i < indexes.length; i++) {
-          const index = indexes[i];
-          const position = (index % 32) * 2;
-          const mask = BigInt(~(BigInt(3) << BigInt(position)));
-          newState =
-            (newState & mask) | (BigInt(statusArray[i]) << BigInt(position));
-        }
-
-        return newState.toString();
-      };
 
       it("SHOULD set the correct application statuses", async () => {
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 110]);
@@ -1114,15 +1218,14 @@ describe.only("RoundImplementation", function () {
           );
         }
 
-        const indexes: number[] = [0, 1, 2, 3];
-        const statusArray: number[] = [
-          STATUS.PENDING,
-          STATUS.ACCEPTED,
-          STATUS.REJECTED,
-          STATUS.CANCELED,
+        const statuses = [
+          { index: 0, status: ApplicationStatus.PENDING },
+          { index: 1, status: ApplicationStatus.ACCEPTED },
+          { index: 2, status: ApplicationStatus.REJECTED },
+          { index: 3, status: ApplicationStatus.CANCELED },
         ];
 
-        const newState = buildNewState(BigInt(0), indexes, statusArray);
+        const newState = buildStatusRow(0n, statuses);
 
         const applicationStatus = {
           index: 0,
@@ -1132,20 +1235,20 @@ describe.only("RoundImplementation", function () {
         await roundImplementation.setApplicationStatuses([applicationStatus]);
 
         expect(await roundImplementation.getApplicationStatus(0)).equal(
-          STATUS.PENDING
+          ApplicationStatus.PENDING
         );
 
         expect(await roundImplementation.getApplicationStatus(1)).equal(
-          STATUS.ACCEPTED
+          ApplicationStatus.ACCEPTED
         );
 
         expect(await roundImplementation.getApplicationStatus(2)).equal(
-          STATUS.REJECTED
+          ApplicationStatus.REJECTED
         );
 
         expect(await roundImplementation.getApplicationStatus(3)).equal(
-          STATUS.CANCELED
-        );      
+          ApplicationStatus.CANCELED
+        );
       });
     });
 
@@ -1235,13 +1338,14 @@ describe.only("RoundImplementation", function () {
             5,
             Wallet.createRandom().address,
             formatBytes32String("grant2"),
+            1,
           ],
         ];
 
         for (let i = 0; i < votes.length; i++) {
           encodedVotes.push(
             ethers.utils.defaultAbiCoder.encode(
-              ["address", "uint256", "address", "bytes32"],
+              ["address", "uint256", "address", "bytes32", "uint256"],
               votes[i]
             )
           );
@@ -1255,7 +1359,8 @@ describe.only("RoundImplementation", function () {
       });
 
       it("SHOULD NOT revert when round is active", async () => {
-        await mockERC20.approve(votingStrategyContract.address, 1000);
+        const votingStrategy = await roundImplementation.votingStrategy()
+        await mockERC20.approve(votingStrategy, 1000);
 
         // Mine Blocks
         await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 900]);
@@ -1276,15 +1381,6 @@ describe.only("RoundImplementation", function () {
 
         await expect(roundImplementation.vote(encodedVotes)).to.be.revertedWith(
           "Round: Round is not active"
-        );
-      });
-
-      it("SHOULD revert when invoked without Allowance", async () => {
-        // Mine Blocks
-        await ethers.provider.send("evm_mine", [_currentBlockTimestamp + 600]);
-
-        await expect(roundImplementation.vote(encodedVotes)).to.be.revertedWith(
-          "ERC20: insufficient allowance"
         );
       });
     });
@@ -1434,6 +1530,15 @@ describe.only("RoundImplementation", function () {
           let payoutContractBalance = await ethers.provider.getBalance(
             payoutContract
           );
+
+          // Set distribution metaPtry
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          );
+
           expect(Number(payoutContractBalance)).to.be.equal(0);
 
           tx = await roundImplementation.setReadyForPayout();
@@ -1542,6 +1647,15 @@ describe.only("RoundImplementation", function () {
             _currentBlockTimestamp + 1200,
           ]);
 
+          // Set distribution metaPtr
+          const payoutContract = await roundImplementation.payoutStrategy();
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          );
+
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
         });
@@ -1630,6 +1744,15 @@ describe.only("RoundImplementation", function () {
           await ethers.provider.send("evm_mine", [
             _currentBlockTimestamp + 1200,
           ]);
+
+          // Set distribution metaPtr
+          const payoutContract = await roundImplementation.payoutStrategy();
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();
@@ -1724,6 +1847,15 @@ describe.only("RoundImplementation", function () {
           await ethers.provider.send("evm_mine", [
             _currentBlockTimestamp + 1200,
           ]);
+
+          // Set distribution metaPtr
+          const payoutContract = await roundImplementation.payoutStrategy();
+          const merklePayout = await ethers.getContractAt('MerklePayoutStrategyImplementation', payoutContract);
+          merklePayout.updateDistribution(
+            encodeDistributionParameters(
+              hexlify(randomBytes(32)), 1, "metaPointer"
+            )
+          );
 
           // invoke setReadyForPayout
           tx = await roundImplementation.setReadyForPayout();

@@ -10,32 +10,55 @@ type RoundParams = {
 type DeployParams = Record<string, RoundParams>;
 
 export const roundParams: DeployParams = {
-  "mainnet": {
-    roundFactoryContract: "0xE2Bf906f7d10F059cE65769F53fe50D8E0cC7cBe",
-    roundImplementationContract: "0x3e7f72DFeDF6ba1BcBFE77A94a752C529Bb4429E",
-    roundContract: "0x3172a6cCE26529e7DD2B533e7c3622a0b544f349",
+  mainnet: {
+    roundFactoryContract: "0x9Cb7f434aD3250d1656854A9eC7A71EceC6eE1EF",
+    roundImplementationContract: "0x10825896637298473877b6610BB380be51D20D04",
+    roundContract: "",
   },
-  "goerli": {
-    roundFactoryContract: "0x8fFaDeC99708a69b1D8e143b2aE7C96039b338f6",
-    roundImplementationContract: "0x0bbB660E151F4A404AA5692445465291A95400C4",
-    roundContract: "0x9aCcdbf1805088145a168f2D496e9F775222a82C",
-    newProtocolFeePercentage: 1,
-    newProtocolTreasury: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+  goerli: {
+    roundFactoryContract: "0x60EF85011E1480BD21dFa636FDa7F6e2e3dbbDa7",
+    roundImplementationContract: "0x71ffC79b386e8477A6deE69eb5abc50f7c614058",
+    roundContract: "",
   },
   "optimism-mainnet": {
-    roundFactoryContract: "0x0f0A4961274A578443089D06AfB9d1fC231A5a4D",
-    roundImplementationContract: "0xCd5AbD09ee34BA604795F7f69413caf20ee0Ab60",
-    roundContract: "0xe0883e6F3113FC4C2d9539b9eE1659E59531e312"
+    roundFactoryContract: "0x04E753cFB8c8D1D7f776f7d7A033740961b6AEC2",
+    roundImplementationContract: "0x4bbE502461D67d2cecB3834Ff2440510f33BE024",
+    roundContract: "",
   },
   "fantom-mainnet": {
-    roundFactoryContract: "0x3e7f72DFeDF6ba1BcBFE77A94a752C529Bb4429E",
-    roundImplementationContract: "0xC2B0d8dAdB88100d8509534BB8B5778d1901037d",
-    roundContract: "0x866485759ABC95c36FA77B216A5AdbA4275a14aB"
+    roundFactoryContract: "0xfb08d1fD3a7c693677eB096E722ABf4Ae63B0B95",
+    roundImplementationContract: "0x43F24E777A2a3717690784633c01c9F9122352BB",
+    roundContract: "",
   },
   "fantom-testnet": {
-    roundFactoryContract: "0x00F51ba2Cd201F4bFac0090F450de0992a838762",
-    roundImplementationContract: "0x635E69237C0428861EC8c5D8083e9616022c89Ea",
-    roundContract: "0xd3E45c78050a6472e28b9E02AA8596F7868e63d6"
+    roundFactoryContract: "0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3",
+    roundImplementationContract: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
+    roundContract: "",
+  },
+  "pgn-mainnet": {
+    roundFactoryContract: "0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3",
+    roundImplementationContract: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
+    roundContract: "",
+  },
+  "arbitrumGoerli": {
+    roundFactoryContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
+    roundImplementationContract: "0xfF94fAfC740Be8D2010304108266E7b90ed232fc",
+    roundContract: "",
+  },
+  "arbitrumOne": {
+    roundFactoryContract: "0xF2a07728107B04266015E67b1468cA0a536956C8",
+    roundImplementationContract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
+    roundContract: "",
+  },
+  "avalanche-mainnet": {
+    roundFactoryContract: "0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912",
+    roundImplementationContract: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
+    roundContract: "",
+  },
+  "fuji-testnet": {
+    roundFactoryContract: "0x3615d870d5B760cea43693ABED70Cd8A9b59b3d8",
+    roundImplementationContract: "0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0",
+    roundContract: "",
   },
   "zksync-testnet": {
     roundFactoryContract: "",

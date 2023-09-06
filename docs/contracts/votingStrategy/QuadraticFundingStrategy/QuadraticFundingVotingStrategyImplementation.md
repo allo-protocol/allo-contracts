@@ -106,7 +106,7 @@ event Initialized(uint8 version)
 ### Voted
 
 ```solidity
-event Voted(address token, uint256 amount, address indexed voter, address grantAddress, bytes32 indexed projectId, address indexed roundAddress)
+event Voted(address token, uint256 amount, address origin, address indexed voter, address grantAddress, bytes32 indexed projectId, uint256 applicationIndex, address indexed roundAddress)
 ```
 
 Emitted when a new vote is sent
@@ -119,9 +119,11 @@ Emitted when a new vote is sent
 |---|---|---|
 | token  | address | undefined |
 | amount  | uint256 | undefined |
+| origin  | address | undefined |
 | voter `indexed` | address | undefined |
 | grantAddress  | address | undefined |
 | projectId `indexed` | bytes32 | undefined |
+| applicationIndex  | uint256 | undefined |
 | roundAddress `indexed` | address | undefined |
 
 

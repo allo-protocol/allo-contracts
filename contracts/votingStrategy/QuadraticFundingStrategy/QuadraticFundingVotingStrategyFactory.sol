@@ -5,11 +5,14 @@ import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../../utils/MetaPtr.sol";
 
+import "../IVotingStrategyFactory.sol";
 import "./QuadraticFundingVotingStrategyImplementation.sol";
 
-contract QuadraticFundingVotingStrategyFactory is OwnableUpgradeable {
- 
+contract QuadraticFundingVotingStrategyFactory is IVotingStrategyFactory, OwnableUpgradeable {
+
   address public votingContract;
+
+  uint256 public nonce;
 
   // --- Event ---
 
@@ -47,7 +50,10 @@ contract QuadraticFundingVotingStrategyFactory is OwnableUpgradeable {
    */
   function create() external returns (address) {
 
-    address clone = ClonesUpgradeable.clone(votingContract);
+    nonce++;
+    bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
+    address clone = ClonesUpgradeable.cloneDeterministic(votingContract, salt);
+
     emit VotingContractCreated(clone, votingContract);
     QuadraticFundingVotingStrategyImplementation(clone).initialize();
 

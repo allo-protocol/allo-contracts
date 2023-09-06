@@ -4,7 +4,7 @@
 
 
 
-Contract deployed per Round which would managed by a group of ROUND_OPERATOR via the RoundFactory
+Contract deployed per Round which would be managed by a group of ROUND_OPERATOR via the RoundFactory
 
 
 
@@ -401,6 +401,28 @@ Match Amount (excluding protocol fee &amp; round fee)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### multicall
+
+```solidity
+function multicall(bytes[] data) external nonpayable returns (bytes[] results)
+```
+
+
+
+*Receives and executes a batch of function calls on this contract.*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| data | bytes[] | undefined |
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| results | bytes[] | undefined |
+
 ### nextApplicationIndex
 
 ```solidity
@@ -421,7 +443,7 @@ function nextApplicationIndex() external view returns (uint256)
 ### payoutStrategy
 
 ```solidity
-function payoutStrategy() external view returns (contract IPayoutStrategy)
+function payoutStrategy() external view returns (address payable)
 ```
 
 Payout Strategy Contract Address
@@ -433,7 +455,24 @@ Payout Strategy Contract Address
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract IPayoutStrategy | undefined |
+| _0 | address payable | undefined |
+
+### payoutStrategyFactory
+
+```solidity
+function payoutStrategyFactory() external view returns (contract IPayoutStrategyFactory)
+```
+
+Payout Strategy Factory Contract Address
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract IPayoutStrategyFactory | undefined |
 
 ### renounceRole
 
@@ -739,7 +778,7 @@ Invoked by voter to cast votes
 ### votingStrategy
 
 ```solidity
-function votingStrategy() external view returns (contract IVotingStrategy)
+function votingStrategy() external view returns (address)
 ```
 
 Voting Strategy Contract Address
@@ -751,7 +790,24 @@ Voting Strategy Contract Address
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | contract IVotingStrategy | undefined |
+| _0 | address | undefined |
+
+### votingStrategyFactory
+
+```solidity
+function votingStrategyFactory() external view returns (contract IVotingStrategyFactory)
+```
+
+Voting Strategy Factory Contract Address
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | contract IVotingStrategyFactory | undefined |
 
 ### withdraw
 

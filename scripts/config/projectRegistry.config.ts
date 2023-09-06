@@ -1,30 +1,46 @@
 // Update this file any time a new project registry contract has been deployed / upgraded
 type ProjectRegistryParams = {
-  proxyContactAddress: string;
+  proxyContractAddress: string;
 };
 
 type DeployParams = Record<string, ProjectRegistryParams>;
 
 export const projectRegistryParams: DeployParams = {
-  "mainnet": {
-    proxyContactAddress: "",
+  mainnet: {
+    proxyContractAddress: "",
   },
-  "goerli": {
-    proxyContactAddress: "0xf7B93519a3A1790F97f7b14E6f118A139187843e",
+  goerli: {
+    proxyContractAddress: "0x9C789Ad2457A605a0ea1aaBEEf16585633530069",
   },
   "optimism-mainnet": {
-    proxyContactAddress: "",
+    proxyContractAddress: "",
   },
   "fantom-mainnet": {
-    proxyContactAddress: "",
+    proxyContractAddress: "0xAdcB64860902A29c3e408586C782A2221d595B55",
   },
   "fantom-testnet": {
-    proxyContactAddress: "",
+    proxyContractAddress: "0x5e5b7D871efDE8224390a334045e1dcb7daAf4E2",
+  },
+  "pgn-mainnet": {
+    proxyContractAddress: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
+  },
+  arbitrumGoerli: {
+    proxyContractAddress: "0x0CD135777dEaB6D0Bb150bDB0592aC9Baa4d0871",
+  },
+  arbitrumOne: {
+    proxyContractAddress: "0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27",
+  },
+  "fuji-testnet": {
+    proxyContractAddress: "0x8918401DD47f1645fF1111D8E513c0404b84d5bB",
+  },
+  "avalanche-mainnet": {
+    proxyContractAddress: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
   },
   "zksync-testnet": {
-    proxyContactAddress: "",
+    proxyContractAddress: "",
   },
   "zksync-mainnet": {
-    proxyContactAddress: "",
+    proxyContractAddress: "",
   },
 };
+

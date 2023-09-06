@@ -8,7 +8,9 @@ import { artifacts, ethers, upgrades } from "hardhat";
 import { Artifact } from "hardhat/types";
 import {
   AlloSettings,
+  MerklePayoutStrategyFactory,
   MerklePayoutStrategyImplementation,
+  QuadraticFundingVotingStrategyFactory,
   QuadraticFundingVotingStrategyImplementation,
   RoundFactory,
   RoundImplementation,
@@ -32,13 +34,13 @@ describe("RoundFactory", function () {
   let roundImplementation: RoundImplementation;
   let roundImplementationArtifact: Artifact;
 
-  // Voting Strategy
-  let votingStrategy: QuadraticFundingVotingStrategyImplementation;
-  let votingStrategyArtifact: Artifact;
+  // Voting Strategy Factory
+  let votingStrategyFactory: QuadraticFundingVotingStrategyFactory;
+  let votingStrategyFactoryArtifact: Artifact;
 
-  // Payout Strategy
-  let payoutStrategy: MerklePayoutStrategyImplementation;
-  let payoutStrategyArtifact: Artifact;
+  // Payout Strategy Factory
+  let payoutStrategyFactory: MerklePayoutStrategyFactory;
+  let payoutStrategyFactoryArtifact: Artifact;
 
   let protocolTreasury = Wallet.createRandom();
 
@@ -126,13 +128,13 @@ describe("RoundFactory", function () {
           await ethers.provider.getBlockNumber())
         ).timestamp;
 
-        // Deploy VotingStrategy contract
-        votingStrategyArtifact = await artifacts.readArtifact('QuadraticFundingVotingStrategyImplementation');
-        votingStrategy = <QuadraticFundingVotingStrategyImplementation>await deployContract(user, votingStrategyArtifact, []);
+        // Deploy VotingStrategyFactory contract
+        votingStrategyFactoryArtifact = await artifacts.readArtifact('QuadraticFundingVotingStrategyFactory');
+        votingStrategyFactory = <QuadraticFundingVotingStrategyFactory>await deployContract(user, votingStrategyFactoryArtifact, []);
 
-        // Deploy PayoutStrategy contract
-        payoutStrategyArtifact = await artifacts.readArtifact('MerklePayoutStrategyImplementation');
-        payoutStrategy = <MerklePayoutStrategyImplementation>await deployContract(user, payoutStrategyArtifact, []);
+        // Deploy PayoutStrategyFactory contract
+        payoutStrategyFactoryArtifact = await artifacts.readArtifact('MerklePayoutStrategyFactory');
+        payoutStrategyFactory = <MerklePayoutStrategyFactory>await deployContract(user, payoutStrategyFactoryArtifact, []);
 
         // Deploy RoundFactory contract
         roundContractFactory = await ethers.getContractFactory('RoundFactory');
@@ -140,8 +142,8 @@ describe("RoundFactory", function () {
 
         // Creating a Round
         const initAddress = [
-          votingStrategy.address, // votingStrategy
-          payoutStrategy.address, // payoutStrategy
+          votingStrategyFactory.address, // votingStrategyFactory
+          payoutStrategyFactory.address, // payoutStrategyFactory
         ];
 
         const initRoundTime = [

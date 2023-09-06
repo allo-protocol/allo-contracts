@@ -12,3 +12,6 @@ cache-zk
 artifacts
 artifacts-zk
 abis/
+
+artifacts-zk
+cache-zk

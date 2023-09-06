@@ -7,16 +7,18 @@ All the deploy scripts will expect network param to know which network the contr
 |--------------------|
 | `goerli`           |
 | `optimism-mainnet` |
-| 'fantom-mainnet'   |
+| `fantom-mainnet`   |
 | `fantom-testnet`   |
 | `mainnet`          |
+| `fuji-testnet`     |
+| `avalanche-mainnet`|
 | `zksync-mainnet`   |
 | `zksync-testnet`   |
 
 
 ### Project Registry
 
-The section here shows how to set up the project registry for the first time on a given network. Ideally these steps would be done once per chain. In this example , we would be deploying on goerli
+The section here shows how to set up the project registry for the first time on a given network. Ideally these steps would be done once per chain. In this example, we would be deploying on goerli
 
 0. Create an `.env` file
 ```sh
@@ -24,19 +26,19 @@ cp ../.env.example ../.env
 ```
 
 1. Create an `.env` file and fill out
-    - `INFURA_ID`               : Infura ID for deploying contract
+    - `INFURA_ID`               : Infura ID for deploying contract ([Get one here](https://app.infura.io/dashboard))
     - `DEPLOYER_PRIVATE_KEY`    : address which deploys the contract
-    - `ETHERSCAN_API_KEY`       : API key for etherscan verification
+    - `ETHERSCAN_API_KEY`       : API key for etherscan verification ([Get one here](https://etherscan.io/myapikey))
 
-2. Deploy the `ProgramRegistry` contract
+2. Deploy the `ProjectRegistry` contract
 ```shell
-pnpm run deploy-builder goerli
+pnpm run deploy-project-registry goerli
 ```
 
 
 ### Program Setup
 
-The section here shows how to set up the program for the first time on a given network. Ideally these steps would be done once per chain. In this example , we would be deploying on goerli
+The section here shows how to set up the program for the first time on a given network. Ideally these steps would be done once per chain. In this example, we would be deploying on goerli
 
 0. Create an `.env` file
 ```sh
@@ -77,7 +79,7 @@ pnpm run link-program-implementation goerli
 
 ### VotingStrategy Setup
 
-The section here shows how to set up voting strategy for the first time on a given network. Ideally these steps would be done once per chain. In this example ,we would be deploying the QuadraticFundingVotingStrategyImplementation contract on goerli
+The section here shows how to set up voting strategy for the first time on a given network. Ideally these steps would be done once per chain. In this example, we would be deploying the QuadraticFundingVotingStrategyImplementation contract on goerli
 
 1. Create an `.env` file and fill out
     - `INFURA_ID`               : Infura ID for deploying contract
@@ -112,10 +114,10 @@ export const QFVotingParams: DeployParams = {
 pnpm run link-qf-implementation goerli
 ```
 
-### PayoutStrategy Setup
+### Merkle PayoutStrategy Setup
 
-The section here shows how to deploy the payout strategy contract. Ideally these would be done before creating a round. In this example ,we would be deploying the MerklePayoutStrategy contract on goerli. This would have to be done before creating a round
-so that round is aware and store a reference to the voting contract during it's creation.
+The section here shows how to deploy the payout strategy contract. Ideally these would be done before creating a round. In this example, we would be deploying the MerklePayoutStrategy contract on goerli. This would have to be done before creating a round
+so that round is aware and store a reference to the voting contract during its creation.
 
 
 1. Create an `.env` file and fill out
@@ -136,7 +138,7 @@ pnpm run deploy-merkle-implementation goerli
 
 4. Update `payoutStrategy.config.ts` with deployed contract based on your network
 ```javascript
-export const PayoutParams: DeployParams = {
+export const MerklePayoutParams: DeployParams = {
   "goerli": {
     factory: 'DEPLOYED_MERKLE_FACTORY_CONTRACT',
     implementation: 'DEPLOYED_MERKLE_IMPLEMENTATION_CONTRACT',
@@ -151,10 +153,48 @@ export const PayoutParams: DeployParams = {
 pnpm run link-merkle-implementation goerli
 ```
 
+### DirectGrants Setup
+
+The section here shows how to deploy the payout strategy contract. Ideally these would be done before creating a round. In this example, we would be deploying the DirectPayoutStrategy contract on goerli. This would have to be done before creating a round
+so that round is aware and store a reference to the voting contract during its creation.
+
+
+1. Create an `.env` file and fill out
+    - `INFURA_ID`               : Infura ID for deploying contract
+    - `DEPLOYER_PRIVATE_KEY`    : address which deploys the contract
+    - `ETHERSCAN_API_KEY`       : API key for etherscan verification
+
+
+2. Deploy the `DirectPayoutStrategyFactory` contract
+```shell
+pnpm run deploy-direct-factory goerli
+```
+
+3. Deploy the `DirectPayoutStrategyImplementation` contract
+```shell
+pnpm run deploy-direct-implementation goerli
+```
+
+4. Update `payoutStrategy.config.ts` with deployed contract based on your network
+```javascript
+export const DirectPayoutParams: DeployParams = {
+  "goerli": {
+    factory: 'DEPLOYED_DIRECT_FACTORY_CONTRACT',
+    implementation: 'DEPLOYED_DIRECT_IMPLEMENTATION_CONTRACT',
+    ...
+  },
+  ...
+};
+```
+
+5. Link the `DirectPayoutStrategyImplementation` contract to the `DirectPayoutStrategyFactory` contract
+```bash
+pnpm run link-direct-implementation goerli
+```
 
 ### Round Setup
 
-The section here shows how to set up the round manager for the first time on a given network. Ideally these steps would be done once per chain. In this example , we would be deploying on goerli
+The section here shows how to set up the round manager for the first time on a given network. Ideally these steps would be done once per chain. In this example, we would be deploying on goerli
 
 1. Create an `.env` file and fill out
     - `INFURA_ID`                     : Infura ID for deploying contract
@@ -213,9 +253,16 @@ pnpm run deploy-qf-implementation goerli
 pnpm run link-qf-implementation goerli
 
 # Payout
-pnpm run deploy-merkle-contract goerli
+pnpm run deploy-merkle-factory goerli
 pnpm run deploy-merkle-implementation goerli
 pnpm run link-merkle-implementation goerli
+
+
+# direct grants
+pnpm run deploy-direct-factory goerli
+pnpm run deploy-direct-implementation goerli
+pnpm run link-direct-implementation goerli
+
 
 # AlloSettings
 pnpm run deploy-allo-settings goerli
@@ -226,15 +273,15 @@ pnpm run deploy-round-factory goerli
 pnpm run deploy-round-implementation goerli
 pnpm run link-round-implementation goerli
 pnpm run link-allo-settings goerli
-pnpm run create-round goerli
+pnpm run deploy-dummy-voting-strategy goerli
 
 # Project Registry
-pnpm run deploy-builder goerli
+pnpm run deploy-project-registry goerli
 
 # These scripts would be used to create a test round
 pnpm run create-program goerli
 pnpm run create-qf-contract goerli
-pnpm run deploy-merkle-contract goerli
+pnpm run create-merkle-contract goerli
 pnpm run create-round goerli
 ```
 

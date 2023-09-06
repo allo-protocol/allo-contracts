@@ -5,13 +5,16 @@ import "./MerklePayoutStrategyImplementation.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
+import "../IPayoutStrategyFactory.sol";
 import "../../utils/MetaPtr.sol";
 
-contract MerklePayoutStrategyFactory is OwnableUpgradeable {
+contract MerklePayoutStrategyFactory is IPayoutStrategyFactory, OwnableUpgradeable {
 
   // --- Data ---
 
   address payable public payoutImplementation;
+
+  uint256 public nonce;
 
   // --- Event ---
 
@@ -54,7 +57,11 @@ contract MerklePayoutStrategyFactory is OwnableUpgradeable {
   function create(
   ) external returns (address) {
 
-    address clone = ClonesUpgradeable.clone(payoutImplementation);
+    nonce++;
+
+    bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
+    address clone = ClonesUpgradeable.cloneDeterministic(payoutImplementation, salt);
+
     MerklePayoutStrategyImplementation(payable(clone)).initialize();
     emit PayoutContractCreated(clone, payoutImplementation);
 

@@ -10,23 +10,6 @@ Merkle Payout Strategy contract which is deployed once per round and is used to 
 
 ## Methods
 
-### LOCK_DURATION
-
-```solidity
-function LOCK_DURATION() external view returns (uint256)
-```
-
-Locking duration
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | uint256 | undefined |
-
 ### ROUND_OPERATOR_ROLE
 
 ```solidity
@@ -123,6 +106,23 @@ function initialize() external nonpayable
 
 
 
+### isDistributionSet
+
+```solidity
+function isDistributionSet() external view returns (bool)
+```
+
+function to check if distribution is set
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | bool | undefined |
+
 ### isReadyForPayout
 
 ```solidity
@@ -156,22 +156,6 @@ merkle root generated from distribution
 | Name | Type | Description |
 |---|---|---|
 | _0 | bytes32 | undefined |
-
-### payout
-
-```solidity
-function payout(bytes[] _distributions) external payable
-```
-
-payout function defined in IPayoutStrategy
-
-*NOT IMPLEMENTED. Use payout(Distribution[] calldata _distributions) instead*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| _distributions | bytes[] | encoded distribution |
 
 ### payout
 

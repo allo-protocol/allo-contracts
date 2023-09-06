@@ -32,6 +32,9 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
   /// @notice Address of the Allo settings contract
   address public alloSettings;
 
+  /// @notice Nonce used to generate deterministic salt for Clones
+  uint256 public nonce;
+
   // --- Event ---
 
   /// @notice Emitted when allo settings contract is updated
@@ -94,10 +97,13 @@ contract RoundFactory is IRoundFactory, OwnableUpgradeable {
     address ownedBy
   ) external returns (address) {
 
+    nonce++;
+
     require(roundImplementation != address(0), "roundImplementation is 0x");
     require(alloSettings != address(0), "alloSettings is 0x");
 
-    address clone = ClonesUpgradeable.clone(roundImplementation);
+    bytes32 salt = keccak256(abi.encodePacked(msg.sender, nonce));
+    address clone = ClonesUpgradeable.cloneDeterministic(roundImplementation, salt);
 
     emit RoundCreated(clone, ownedBy, payable(roundImplementation));
 
