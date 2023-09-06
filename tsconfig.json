@@ -7,6 +7,6 @@
     "outDir": "dist",
     "declaration": true
   },
-  "include": ["./scripts", "./test", "./typechain"],
+  "include": ["./scripts", "./test", "./typechain", "deploy/deployZkSync.ts"],
   "files": ["./hardhat.config.ts"]
 }
