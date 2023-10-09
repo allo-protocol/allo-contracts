@@ -19,7 +19,12 @@ export async function confirmContinue(params: Record<string, unknown>) {
   console.log("\nPARAMETERS");
   console.table(params);
 
+  if (process.env.SKIP_CONFIRMATIONS === "true") {
+    return;
+  }
+
   const response = await waitForInput("\nDo you want to continue? y/N\n");
+
   if (response !== "y")
     throw new Error("Aborting script: User chose to exit script");
   console.log("\n");
@@ -34,7 +39,7 @@ export const prettyNum = (_n: number | string) => {
     }
 
     s = n[n.length - 1 - i] + s;
-  };
+  }
 
   return s;
-}
+};

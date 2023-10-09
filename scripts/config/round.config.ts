@@ -10,6 +10,11 @@ type RoundParams = {
 type DeployParams = Record<string, RoundParams>;
 
 export const roundParams: DeployParams = {
+  dev: {
+    roundFactoryContract: "0x59b670e9fA9D0A427751Af201D676719a970857b",
+    roundImplementationContract: "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1",
+    roundContract: "",
+  },
   mainnet: {
     roundFactoryContract: "0x9Cb7f434aD3250d1656854A9eC7A71EceC6eE1EF",
     roundImplementationContract: "0x10825896637298473877b6610BB380be51D20D04",
@@ -60,7 +65,7 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0",
     roundContract: "",
   },
-  "mumbai": {
+  mumbai: {
     roundFactoryContract: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
     roundImplementationContract: "0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC",
     roundContract: "",

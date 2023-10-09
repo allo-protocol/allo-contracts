@@ -18,6 +18,7 @@ dotenv.config();
 const chainIds = {
   // local
   localhost: 31337,
+  dev: 31337,
   // testnet
   goerli: 5,
   "optimism-goerli": 420,
@@ -48,7 +49,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 let deployPrivateKey = process.env.DEPLOYER_PRIVATE_KEY as string;
-if (!deployPrivateKey) {
+if (deployPrivateKey === undefined) {
   // default first account deterministically created by local nodes like `npx hardhat node` or `anvil`
   deployPrivateKey =
     "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
@@ -67,7 +68,7 @@ function createTestnetConfig(
   network: keyof typeof chainIds,
   url?: string
 ): NetworkUserConfig {
-  if (!url) {
+  if (url === undefined) {
     url = `https://${network}.infura.io/v3/${infuraIdKey}`;
   }
   return {
