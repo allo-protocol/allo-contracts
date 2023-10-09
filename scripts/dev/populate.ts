@@ -1,16 +1,16 @@
-import hre, { ethers, upgrades } from "hardhat";
-import { LedgerSigner } from "@anders-t/ethers-ledger";
-import { confirmContinue, prettyNum } from "../../utils/script-utils";
+import hre, { ethers } from "hardhat";
 
 async function main() {
-  const network = await ethers.provider.getNetwork();
-  const networkName = hre.network.name;
+  if (hre.network.name !== "dev") {
+    console.error("This script can only be use in local dev environments");
+    process.exit(1);
+  }
+
   let account;
   let accountAddress;
 
   account = (await ethers.getSigners())[0];
   accountAddress = await account.getAddress();
-  const balance = await ethers.provider.getBalance(accountAddress);
 
   console.log("This script populates the local chain");
 

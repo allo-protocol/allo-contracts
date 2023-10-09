@@ -1,14 +1,11 @@
 // This script deals with deploying the DirectPayoutStrategyImplementation on a given network
 import hre, { ethers } from "hardhat";
-import { confirmContinue } from "../../../utils/script-utils";
+import { confirmContinue, getBlocksToWait } from "../../../utils/script-utils";
 import * as utils from "../../utils";
 
 utils.assertEnvironment();
 
 export async function main() {
-  // Wait 10 blocks for re-org protection
-  const blocksToWait = hre.network.name === "localhost" ? 0 : 10;
-
   await confirmContinue({
     contract: "DirectPayoutStrategyImplementation",
     network: hre.network.name,
@@ -24,7 +21,7 @@ export async function main() {
   console.log(
     `Deploying DirectPayoutStrategyImplementation to ${contract.address}`
   );
-  await contract.deployTransaction.wait(blocksToWait);
+  await contract.deployTransaction.wait(getBlocksToWait(hre.network.name));
   console.log("✅ Deployed");
 
   return contract.address;

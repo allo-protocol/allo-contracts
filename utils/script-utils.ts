@@ -43,3 +43,8 @@ export const prettyNum = (_n: number | string) => {
 
   return s;
 };
+
+export const getBlocksToWait = (networkName: string) => {
+  // Wait 10 blocks for re-org protection
+  return networkName === "localhost" || networkName === "dev" ? 0 : 10;
+};

@@ -31,4 +31,4 @@ pnpm run link-allo-settings dev
 # pnpm run create-merkle-contract dev
 # pnpm run create-round dev
 
-pnpm hardhat run scripts/local-dev/populate.ts --network dev
+pnpm hardhat run scripts/dev/populate.ts --network dev
