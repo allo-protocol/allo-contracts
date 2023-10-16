@@ -72,12 +72,12 @@ These are contracts that are created/deployed once for polygon
 |---------------------------------------|--------------------------------------------|
 | ProgramFactory                        | 0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143 |
 | ProgramImplementation                 | 0x04b194b14532070F5cc8D3A760c9a0957D85ad5B |
-| QuadraticFundingVotingStrategyFactory | 0xc1a26b0789C3E93b07713e90596Cad8d0442C826 |
-| QFVotingStrategyImplementation        | 0x74c3665540FC8B92Dd06a7e56a51eCa038C18180 |
-| MerklePayoutStrategyFactory           | 0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c |
-| MerklePayouStrategyImplementation     | 0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4 |
-| DirectPayoutStrategyFactory           | 0xF2a07728107B04266015E67b1468cA0a536956C8 |
-| DirectPayoutStrategyImplementation    | 0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab |
+| QuadraticFundingVotingStrategyFactory | 0xAdcB64860902A29c3e408586C782A2221d595B55 |
+| QFVotingStrategyImplementation        | 0x86c23265cC76B5C2790Bb86fc7375DDE220e777e |
+| MerklePayoutStrategyFactory           | 0x5c1EDa32B5d2F8048a709f8b18B02AbEC68601D8 |
+| MerklePayouStrategyImplementation     | 0xB9fd0d433d2ca03D26A182Dc709bA1EccA3B00cC |
+| DirectPayoutStrategyFactory           | 0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB |
+| DirectPayoutStrategyImplementation    | 0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f |
 | AlloSettings                          | 0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC |
 | RoundFactory                          | 0x5ab68dCdcA37A1C2b09c5218e28eB0d9cc3FEb03 |
 | RoundImplementation                   | 0xcE7c30DbcEC2a98B516E4C64fA4E3256AB813b10 |

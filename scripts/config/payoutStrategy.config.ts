@@ -64,8 +64,8 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   polygon: {
-    factory: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
-    implementation: "0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4",
+    factory: "0x5c1EDa32B5d2F8048a709f8b18B02AbEC68601D8",
+    implementation: "0xB9fd0d433d2ca03D26A182Dc709bA1EccA3B00cC",
     contract: "",
   },
   "zksync-testnet": {
@@ -143,8 +143,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   polygon: {
-    factory: "0xF2a07728107B04266015E67b1468cA0a536956C8",
-    implementation: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
+    factory: "0x534d2AAc03dCd0Cb3905B591BAf04C14A95426AB",
+    implementation: "0x87DeA2C57ac3Ab1df18D9aa327c3eE229147059f",
     contract: "",
   },
   "zksync-testnet": {

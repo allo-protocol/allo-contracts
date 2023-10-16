@@ -64,8 +64,8 @@ export const QFVotingParams: DeployParams = {
     contract: "",
   },
   polygon: {
-    factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
-    implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
+    factory: "0xAdcB64860902A29c3e408586C782A2221d595B55",
+    implementation: "0x86c23265cC76B5C2790Bb86fc7375DDE220e777e",
     contract: "",
   },
   "zksync-testnet": {
