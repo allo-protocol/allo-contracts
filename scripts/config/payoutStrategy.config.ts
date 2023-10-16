@@ -153,8 +153,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "zksync-mainnet": {
-    factory: "",
-    implementation: "",
+    factory: "0x5A7ea8C03C40e02A97B1901101e415Fdfc1aE64d",
+    implementation: "0xB0c9320F2176bc69bf808FA9B5C816713dC6A44C",
     contract: "",
   },
 };

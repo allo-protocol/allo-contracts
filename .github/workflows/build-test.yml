@@ -35,6 +35,8 @@ jobs:
           pnpm compile
 
       - name: Test contract
+        env:
+          FORK_RPC_URL: ${{ secrets.FORK_RPC_URL }}
         run: |
           pnpm test
 
