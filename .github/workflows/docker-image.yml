@@ -15,12 +15,6 @@ env:
 
 jobs:
   build-and-push-image:
-    strategy:
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
-
     runs-on: ubuntu-latest
 
     permissions:
@@ -56,5 +50,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: ${{ matrix.platform }}
+          platforms: linux/amd64,linux/arm64
 
