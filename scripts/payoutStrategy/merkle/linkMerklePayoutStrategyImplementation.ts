@@ -44,7 +44,8 @@ export async function main(
   await confirmContinue({
     contract: "MerklePayoutStrategyFactory",
     merklePayoutStrategyFactoryContract: merklePayoutStrategyFactoryContract,
-    merklePayoutStrategyImplementationContract: merklePayoutStrategyImplementationContract,
+    merklePayoutStrategyImplementationContract:
+      merklePayoutStrategyImplementationContract,
     network: network.name,
     chainId: network.config.chainId,
   });

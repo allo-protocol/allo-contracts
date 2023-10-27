@@ -14,7 +14,7 @@ export const encodeProgramParameters = (params: any[]): string => {
     ["tuple(uint256 protocol, string pointer)", "address[]", "address[]"],
     params
   );
-}
+};
 
 /**
  * Encodes the parameters for the RoundFactory.create() function.
@@ -36,7 +36,7 @@ export const encodeRoundParameters = (params: any[]): string => {
     ],
     params
   );
-}
+};
 
 /**
  * Encodes the parameters for the MerklePayoutStrategy.updateDistribution() function.
@@ -44,16 +44,14 @@ export const encodeRoundParameters = (params: any[]): string => {
  * @param params
  * @returns {string}
  */
-export const encodeMerkleUpdateDistributionParameters = (params: any[]): string => {
+export const encodeMerkleUpdateDistributionParameters = (
+  params: any[]
+): string => {
   return ethers.utils.defaultAbiCoder.encode(
-    [
-      "bytes32",
-      "tuple(uint256 protocol, string pointer)"
-    ],
+    ["bytes32", "tuple(uint256 protocol, string pointer)"],
     params
   );
-}
-
+};
 
 /**
  * Asserts that environment variables are set as expected
@@ -65,4 +63,4 @@ export const assertEnvironment = () => {
   if (!process.env.INFURA_ID) {
     console.error("Please set your INFURA_ID in a .env file");
   }
-}
+};
