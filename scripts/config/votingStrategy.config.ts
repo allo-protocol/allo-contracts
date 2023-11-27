@@ -78,6 +78,11 @@ export const QFVotingParams: DeployParams = {
     implementation: "0x20717A4fEf86705210911c59d08dB8B6D2C593eE",
     contract: "",
   },
+  "base": {
+    factory: "0xC3A195EEa198e74D67671732E1B8F8A23781D735",
+    implementation: "0x545B282A50EaeA01A619914d44105437036CbB36",
+    contract: "",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -133,5 +138,8 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   "zksync-mainnet": {
     contract: "0x590638033E8DeE4028244326c1ecA251c8022346",
   },
+  "base": {
+    contract: "0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27"
+  }
 };
 

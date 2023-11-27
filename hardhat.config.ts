@@ -26,6 +26,7 @@ const chainIds = {
   "arbitrum-goerli": 421613,
   "fuji-testnet": 43113,
   polygon: 137,
+  base: 8453,
 
   // mainnet
   mainnet: 1,
@@ -194,6 +195,10 @@ const config: HardhatUserConfig = {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${alchemyKey}`,
       chainId: chainIds["mumbai"],
     },
+    base: {
+      ...createMainnetConfig("base"),
+      url: `https://base-mainnet.g.alchemy.com/v2/${alchemyKey}`,
+    },
 
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
@@ -239,6 +244,8 @@ const config: HardhatUserConfig = {
       polygon: process.env.POLYGONSCAN_API_KEY,
       // @ts-ignore
       mumbai: process.env.POLYGONSCAN_API_KEY,
+      // @ts-ignore
+      base: process.env.BASESCAN_API_KEY
     },
     customChains: [
       {
@@ -289,6 +296,14 @@ const config: HardhatUserConfig = {
           browserURL: "https://polygonscan.com/",
         },
       },
+      {
+        network: "base",
+        chainId: chainIds["base"],
+        urls: {
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org/",
+        },
+      }
     ],
   },
   abiExporter: abiExporter,

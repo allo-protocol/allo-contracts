@@ -78,6 +78,11 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0x252E749Dca5bE43C5257577E6d37dB12419a1773",
     contract: "",
   },
+  "base": {
+    factory: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
+    implementation: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
+    contract: "",
+  },
 };
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
@@ -155,6 +160,11 @@ export const DirectPayoutParams: DeployParams = {
   "zksync-mainnet": {
     factory: "0x5A7ea8C03C40e02A97B1901101e415Fdfc1aE64d",
     implementation: "0xB0c9320F2176bc69bf808FA9B5C816713dC6A44C",
+    contract: "",
+  },
+  "base": {
+    factory: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
+    implementation: "0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3",
     contract: "",
   },
 };
