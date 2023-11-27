@@ -80,4 +80,9 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0x9569470C409E96d20435e277e30b94828DC4656d",
     roundContract: "",
   },
+  "base": {
+    roundFactoryContract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
+    roundImplementationContract: "0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912",
+    roundContract: "",
+  },
 };

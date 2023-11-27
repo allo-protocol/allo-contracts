@@ -16,6 +16,7 @@ All the deploy scripts will expect network param to know which network the contr
 | `polygon`          |
 | `zksync-mainnet`   |
 | `zksync-testnet`   |
+| `base`             |
 
 
 ### Project Registry

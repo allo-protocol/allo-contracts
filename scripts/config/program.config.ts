@@ -78,4 +78,9 @@ export const programParams: DeployParams = {
     programImplementationContract: "0x08Bfe6ec7831d4bbd48873fCDc89Ef3d2d8c2C4E",
     programContract: "",
   },
+  "base": {
+    programFactoryContract: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
+    programImplementationContract: "0x424C5C175fbd46CA0b27866044A5B956c6AbEe0D",
+    programContract: "",
+  }
 };

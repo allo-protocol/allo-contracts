@@ -78,5 +78,10 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "",
   },
+  "base": {
+    alloSettingsContract: "0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0x1fD06f088c720bA3b7a3634a8F021Fdd485DcA42",
+  },
 };
 
