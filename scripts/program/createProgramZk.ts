@@ -187,7 +187,7 @@ export async function main() {
   }
 
   const programFactory = new ethers.Contract(
-    programFactoryContract,
+    "0xF8C1219192dfd6dd1dF2Dfd616285fB7Aa3D3525",
     abi,
     signer
   );
