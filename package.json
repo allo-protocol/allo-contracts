@@ -29,7 +29,7 @@
     "deploy-program-factory": "pnpm hardhat run scripts/program/deployProgramFactory.ts --network",
     "deploy-program-implementation": "pnpm hardhat run scripts/program/deployProgramImplementation.ts --network",
     "link-program-implementation": "pnpm hardhat run scripts/program/linkProgramImplementation.ts --network",
-    "create-program": "pnpm hardhat run scripts/program/createProgram.ts --network",
+    "create-program": "pnpm hardhat run scripts/program/createProgramZk.ts --network",
     "upgrade-program-factory": "pnpm hardhat run scripts/program/upgradeProgramFactory.ts --network",
     "// round-deploy-scripts": "echo '//-- Round deploy Script --//'",
     "deploy-round-implementation": "pnpm hardhat run scripts/round/deployRoundImplementation.ts --network",
