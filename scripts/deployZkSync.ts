@@ -68,13 +68,13 @@ export default async function main() {
 
   /** Deploy Program Factory */
   await confirmContinue({
-    contract: "ProgramFactoryZkZK",
+    contract: "ProgramFactoryZk",
   });
 
   // Deploy the Program Factory contract
   // Load the artifact we want to deploy
   console.info("Deploying ProgramFactoryZk contract...");
-  const ProgramFactoryZk = await deployer.loadArtifact("ProgramFactoryZkZK");
+  const ProgramFactoryZk = await deployer.loadArtifact("ProgramFactoryZk");
 
   // Estimate fee
   const programFactoryZkDeploymentFee = await deployer.estimateDeployFee(
