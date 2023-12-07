@@ -69,13 +69,13 @@ export const QFVotingParams: DeployParams = {
     contract: "",
   },
   "zksync-testnet": {
-    factory: "0x7DA751bb567D37fbd5311f8e37629c3355675bEe",
-    implementation: "0xB061F5a7359B11320d554b6Cfb450b6fd5Fc70bF",
+    factory: "0x8c28F21D2d8C53eedC58bF9cdCfb7DCF7d809d97",
+    implementation: "",
     contract: "",
   },
   "zksync-mainnet": {
-    factory: "0xa1F116d1Cb73b6f8dDFD6DDD6E06386553B3af7b",
-    implementation: "0x20717A4fEf86705210911c59d08dB8B6D2C593eE",
+    factory: "",
+    implementation: "",
     contract: "",
   },
   "base": {
@@ -133,10 +133,10 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
     contract: "0x8142cAa6dED9F63434B1ED862d53E06332874570",
   },
   "zksync-testnet": {
-    contract: "0x1127EF659bF29bBe05C892D0Bd683a07AB350A09",
+    contract: "0x0c0B71BA1427cb46424d38133E8187365Cc5466b",
   },
   "zksync-mainnet": {
-    contract: "0x590638033E8DeE4028244326c1ecA251c8022346",
+    contract: "",
   },
   "base": {
     contract: "0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27"

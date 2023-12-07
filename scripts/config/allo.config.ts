@@ -69,12 +69,12 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolTreasury: "0xbF91bfa8c0Bcd130cDf0a7d9C01A4Db4842B1532",
   },
   "zksync-testnet": {
-    alloSettingsContract: "0x0FD600678475C03f28baE59A2d55f7a911383e2B",
+    alloSettingsContract: "0x2891369Fb2DA2898B35b91dbd55b2489061abbE5",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0x0000000000000000000000000000000000000000",
   },
   "zksync-mainnet": {
-    alloSettingsContract: "0xA86824AB3038daCfeB61e03f45CA1a02b77f1081",
+    alloSettingsContract: "",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "",
   },
