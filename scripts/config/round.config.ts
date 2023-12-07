@@ -76,7 +76,7 @@ export const roundParams: DeployParams = {
     roundContract: "",
   },
   "zksync-mainnet": {
-    roundFactoryContract: "",
+    roundFactoryContract: "0xF3B5a0d59C6292BD0e4f8Cf735EEF52b98f428E6",
     roundImplementationContract: "",
     roundContract: "",
   },

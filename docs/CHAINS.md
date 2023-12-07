@@ -314,18 +314,30 @@ These are contracts that are created/deployed once for goerli
 
 ## ZkSync Testnet 
 
-| Contract                              | Address                                    |
-|---------------------------------------|--------------------------------------------|
+| Contract                                | Address                                    |
+|-----------------------------------------|--------------------------------------------|
 | ProgramFactoryZk                        | 0x6D341814Be4E2316142D9190E390b494F1dECFAf |
 | QuadraticFundingVotingStrategyFactoryZk | 0x8c28F21D2d8C53eedC58bF9cdCfb7DCF7d809d97 |
 | MerklePayoutStrategyFactoryZk           | 0xbA160C13F8F626e3232078aDFD6eD2f2B2289563 |
 | DirectPayoutStrategyFactoryZk           | 0x4170665B31bC10009f8a69CeaACf3265C3d66797 |
-| AlloSettings                          | 0x2891369Fb2DA2898B35b91dbd55b2489061abbE5 |
+| AlloSettings                            | 0x2891369Fb2DA2898B35b91dbd55b2489061abbE5 |
 | RoundFactoryZk                          | 0x0Bb6e2dfEaef0Db5809B3979717E99e053Cbae72 |
-| ProjectRegistry                       | 0xb0F4882184EB6e3ed120c5181651D50719329788 |
-| DummyVotingStrategy                   | 0x0c0B71BA1427cb46424d38133E8187365Cc5466b |
+| ProjectRegistry                         | 0xb0F4882184EB6e3ed120c5181651D50719329788 |
+| DummyVotingStrategy                     | 0x0c0B71BA1427cb46424d38133E8187365Cc5466b |
+
 
 ## ZkSync Era Mainnet 
+
+| Contract                                | Address                                    |
+|-----------------------------------------|--------------------------------------------|
+| ProgramFactoryZk                        | 0x68a14AF71BFa0FE09fC937033f6Ea5153c0e75e4 |
+| QuadraticFundingVotingStrategyFactoryZk | 0x94cB638556d3991363102431d8cE9e839C734677 |
+| MerklePayoutStrategyFactoryZk           | 0x41A8F19C6CB88C9Cc98d29Cb7A4015629910fFc0 |
+| DirectPayoutStrategyFactoryZk           | 0x0ccdfCB7e5DB60AAE5667d1680B490F7830c49C8 |
+| AlloSettings                            | 0x7423451F93F8AA5324F61C36fAa76896E58ACd18 |
+| RoundFactoryZk                          | 0xF3B5a0d59C6292BD0e4f8Cf735EEF52b98f428E6 |
+| ProjectRegistry                         | 0xe6CCEe93c97E20644431647B306F48e278aFFdb9 |
+| DummyVotingStrategy                     | 0x787D662D19C9528EB33FdaBb3cBEcBeAb2a7F15a |
 
 
 
