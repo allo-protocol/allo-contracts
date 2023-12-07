@@ -1,4 +1,4 @@
-# ProgramFactoryZk
+# MerklePayoutStrategyFactoryZk
 
 
 
@@ -13,18 +13,13 @@
 ### create
 
 ```solidity
-function create(bytes encodedParameters) external nonpayable returns (address)
+function create() external nonpayable returns (address)
 ```
 
-Clones ProgramImplmentation and deployed a program and emits an event
+Clones MerklePayoutStrategyImplementation and deploys a contract and emits an event
 
 
 
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| encodedParameters | bytes | Encoded parameters for creating a program |
 
 #### Returns
 
@@ -124,13 +119,13 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 | previousOwner `indexed` | address | undefined |
 | newOwner `indexed` | address | undefined |
 
-### ProgramCreated
+### PayoutContractCreated
 
 ```solidity
-event ProgramCreated(address indexed programContractAddress, address indexed programImplementation)
+event PayoutContractCreated(address indexed payoutContractAddress, address indexed payoutImplementation)
 ```
 
-Emitted when a new Program is created
+Emitted when a new payout contract is created
 
 
 
@@ -138,8 +133,8 @@ Emitted when a new Program is created
 
 | Name | Type | Description |
 |---|---|---|
-| programContractAddress `indexed` | address | undefined |
-| programImplementation `indexed` | address | undefined |
+| payoutContractAddress `indexed` | address | undefined |
+| payoutImplementation `indexed` | address | undefined |
 
 
 

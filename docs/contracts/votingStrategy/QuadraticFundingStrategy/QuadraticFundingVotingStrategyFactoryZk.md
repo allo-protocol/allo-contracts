@@ -1,4 +1,4 @@
-# ProgramFactoryZk
+# QuadraticFundingVotingStrategyFactoryZk
 
 
 
@@ -13,18 +13,13 @@
 ### create
 
 ```solidity
-function create(bytes encodedParameters) external nonpayable returns (address)
+function create() external nonpayable returns (address)
 ```
 
-Clones ProgramImplmentation and deployed a program and emits an event
+Clones QuadraticFundingVotingStrategyImplementation and deploys a contract and emits an event
 
 
 
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| encodedParameters | bytes | Encoded parameters for creating a program |
 
 #### Returns
 
@@ -124,13 +119,13 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 | previousOwner `indexed` | address | undefined |
 | newOwner `indexed` | address | undefined |
 
-### ProgramCreated
+### VotingContractCreated
 
 ```solidity
-event ProgramCreated(address indexed programContractAddress, address indexed programImplementation)
+event VotingContractCreated(address indexed votingContractAddress, address indexed votingImplementation)
 ```
 
-Emitted when a new Program is created
+Emitted when a new Voting is created
 
 
 
@@ -138,8 +133,8 @@ Emitted when a new Program is created
 
 | Name | Type | Description |
 |---|---|---|
-| programContractAddress `indexed` | address | undefined |
-| programImplementation `indexed` | address | undefined |
+| votingContractAddress `indexed` | address | undefined |
+| votingImplementation `indexed` | address | undefined |
 
 
 

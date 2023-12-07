@@ -316,37 +316,18 @@ These are contracts that are created/deployed once for goerli
 
 | Contract                              | Address                                    |
 |---------------------------------------|--------------------------------------------|
-| ProgramFactory                        | 0x1c58945a9A61a3390c56a24d42fEab7106E48d03 |
-| ProgramImplementation                 | 0x708DeC2fAC60D669066878dBe1229168c0e02E67 |
-| QuadraticFundingVotingStrategyFactory | 0x7DA751bb567D37fbd5311f8e37629c3355675bEe |
-| QFVotingStrategyImplementation        | 0xB061F5a7359B11320d554b6Cfb450b6fd5Fc70bF |
-| MerklePayoutStrategyFactory           | 0x898126eA2A581b94a7C08F828DF68B54e2063B7c |
-| MerklePayouStrategyImplementation     | 0x1D51B2796cF001239d9F0BFcE2b3C4EC1a0Be18F |
-| DirectPayoutStrategyFactory           | 0x5e3E56F81588220bC0b3827C49A9e9Babb3D8228 |
-| DirectPayoutStrategyImplementation    | 0x4Fc8AF1AE0197acB87BB6376d16666C4946E9030 |
-| AlloSettings                          | 0x0FD600678475C03f28baE59A2d55f7a911383e2B |
-| RoundFactory                          | 0x35E5f2abfaCdbe1bc7C2E09Fbe2e051Ea574Dd3b |
-| RoundImplementation                   | 0xcB0f55a192f0d504490eA5d14eaeE0600F956bb5 |
-| ProjectRegistry                       | 0x2C17D0FAb47bD87333714dC35f84BB669951cea6 |
-| DummyVotingStrategy                   | 0x1127EF659bF29bBe05C892D0Bd683a07AB350A09 |
+| ProgramFactoryZk                        | 0x6D341814Be4E2316142D9190E390b494F1dECFAf |
+| QuadraticFundingVotingStrategyFactoryZk | 0x8c28F21D2d8C53eedC58bF9cdCfb7DCF7d809d97 |
+| MerklePayoutStrategyFactoryZk           | 0xbA160C13F8F626e3232078aDFD6eD2f2B2289563 |
+| DirectPayoutStrategyFactoryZk           | 0x4170665B31bC10009f8a69CeaACf3265C3d66797 |
+| AlloSettings                          | 0x2891369Fb2DA2898B35b91dbd55b2489061abbE5 |
+| RoundFactoryZk                          | 0x0Bb6e2dfEaef0Db5809B3979717E99e053Cbae72 |
+| ProjectRegistry                       | 0xb0F4882184EB6e3ed120c5181651D50719329788 |
+| DummyVotingStrategy                   | 0x0c0B71BA1427cb46424d38133E8187365Cc5466b |
 
 ## ZkSync Era Mainnet 
 
-| Contract                              | Address                                    |
-|---------------------------------------|--------------------------------------------|
-| ProgramFactory                        | 0xe1b01395986bd93Cc9Fa62290987793c150a1AB2 |
-| ProgramImplementation                 | 0x08Bfe6ec7831d4bbd48873fCDc89Ef3d2d8c2C4E |
-| QuadraticFundingVotingStrategyFactory | 0xa1F116d1Cb73b6f8dDFD6DDD6E06386553B3af7b |
-| QFVotingStrategyImplementation        | 0x20717A4fEf86705210911c59d08dB8B6D2C593eE |
-| MerklePayoutStrategyFactory           | 0xE3710C11A5E06E987657A8ce665961362C079De3 |
-| MerklePayouStrategyImplementation     | 0x252E749Dca5bE43C5257577E6d37dB12419a1773 |
-| DirectPayoutStrategyFactory           | 0x5A7ea8C03C40e02A97B1901101e415Fdfc1aE64d |
-| DirectPayoutStrategyImplementation    | 0xB0c9320F2176bc69bf808FA9B5C816713dC6A44C |
-| AlloSettings                          | 0xA86824AB3038daCfeB61e03f45CA1a02b77f1081 |
-| RoundFactory                          | 0xF631C72e0C5837b794911DDaf167861d1A3eDBf5 |
-| RoundImplementation                   | 0x9569470C409E96d20435e277e30b94828DC4656d |
-| ProjectRegistry                       | 0x1593FAA41134544354a1509566DDf8D6596e7348 |
-| DummyVotingStrategy                   | 0x590638033E8DeE4028244326c1ecA251c8022346 |
+
 
 ## Base Mainnet 
 

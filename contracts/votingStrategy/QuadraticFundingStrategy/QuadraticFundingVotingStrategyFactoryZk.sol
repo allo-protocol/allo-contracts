@@ -5,7 +5,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../../utils/MetaPtr.sol";
 import "./QuadraticFundingVotingStrategyImplementation.sol";
 
-contract QuadraticFundingVotingStrategyFactoryZk, OwnableUpgradeable {
+contract QuadraticFundingVotingStrategyFactoryZk is OwnableUpgradeable {
 
   // --- Event ---
 

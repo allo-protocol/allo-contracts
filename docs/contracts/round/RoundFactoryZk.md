@@ -1,4 +1,4 @@
-# ProgramFactoryZk
+# RoundFactoryZk
 
 
 
@@ -10,13 +10,30 @@
 
 ## Methods
 
+### alloSettings
+
+```solidity
+function alloSettings() external view returns (address)
+```
+
+Address of the Allo settings contract
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### create
 
 ```solidity
-function create(bytes encodedParameters) external nonpayable returns (address)
+function create(bytes encodedParameters, address ownedBy) external nonpayable returns (address)
 ```
 
-Clones ProgramImplmentation and deployed a program and emits an event
+Clones RoundImplementation a new round and emits event
 
 
 
@@ -24,7 +41,8 @@ Clones ProgramImplmentation and deployed a program and emits an event
 
 | Name | Type | Description |
 |---|---|---|
-| encodedParameters | bytes | Encoded parameters for creating a program |
+| encodedParameters | bytes | Encoded parameters for creating a round |
+| ownedBy | address | Program which created the contract |
 
 #### Returns
 
@@ -87,9 +105,41 @@ function transferOwnership(address newOwner) external nonpayable
 |---|---|---|
 | newOwner | address | undefined |
 
+### updateAlloSettings
+
+```solidity
+function updateAlloSettings(address newAlloSettings) external nonpayable
+```
+
+Allows the owner to update the allo settings contract.
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| newAlloSettings | address | New allo settings contract address |
+
 
 
 ## Events
+
+### AlloSettingsUpdated
+
+```solidity
+event AlloSettingsUpdated(address alloSettings)
+```
+
+Emitted when allo settings contract is updated
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| alloSettings  | address | undefined |
 
 ### Initialized
 
@@ -124,13 +174,13 @@ event OwnershipTransferred(address indexed previousOwner, address indexed newOwn
 | previousOwner `indexed` | address | undefined |
 | newOwner `indexed` | address | undefined |
 
-### ProgramCreated
+### RoundCreated
 
 ```solidity
-event ProgramCreated(address indexed programContractAddress, address indexed programImplementation)
+event RoundCreated(address indexed roundAddress, address indexed ownedBy, address indexed roundImplementation)
 ```
 
-Emitted when a new Program is created
+Emitted when a new Round is created
 
 
 
@@ -138,8 +188,9 @@ Emitted when a new Program is created
 
 | Name | Type | Description |
 |---|---|---|
-| programContractAddress `indexed` | address | undefined |
-| programImplementation `indexed` | address | undefined |
+| roundAddress `indexed` | address | undefined |
+| ownedBy `indexed` | address | undefined |
+| roundImplementation `indexed` | address | undefined |
 
 
 

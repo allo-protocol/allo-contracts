@@ -77,13 +77,13 @@ export default async function main() {
   const ProgramFactoryZk = await deployer.loadArtifact("ProgramFactoryZk");
 
   // Estimate fee
-  const programFactoryZkDeploymentFee = await deployer.estimateDeployFee(
+  const ProgramFactoryZkDeploymentFee = await deployer.estimateDeployFee(
     ProgramFactoryZk,
     []
   );
 
   const parsedProgramFactoryZkFee = ethers.utils.formatEther(
-    programFactoryZkDeploymentFee.toString()
+    ProgramFactoryZkDeploymentFee.toString()
   );
   console.info(`Estimated deployment fee: ${parsedProgramFactoryZkFee} ETH`);
 
@@ -226,10 +226,10 @@ export default async function main() {
   await MerklePayoutStrategyFactoryZkDeployment.deployed();
   await MerklePayoutStrategyFactoryZkDeployment.initialize();
 
-  // console.info(
-  //   "MerklePayoutStrategyFactoryZk deployed to",
-  //   MerklePayoutStrategyFactoryZkDeployment.address
-  // );
+  console.info(
+    "MerklePayoutStrategyFactoryZk deployed to",
+    MerklePayoutStrategyFactoryZkDeployment.address
+  );
 
   // await confirmContinue({
   //   contract: "MerklePayoutStrategyImplementation",
@@ -568,9 +568,6 @@ export default async function main() {
   );
   console.log(
     `| QuadraticFundingVotingStrategyFactoryZk | ${QuadraticFundingVotingStrategyFactoryZkDeployment.address} |`
-  );
-  console.log(
-    `| QFVotingStrategyImplementation        | ${QfVotingImpFactoryDeployment.address} |`
   );
   console.log(
     `| MerklePayoutStrategyFactoryZk           | ${MerklePayoutStrategyFactoryZkDeployment.address} |`

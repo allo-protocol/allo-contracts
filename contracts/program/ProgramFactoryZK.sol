@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./ProgramImplementation.sol";
 
-contract ProgramFactoryZK is OwnableUpgradeable {
+contract ProgramFactoryZk is OwnableUpgradeable {
  
   // --- Event ---
 
