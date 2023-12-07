@@ -6,16 +6,10 @@ import "./ProgramImplementation.sol";
 
 contract ProgramFactoryZK is OwnableUpgradeable {
  
-  address public programContract;
-
   // --- Event ---
-
-  /// @notice Emitted when a Program contract is updated
-  event ProgramContractUpdated(address programContractAddress);
 
   /// @notice Emitted when a new Program is created
   event ProgramCreated(address indexed programContractAddress, address indexed programImplementation);
-
 
   /// @notice constructor function which ensure deployer is set as owner
   function initialize() external initializer {
@@ -35,7 +29,7 @@ contract ProgramFactoryZK is OwnableUpgradeable {
   ) external returns (address) {
 
     address impl = address(new ProgramImplementation());
-    emit ProgramCreated(impl, programContract);
+    emit ProgramCreated(impl, address(0));
     ProgramImplementation(impl).initialize(encodedParameters);
 
     return impl;
