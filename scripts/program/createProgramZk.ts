@@ -182,12 +182,8 @@ export async function main() {
     throw new Error(`error: missing programFactoryContract`);
   }
 
-  if (!programImplementationContract) {
-    throw new Error(`error: missing programImplementationContract`);
-  }
-
   const programFactory = new ethers.Contract(
-    "0x6D341814Be4E2316142D9190E390b494F1dECFAf",
+    programFactoryContract,
     abi,
     signer
   );
@@ -195,7 +191,6 @@ export async function main() {
   await confirmContinue({
     info: "create a Program",
     programFactoryContract: programFactoryContract,
-    programImplementationContract: programImplementationContract,
     network: network,
     chainId: 280,
   });
