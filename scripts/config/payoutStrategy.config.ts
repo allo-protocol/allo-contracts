@@ -69,13 +69,13 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   "zksync-testnet": {
-    factory: "0x898126eA2A581b94a7C08F828DF68B54e2063B7c",
-    implementation: "0x1D51B2796cF001239d9F0BFcE2b3C4EC1a0Be18F",
+    factory: "0xbA160C13F8F626e3232078aDFD6eD2f2B2289563",
+    implementation: "",
     contract: "",
   },
   "zksync-mainnet": {
-    factory: "0xE3710C11A5E06E987657A8ce665961362C079De3",
-    implementation: "0x252E749Dca5bE43C5257577E6d37dB12419a1773",
+    factory: "0x41A8F19C6CB88C9Cc98d29Cb7A4015629910fFc0",
+    implementation: "",
     contract: "",
   },
   "base": {
@@ -153,13 +153,13 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "zksync-testnet": {
-    factory: "0x5e3E56F81588220bC0b3827C49A9e9Babb3D8228",
-    implementation: "0x4Fc8AF1AE0197acB87BB6376d16666C4946E9030",
+    factory: "0x4170665B31bC10009f8a69CeaACf3265C3d66797",
+    implementation: "",
     contract: "",
   },
   "zksync-mainnet": {
-    factory: "0x5A7ea8C03C40e02A97B1901101e415Fdfc1aE64d",
-    implementation: "0xB0c9320F2176bc69bf808FA9B5C816713dC6A44C",
+    factory: "0x0ccdfCB7e5DB60AAE5667d1680B490F7830c49C8",
+    implementation: "",
     contract: "",
   },
   "base": {

@@ -69,13 +69,13 @@ export const programParams: DeployParams = {
     programContract: "",
   },
   "zksync-testnet": {
-    programFactoryContract: "0x1c58945a9A61a3390c56a24d42fEab7106E48d03",
-    programImplementationContract: "0x708DeC2fAC60D669066878dBe1229168c0e02E67",
+    programFactoryContract: "0x6D341814Be4E2316142D9190E390b494F1dECFAf",
+    programImplementationContract: "",
     programContract: "",
   },
   "zksync-mainnet": {
-    programFactoryContract: "0xe1b01395986bd93Cc9Fa62290987793c150a1AB2",
-    programImplementationContract: "0x08Bfe6ec7831d4bbd48873fCDc89Ef3d2d8c2C4E",
+    programFactoryContract: "0x68a14AF71BFa0FE09fC937033f6Ea5153c0e75e4",
+    programImplementationContract: "",
     programContract: "",
   },
   "base": {

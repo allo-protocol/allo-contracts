@@ -68,258 +68,258 @@ export default async function main() {
 
   /** Deploy Program Factory */
   await confirmContinue({
-    contract: "ProgramFactory",
+    contract: "ProgramFactoryZk",
   });
 
   // Deploy the Program Factory contract
   // Load the artifact we want to deploy
-  console.info("Deploying ProgramFactory contract...");
-  const ProgramFactory = await deployer.loadArtifact("ProgramFactory");
+  console.info("Deploying ProgramFactoryZk contract...");
+  const ProgramFactoryZk = await deployer.loadArtifact("ProgramFactoryZk");
 
   // Estimate fee
-  const programFactoryDeploymentFee = await deployer.estimateDeployFee(
-    ProgramFactory,
+  const ProgramFactoryZkDeploymentFee = await deployer.estimateDeployFee(
+    ProgramFactoryZk,
     []
   );
 
-  const parsedProgramFactoryFee = ethers.utils.formatEther(
-    programFactoryDeploymentFee.toString()
+  const parsedProgramFactoryZkFee = ethers.utils.formatEther(
+    ProgramFactoryZkDeploymentFee.toString()
   );
-  console.info(`Estimated deployment fee: ${parsedProgramFactoryFee} ETH`);
+  console.info(`Estimated deployment fee: ${parsedProgramFactoryZkFee} ETH`);
 
   // Deploy the contract
   const programProxy = await hre.zkUpgrades.deployProxy(
     deployer.zkWallet,
-    ProgramFactory,
+    ProgramFactoryZk,
     []
   );
 
   await programProxy.deployed();
 
   // Show the contract info
-  console.info("ProgramFactory deployed to:", programProxy.address);
+  console.info("ProgramFactoryZk deployed to:", programProxy.address);
 
-  /** Deploy Program Implementation */
-  await confirmContinue({
-    contract: "ProgramImplementation",
-  });
+  // /** Deploy Program Implementation */
+  // await confirmContinue({
+  //   contract: "ProgramImplementation",
+  // });
 
-  // Load the artifact
-  console.info("Deploying ProgramImplementation contract...");
-  const ProgramImplementation = await deployer.loadArtifact(
-    "ProgramImplementation"
-  );
+  // // Load the artifact
+  // console.info("Deploying ProgramImplementation contract...");
+  // const ProgramImplementation = await deployer.loadArtifact(
+  //   "ProgramImplementation"
+  // );
 
-  // Estimate fee
-  const programImplementationDeploymentFee = await deployer.estimateDeployFee(
-    ProgramImplementation,
-    []
-  );
-  const parsedProgramImplementationFee = ethers.utils.formatEther(
-    programImplementationDeploymentFee.toString()
-  );
-  console.info(
-    `Estimated deployment fee: ${parsedProgramImplementationFee} ETH`
-  );
+  // // Estimate fee
+  // const programImplementationDeploymentFee = await deployer.estimateDeployFee(
+  //   ProgramImplementation,
+  //   []
+  // );
+  // const parsedProgramImplementationFee = ethers.utils.formatEther(
+  //   programImplementationDeploymentFee.toString()
+  // );
+  // console.info(
+  //   `Estimated deployment fee: ${parsedProgramImplementationFee} ETH`
+  // );
 
-  // Deploy the contract
-  const programImplementationContractDeployment = await deployer.deploy(
-    ProgramImplementation,
-    []
-  );
+  // // Deploy the contract
+  // const programImplementationContractDeployment = await deployer.deploy(
+  //   ProgramImplementation,
+  //   []
+  // );
 
-  await programImplementationContractDeployment.deployed();
+  // await programImplementationContractDeployment.deployed();
 
-  // Show the contract info
-  console.info(
-    "ProgramImplementation deployed to:",
-    programImplementationContractDeployment.address
-  );
+  // // Show the contract info
+  // console.info(
+  //   "ProgramImplementation deployed to:",
+  //   programImplementationContractDeployment.address
+  // );
 
-  // Link the ProgramFactory contract with the ProgramImplementation contract
-  console.info(
-    "Linking ProgramFactory contract to ProgramImplementation contract..."
-  );
-  const updateTx = await programProxy.updateProgramContract(
-    programImplementationContractDeployment.address
-  );
-  await updateTx.wait();
-  console.info(
-    "ProgramFactory contract linked to ProgramImplementation contract in tx",
-    updateTx.hash
-  );
+  // // Link the ProgramFactoryZk contract with the ProgramImplementation contract
+  // console.info(
+  //   "Linking ProgramFactoryZk contract to ProgramImplementation contract..."
+  // );
+  // const updateTx = await programProxy.updateProgramContract(
+  //   programImplementationContractDeployment.address
+  // );
+  // await updateTx.wait();
+  // console.info(
+  //   "ProgramFactoryZk contract linked to ProgramImplementation contract in tx",
+  //   updateTx.hash
+  // );
 
   /** Deploy Voting Factory */
   await confirmContinue({
-    contract: "QuadraticFundingVotingStrategyFactory",
+    contract: "QuadraticFundingVotingStrategyFactoryZk",
   });
-  const quadraticFundingVotingStrategyFactory = await deployer.loadArtifact(
-    "QuadraticFundingVotingStrategyFactory"
+  const quadraticFundingVotingStrategyFactoryZk = await deployer.loadArtifact(
+    "QuadraticFundingVotingStrategyFactoryZk"
   );
-  const quadraticFundingVotingStrategyFactoryFee =
-    await deployer.estimateDeployFee(quadraticFundingVotingStrategyFactory, []);
-  const parsedQuadraticFundingVotingStrategyFactoryFee =
+  const quadraticFundingVotingStrategyFactoryZkFee =
+    await deployer.estimateDeployFee(quadraticFundingVotingStrategyFactoryZk, []);
+  const parsedQuadraticFundingVotingStrategyFactoryZkFee =
     ethers.utils.formatEther(
-      quadraticFundingVotingStrategyFactoryFee.toString()
+      quadraticFundingVotingStrategyFactoryZkFee.toString()
     );
   console.info(
-    `Estimated deployment fee: ${parsedQuadraticFundingVotingStrategyFactoryFee} ETH`
+    `Estimated deployment fee: ${parsedQuadraticFundingVotingStrategyFactoryZkFee} ETH`
   );
-  const QuadraticFundingVotingStrategyFactoryDeployment = await deployer.deploy(
-    quadraticFundingVotingStrategyFactory,
+  const QuadraticFundingVotingStrategyFactoryZkDeployment = await deployer.deploy(
+    quadraticFundingVotingStrategyFactoryZk,
     []
   );
 
-  await QuadraticFundingVotingStrategyFactoryDeployment.deployed();
-  await QuadraticFundingVotingStrategyFactoryDeployment.initialize();
+  await QuadraticFundingVotingStrategyFactoryZkDeployment.deployed();
+  await QuadraticFundingVotingStrategyFactoryZkDeployment.initialize();
 
   console.info(
-    "QuadraticFundingVotingStrategyFactory deployed to",
-    QuadraticFundingVotingStrategyFactoryDeployment.address
+    "QuadraticFundingVotingStrategyFactoryZk deployed to",
+    QuadraticFundingVotingStrategyFactoryZkDeployment.address
   );
 
   /** Deploy Voting Implementation */
-  await confirmContinue({
-    contract: "QuadraticFundingVotingStrategyImplementation",
-  });
-  const qfImpFactory = await deployer.loadArtifact(
-    "QuadraticFundingVotingStrategyImplementation"
-  );
-  const QfVotingImpFactoryDeployment = await deployer.deploy(qfImpFactory, []);
+  // await confirmContinue({
+  //   contract: "QuadraticFundingVotingStrategyImplementation",
+  // });
+  // const qfImpFactory = await deployer.loadArtifact(
+  //   "QuadraticFundingVotingStrategyImplementation"
+  // );
+  // const QfVotingImpFactoryDeployment = await deployer.deploy(qfImpFactory, []);
 
-  await QfVotingImpFactoryDeployment.deployed();
-  await QfVotingImpFactoryDeployment.initialize();
+  // await QfVotingImpFactoryDeployment.deployed();
+  // await QfVotingImpFactoryDeployment.initialize();
 
-  console.info(
-    "QuadraticFundingVotingStrategyImplementation deployed to",
-    QfVotingImpFactoryDeployment.address
-  );
+  // console.info(
+  //   "QuadraticFundingVotingStrategyImplementation deployed to",
+  //   QfVotingImpFactoryDeployment.address
+  // );
 
-  console.info(
-    "Linking QuadraticFundingVotingStrategyFactory to implementation"
-  );
-  let qfLink =
-    await QuadraticFundingVotingStrategyFactoryDeployment.updateVotingContract(
-      QfVotingImpFactoryDeployment.address
-    );
-  console.info(
-    "QuadraticFundingVotingStrategyFactory linked to QuadraticFundingVotingStrategyImplementation in tx",
-    qfLink.hash
-  );
-  console.info(
-    "Linked QuadraticFundingVotingStrategyFactory to implementation"
-  );
+  // console.info(
+  //   "Linking QuadraticFundingVotingStrategyFactoryZk to implementation"
+  // );
+  // let qfLink =
+  //   await QuadraticFundingVotingStrategyFactoryZkDeployment.updateVotingContract(
+  //     QfVotingImpFactoryDeployment.address
+  //   );
+  // console.info(
+  //   "QuadraticFundingVotingStrategyFactoryZk linked to QuadraticFundingVotingStrategyImplementation in tx",
+  //   qfLink.hash
+  // );
+  // console.info(
+  //   "Linked QuadraticFundingVotingStrategyFactoryZk to implementation"
+  // );
 
   // /** Merkle Payout Strategy */
   await confirmContinue({
-    contract: "MerklePayoutStrategyFactory",
+    contract: "MerklePayoutStrategyFactoryZk",
   });
-  console.info("Deploying MerklePayoutStrategyFactory...");
-  const merklePayoutStrategyFactory = await deployer.loadArtifact(
-    "MerklePayoutStrategyFactory"
+  console.info("Deploying MerklePayoutStrategyFactoryZk...");
+  const merklePayoutStrategyFactoryZk = await deployer.loadArtifact(
+    "MerklePayoutStrategyFactoryZk"
   );
-  const MerklePayoutStrategyFactoryDeployment = await deployer.deploy(
-    merklePayoutStrategyFactory,
+  const MerklePayoutStrategyFactoryZkDeployment = await deployer.deploy(
+    merklePayoutStrategyFactoryZk,
     []
   );
 
-  await MerklePayoutStrategyFactoryDeployment.deployed();
-  await MerklePayoutStrategyFactoryDeployment.initialize();
+  await MerklePayoutStrategyFactoryZkDeployment.deployed();
+  await MerklePayoutStrategyFactoryZkDeployment.initialize();
 
   console.info(
-    "MerklePayoutStrategyFactory deployed to",
-    MerklePayoutStrategyFactoryDeployment.address
+    "MerklePayoutStrategyFactoryZk deployed to",
+    MerklePayoutStrategyFactoryZkDeployment.address
   );
 
-  await confirmContinue({
-    contract: "MerklePayoutStrategyImplementation",
-  });
-  const merklePayoutStrategyImplementation = await deployer.loadArtifact(
-    "MerklePayoutStrategyImplementation"
-  );
-  const merklePayoutStrategyImplementationDeployment = await deployer.deploy(
-    merklePayoutStrategyImplementation,
-    []
-  );
+  // await confirmContinue({
+  //   contract: "MerklePayoutStrategyImplementation",
+  // });
+  // const merklePayoutStrategyImplementation = await deployer.loadArtifact(
+  //   "MerklePayoutStrategyImplementation"
+  // );
+  // const merklePayoutStrategyImplementationDeployment = await deployer.deploy(
+  //   merklePayoutStrategyImplementation,
+  //   []
+  // );
 
-  await merklePayoutStrategyImplementationDeployment.deployed();
-  await merklePayoutStrategyImplementationDeployment.initialize();
+  // await merklePayoutStrategyImplementationDeployment.deployed();
+  // await merklePayoutStrategyImplementationDeployment.initialize();
 
-  console.info(
-    "MerklePayoutStrategyImplementation deployed to",
-    merklePayoutStrategyImplementationDeployment.address
-  );
+  // console.info(
+  //   "MerklePayoutStrategyImplementation deployed to",
+  //   merklePayoutStrategyImplementationDeployment.address
+  // );
 
-  let merkleLinkTx =
-    await MerklePayoutStrategyFactoryDeployment.updatePayoutImplementation(
-      merklePayoutStrategyImplementationDeployment.address
-    );
-  console.info(
-    "MerklePayoutStrategyImplementation linked to MerklePayoutStrategyFactory in tx",
-    merkleLinkTx.hash
-  );
+  // let merkleLinkTx =
+  //   await MerklePayoutStrategyFactoryZkDeployment.updatePayoutImplementation(
+  //     merklePayoutStrategyImplementationDeployment.address
+  //   );
+  // console.info(
+  //   "MerklePayoutStrategyImplementation linked to MerklePayoutStrategyFactoryZk in tx",
+  //   merkleLinkTx.hash
+  // );
 
   // /** Direct Payout Strategy */
   await confirmContinue({
-    contract: "DirectPayoutStrategyFactory",
+    contract: "DirectPayoutStrategyFactoryZk",
   });
-  console.info("Deploying DirectPayoutStrategyFactory...");
-  const directPayoutStrategyFactory = await deployer.loadArtifact(
-    "DirectPayoutStrategyFactory"
+  console.info("Deploying DirectPayoutStrategyFactoryZk...");
+  const directPayoutStrategyFactoryZk = await deployer.loadArtifact(
+    "DirectPayoutStrategyFactoryZk"
   );
-  const directPayoutStrategyFactoryDeployment = await deployer.deploy(
-    directPayoutStrategyFactory,
+  const directPayoutStrategyFactoryZkDeployment = await deployer.deploy(
+    directPayoutStrategyFactoryZk,
     []
   );
 
-  await directPayoutStrategyFactoryDeployment.deployed();
-  await directPayoutStrategyFactoryDeployment.initialize();
+  await directPayoutStrategyFactoryZkDeployment.deployed();
+  await directPayoutStrategyFactoryZkDeployment.initialize();
 
   console.info(
-    "DirectPayoutStrategyFactory deployed to",
-    directPayoutStrategyFactoryDeployment.address
+    "DirectPayoutStrategyFactoryZk deployed to",
+    directPayoutStrategyFactoryZkDeployment.address
   );
 
-  await confirmContinue({
-    contract: "DirectPayoutStrategyImplementation",
-  });
-  const directPayoutStrategyImplementation = await deployer.loadArtifact(
-    "DirectPayoutStrategyImplementation"
-  );
-  const directPayoutStrategyImplementationDeployment = await deployer.deploy(
-    directPayoutStrategyImplementation,
-    []
-  );
+  // await confirmContinue({
+  //   contract: "DirectPayoutStrategyImplementation",
+  // });
+  // const directPayoutStrategyImplementation = await deployer.loadArtifact(
+  //   "DirectPayoutStrategyImplementation"
+  // );
+  // const directPayoutStrategyImplementationDeployment = await deployer.deploy(
+  //   directPayoutStrategyImplementation,
+  //   []
+  // );
 
-  await directPayoutStrategyImplementationDeployment.deployed();
-  await directPayoutStrategyImplementationDeployment.initialize();
+  // await directPayoutStrategyImplementationDeployment.deployed();
+  // await directPayoutStrategyImplementationDeployment.initialize();
 
-  console.info(
-    "DirectPayoutStrategyImplementation deployed to",
-    directPayoutStrategyImplementationDeployment.address
-  );
+  // console.info(
+  //   "DirectPayoutStrategyImplementation deployed to",
+  //   directPayoutStrategyImplementationDeployment.address
+  // );
 
-  let payoutLinkTx =
-    await directPayoutStrategyFactoryDeployment.updatePayoutImplementation(
-      directPayoutStrategyImplementationDeployment.address
-    );
-  console.info(
-    "DirectPayoutStrategyImplementation linked to DirectPayoutStrategyFactory in tx",
-    payoutLinkTx.hash
-  );
+  // let payoutLinkTx =
+  //   await directPayoutStrategyFactoryZkDeployment.updatePayoutImplementation(
+  //     directPayoutStrategyImplementationDeployment.address
+  //   );
+  // console.info(
+  //   "DirectPayoutStrategyImplementation linked to DirectPayoutStrategyFactoryZk in tx",
+  //   payoutLinkTx.hash
+  // );
 
   // /* Round Factory */
   await confirmContinue({
-    contract: "RoundFactory",
+    contract: "RoundFactoryZk",
   });
-  console.info("Deploying RoundFactory...");
-  const roundFactory = await deployer.loadArtifact("RoundFactory");
-  const roundFactoryDeployment = await deployer.deploy(roundFactory, []);
+  console.info("Deploying RoundFactoryZk...");
+  const roundFactoryZk = await deployer.loadArtifact("RoundFactoryZk");
+  const roundFactoryZkDeployment = await deployer.deploy(roundFactoryZk, []);
 
-  await roundFactoryDeployment.deployed();
-  await roundFactoryDeployment.initialize();
+  await roundFactoryZkDeployment.deployed();
+  await roundFactoryZkDeployment.initialize();
 
-  console.info("RoundFactory deployed to", roundFactoryDeployment.address);
+  console.info("RoundFactoryZk deployed to", roundFactoryZkDeployment.address);
 
   /* Deploy Allo Settings */
   await confirmContinue({
@@ -337,40 +337,40 @@ export default async function main() {
   await alloSettingsDeployment.initialize();
   console.info("AlloSettings initialized");
 
-  const alloLinkTx = await roundFactoryDeployment.updateAlloSettings(
+  const alloLinkTx = await roundFactoryZkDeployment.updateAlloSettings(
     alloSettingsDeployment.address
   );
   await alloLinkTx.wait();
-  console.info("RoundFactory linked to AlloSettings in tx", alloLinkTx.hash);
+  console.info("RoundFactoryZk linked to AlloSettings in tx", alloLinkTx.hash);
 
-  await confirmContinue({
-    contract: "RoundImplementation",
-  });
-  console.info("Deploying RoundImplementation...");
-  const roundImplementation = await deployer.loadArtifact(
-    "RoundImplementation"
-  );
-  const roundImplementationDeployment = await deployer.deploy(
-    roundImplementation,
-    []
-  );
+  // await confirmContinue({
+  //   contract: "RoundImplementation",
+  // });
+  // console.info("Deploying RoundImplementation...");
+  // const roundImplementation = await deployer.loadArtifact(
+  //   "RoundImplementation"
+  // );
+  // const roundImplementationDeployment = await deployer.deploy(
+  //   roundImplementation,
+  //   []
+  // );
 
-  await roundImplementationDeployment.deployed();
+  // await roundImplementationDeployment.deployed();
 
-  console.info(
-    "RoundImplementation deployed to",
-    roundImplementationDeployment.address
-  );
+  // console.info(
+  //   "RoundImplementation deployed to",
+  //   roundImplementationDeployment.address
+  // );
 
-  const roundLinkTx = await roundFactoryDeployment.updateRoundImplementation(
-    roundImplementationDeployment.address
-  );
-  await roundLinkTx.wait();
+  // const roundLinkTx = await roundFactoryZkDeployment.updateRoundImplementation(
+  //   roundImplementationDeployment.address
+  // );
+  // await roundLinkTx.wait();
 
-  console.info(
-    "RoundFactory linked to RoundImplementation in tx",
-    roundLinkTx.hash
-  );
+  // console.info(
+  //   "RoundFactoryZk linked to RoundImplementation in tx",
+  //   roundLinkTx.hash
+  // );
 
   await confirmContinue({
     contract: "DummyVotingStrategy",
@@ -411,7 +411,7 @@ export default async function main() {
     try {
       //// new
       try {
-        console.log("Verify ProgramFactory");
+        console.log("Verify ProgramFactoryZk");
         await hre.run("verify:verify", {
           address: programProxy.address, // this should be the implementation and not the proxy
           constructorArguments: [
@@ -420,84 +420,84 @@ export default async function main() {
         });
 
       } catch (error) {
-        console.error("ProgramFactory verification", error);
+        console.error("ProgramFactoryZk verification", error);
       }
 
-      try {
-        console.log("Verify ProgramImplementation");
-        await hre.run("verify:verify", {
-          address: programImplementationContractDeployment.address,
-          constructorArguments: [],
-        });
-      } catch (error) {
-        console.error("ProgramImplementation verification", error);
-      }
+      // try {
+      //   console.log("Verify ProgramImplementation");
+      //   await hre.run("verify:verify", {
+      //     address: programImplementationContractDeployment.address,
+      //     constructorArguments: [],
+      //   });
+      // } catch (error) {
+      //   console.error("ProgramImplementation verification", error);
+      // }
 
       try {
-        console.log("Verify QuadraticFundingVotingStrategyFactory");
+        console.log("Verify QuadraticFundingVotingStrategyFactoryZk");
         await hre.run("verify:verify", {
-          address: QuadraticFundingVotingStrategyFactoryDeployment.address,
-          constructorArguments: [],
-        });
-      } catch (error) {
-        console.error(
-          "QuadraticFundingVotingStrategyFactory verification",
-          error
-        );
-      }
-
-      try {
-        console.log("Verify QuadraticFundingVotingStrategyImplementation");
-        await hre.run("verify:verify", {
-          address: QfVotingImpFactoryDeployment.address,
+          address: QuadraticFundingVotingStrategyFactoryZkDeployment.address,
           constructorArguments: [],
         });
       } catch (error) {
         console.error(
-          "QuadraticFundingVotingStrategyImplementation verification",
+          "QuadraticFundingVotingStrategyFactoryZk verification",
           error
         );
       }
 
-      try {
-        console.log("Verify MerklePayoutStrategyFactory");
-        await hre.run("verify:verify", {
-          address: MerklePayoutStrategyFactoryDeployment.address,
-          constructorArguments: [],
-        });
-      } catch (error) {
-        console.error("MerklePayoutStrategyFactory verification", error);
-      }
+      // try {
+      //   console.log("Verify QuadraticFundingVotingStrategyImplementation");
+      //   await hre.run("verify:verify", {
+      //     address: QfVotingImpFactoryDeployment.address,
+      //     constructorArguments: [],
+      //   });
+      // } catch (error) {
+      //   console.error(
+      //     "QuadraticFundingVotingStrategyImplementation verification",
+      //     error
+      //   );
+      // }
 
       try {
-        console.log("Verify MerklePayoutStrategyImplementation");
+        console.log("Verify MerklePayoutStrategyFactoryZk");
         await hre.run("verify:verify", {
-          address: merklePayoutStrategyImplementationDeployment.address,
+          address: MerklePayoutStrategyFactoryZkDeployment.address,
           constructorArguments: [],
         });
       } catch (error) {
-        console.error("MerklePayoutStrategyImplementation verification", error);
+        console.error("MerklePayoutStrategyFactoryZk verification", error);
       }
 
-      try {
-        console.log("Verify DirectPayoutStrategyFactory");
-        await hre.run("verify:verify", {
-          address: directPayoutStrategyFactoryDeployment.address,
-          constructorArguments: [],
-        });
-      } catch (error) {
-        console.error("DirectPayoutStrategyFactory verification", error);
-      }
+      // try {
+      //   console.log("Verify MerklePayoutStrategyImplementation");
+      //   await hre.run("verify:verify", {
+      //     address: merklePayoutStrategyImplementationDeployment.address,
+      //     constructorArguments: [],
+      //   });
+      // } catch (error) {
+      //   console.error("MerklePayoutStrategyImplementation verification", error);
+      // }
 
       try {
-        console.log("Verify DirectPayoutStrategyImplementation");
+        console.log("Verify DirectPayoutStrategyFactoryZk");
         await hre.run("verify:verify", {
-          address: directPayoutStrategyImplementationDeployment.address,
+          address: directPayoutStrategyFactoryZkDeployment.address,
           constructorArguments: [],
         });
       } catch (error) {
-        console.error("DirectPayoutStrategyImplementation verification", error);
+        console.error("DirectPayoutStrategyFactoryZk verification", error);
       }
+
+      // try {
+      //   console.log("Verify DirectPayoutStrategyImplementation");
+      //   await hre.run("verify:verify", {
+      //     address: directPayoutStrategyImplementationDeployment.address,
+      //     constructorArguments: [],
+      //   });
+      // } catch (error) {
+      //   console.error("DirectPayoutStrategyImplementation verification", error);
+      // }
 
       try {
         console.log("Verify AlloSettings");
@@ -510,24 +510,24 @@ export default async function main() {
       }
 
       try {
-        console.log("Verify RoundFactory");
+        console.log("Verify RoundFactoryZk");
         await hre.run("verify:verify", {
-          address: roundFactoryDeployment.address,
+          address: roundFactoryZkDeployment.address,
           constructorArguments: [],
         });
       } catch (error) {
-        console.error("RoundFactory verification", error);
+        console.error("RoundFactoryZk verification", error);
       }
 
-      try {
-        console.log("Verify RoundImplementation");
-        await hre.run("verify:verify", {
-          address: roundImplementationDeployment.address,
-          constructorArguments: [],
-        });
-      } catch (error) {
-        console.error("RoundImplementation verification", error);
-      }
+      // try {
+      //   console.log("Verify RoundImplementation");
+      //   await hre.run("verify:verify", {
+      //     address: roundImplementationDeployment.address,
+      //     constructorArguments: [],
+      //   });
+      // } catch (error) {
+      //   console.error("RoundImplementation verification", error);
+      // }
 
       try {
         console.log("Verify ProjectRegistry");
@@ -564,37 +564,22 @@ export default async function main() {
     "|---------------------------------------|--------------------------------------------|"
   );
   console.log(
-    `| ProgramFactory                        | ${programProxy.address} |`
+    `| ProgramFactoryZk                        | ${programProxy.address} |`
   );
   console.log(
-    `| ProgramImplementation                 | ${programImplementationContractDeployment.address} |`
+    `| QuadraticFundingVotingStrategyFactoryZk | ${QuadraticFundingVotingStrategyFactoryZkDeployment.address} |`
   );
   console.log(
-    `| QuadraticFundingVotingStrategyFactory | ${QuadraticFundingVotingStrategyFactoryDeployment.address} |`
+    `| MerklePayoutStrategyFactoryZk           | ${MerklePayoutStrategyFactoryZkDeployment.address} |`
   );
   console.log(
-    `| QFVotingStrategyImplementation        | ${QfVotingImpFactoryDeployment.address} |`
-  );
-  console.log(
-    `| MerklePayoutStrategyFactory           | ${MerklePayoutStrategyFactoryDeployment.address} |`
-  );
-  console.log(
-    `| MerklePayouStrategyImplementation     | ${merklePayoutStrategyImplementationDeployment.address} |`
-  );
-  console.log(
-    `| DirectPayoutStrategyFactory           | ${directPayoutStrategyFactoryDeployment.address} |`
-  );
-  console.log(
-    `| DirectPayoutStrategyImplementation    | ${directPayoutStrategyImplementationDeployment.address} |`
+    `| DirectPayoutStrategyFactoryZk           | ${directPayoutStrategyFactoryZkDeployment.address} |`
   );
   console.log(
     `| AlloSettings                          | ${alloSettingsDeployment.address} |`
   );
   console.log(
-    `| RoundFactory                          | ${roundFactoryDeployment.address} |`
-  );
-  console.log(
-    `| RoundImplementation                   | ${roundImplementationDeployment.address} |`
+    `| RoundFactoryZk                          | ${roundFactoryZkDeployment.address} |`
   );
   console.log(
     `| ProjectRegistry                       | ${projectRegistryContractDeployment.address} |`

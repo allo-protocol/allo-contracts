@@ -43,10 +43,10 @@ export const projectRegistryParams: DeployParams = {
     proxyContractAddress: "0x5C5E2D94b107C7691B08E43169fDe76EAAB6D48b",
   },
   "zksync-testnet": {
-    proxyContractAddress: "0x2C17D0FAb47bD87333714dC35f84BB669951cea6",
+    proxyContractAddress: "0xb0F4882184EB6e3ed120c5181651D50719329788",
   },
   "zksync-mainnet": {
-    proxyContractAddress: "0x1593FAA41134544354a1509566DDf8D6596e7348",
+    proxyContractAddress: "0xe6CCEe93c97E20644431647B306F48e278aFFdb9",
   },
   "base": {
     proxyContractAddress: "0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918"
