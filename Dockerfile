@@ -11,9 +11,7 @@ WORKDIR /app
 # https://github.com/foundry-rs/foundry/issues/5906
 RUN curl -L https://foundry.paradigm.xyz | bash
 
-# install a previous versions that doesn't have the rpc method hardhat_metadata.
-# hardhat expects an integer but the output from anvil is an hex string
-RUN ~/.foundry/bin/foundryup -v nightly-34f684ddfacc5b2ed371353ba6f730c485616ffe
+RUN ~/.foundry/bin/foundryup
 
 ENV PATH="$PNPM_HOME:$PATH"
 
