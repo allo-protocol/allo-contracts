@@ -4,7 +4,6 @@ import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-solhint";
 import "@nomiclabs/hardhat-waffle";
 import "@openzeppelin/hardhat-upgrades";
-import "@primitivefi/hardhat-dodoc";
 import "@typechain/hardhat";
 import "hardhat-abi-exporter";
 import "hardhat-contract-sizer";
@@ -15,9 +14,19 @@ import "solidity-coverage";
 
 dotenv.config();
 
+function getEnvVarNumber(name: string, defaultValue: number): number {
+  const value = process.env[name];
+  if (value !== undefined) {
+    return parseInt(value);
+  }
+
+  return defaultValue;
+}
+
 const chainIds = {
   // local
   localhost: 31337,
+  dev: getEnvVarNumber("DEV_CHAIN_ID", 313371),
   // testnet
   goerli: 5,
   "optimism-goerli": 420,
@@ -49,7 +58,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 let deployPrivateKey = process.env.DEPLOYER_PRIVATE_KEY as string;
-if (!deployPrivateKey) {
+if (deployPrivateKey === undefined) {
   // default first account deterministically created by local nodes like `npx hardhat node` or `anvil`
   deployPrivateKey =
     "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
@@ -66,13 +75,14 @@ const alchemyKey = process.env.ALCHEMY_API_KEY as string;
  */
 function createTestnetConfig(
   network: keyof typeof chainIds,
-  url?: string
+  url?: string,
+  mnemonic?: string
 ): NetworkUserConfig {
-  if (!url) {
+  if (url === undefined) {
     url = `https://${network}.infura.io/v3/${infuraIdKey}`;
   }
   return {
-    accounts: [deployPrivateKey],
+    accounts: mnemonic ? { mnemonic } : [deployPrivateKey],
     chainId: chainIds[network],
     allowUnlimitedContractSize: true,
     url,
@@ -201,6 +211,13 @@ const config: HardhatUserConfig = {
     },
 
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
+    // dev is still a local chain but it's based on our dev environment
+    // with hardcoded deterministic addresses for deployed contracts
+    dev: createTestnetConfig(
+      "dev",
+      `http://${process.env.DEV_CHAIN_HOST ?? "127.0.0.1"}:8545`,
+      "test test test test test test test test test test test junk"
+    ),
     hardhat: {
       forking: {
         url: `${process.env.FORK_RPC_URL}`,

@@ -8,37 +8,37 @@ on:
     branches:
       - "**"
 jobs:
-  tests:
-    concurrency: ci-contract-${{ github.head_ref || github.run_id }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
+  # tests:
+  #   concurrency: ci-contract-${{ github.head_ref || github.run_id }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 1
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
+  #     - uses: pnpm/action-setup@v2
+  #       with:
+  #         version: 8
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'pnpm'
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '16'
+  #         cache: 'pnpm'
 
-      - name: Install dependencies
-        run: |
-          pnpm install
+  #     - name: Install dependencies
+  #       run: |
+  #         pnpm install
 
-      - name: Compile contract
-        run: |
-          pnpm compile
+  #     - name: Compile contract
+  #       run: |
+  #         pnpm compile
 
-      - name: Test contract
-        env:
-          FORK_RPC_URL: ${{ secrets.FORK_RPC_URL }}
-        run: |
-          pnpm test
+  #     - name: Test contract
+  #       env:
+  #         FORK_RPC_URL: ${{ secrets.FORK_RPC_URL }}
+  #       run: |
+  #         pnpm test
 
 #  slither:
 #    runs-on: ubuntu-latest

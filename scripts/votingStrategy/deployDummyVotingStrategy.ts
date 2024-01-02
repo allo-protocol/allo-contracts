@@ -1,15 +1,12 @@
 // This script deals with deploying the QuadraticFundingVotingStrategyFactory on a given network
 import { ethers, upgrades } from "hardhat";
 import hre from "hardhat";
-import { confirmContinue } from "../../utils/script-utils";
+import { confirmContinue, getBlocksToWait } from "../../utils/script-utils";
 import * as utils from "../utils";
 
 utils.assertEnvironment();
 
 export async function main() {
-  // Wait 10 blocks for re-org protection
-  const blocksToWait = hre.network.name === "localhost" ? 0 : 10;
-
   await confirmContinue({
     contract: "DummyVotingStrategy",
     network: hre.network.name,
@@ -22,11 +19,9 @@ export async function main() {
   );
   const contract = await contractFactory.deploy();
 
-  console.log(
-    `Deploying DummyVotingStrategy to ${contract.address}`
-  );
+  console.log(`Deploying DummyVotingStrategy to ${contract.address}`);
 
-  await contract.deployTransaction.wait(blocksToWait);
+  await contract.deployTransaction.wait(getBlocksToWait(hre.network.name));
   console.log("✅ Deployed.");
 
   return contract.address;

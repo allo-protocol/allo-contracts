@@ -105,6 +105,19 @@ To know the addresses are deployed on which network. refer [CHAINS.md](docs/CHAI
 
 To contribute to this project, fork the project and follow the instructions at [DEV.md](docs/DEV.md)
 
+You can run a local chain and deploy contracts using our docker configuration and tasks:
+
+```
+# Build the docker image with the project deps + anvil
+make docker-build
+
+# run a containerized chain with anvil
+make docker-run
+
+# deploy the contracts to the containerized chain
+make docker-deploy-contracts
+```
+
 ## Contract Documentation
 
 The contract documentation has been generated using [primitive-dodoc](https://github.com/primitivefinance/primitive-dodoc) and can be found over at [docs/contracts](docs/contracts/)

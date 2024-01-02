@@ -1,13 +1,12 @@
 import { ethers } from "hardhat";
 import hre from "hardhat";
 import { confirmContinue } from "../../utils/script-utils";
-import { AlloSettingsParams } from '../config/allo.config';
+import { AlloSettingsParams } from "../config/allo.config";
 import * as utils from "../utils";
 
 utils.assertEnvironment();
-  
-export async function main() {
 
+export async function main() {
   const network = hre.network;
 
   const networkParams = AlloSettingsParams[network.name];

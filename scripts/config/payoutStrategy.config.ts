@@ -8,6 +8,11 @@ type PayoutParams = {
 type DeployParams = Record<string, PayoutParams>;
 
 export const MerklePayoutParams: DeployParams = {
+  dev: {
+    factory: "0x0B306BF915C4d645ff596e518fAf3F9669b97016",
+    implementation: "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
+    contract: "",
+  },
   mainnet: {
     factory: "0x8F8d78f119Aa722453d33d6881f4D400D67D054F",
     implementation: "0xf166786c1b49395F0300e52E8479712B0089FA65",
@@ -58,7 +63,7 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
     contract: "",
   },
-  "mumbai": {
+  mumbai: {
     factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
     contract: "",
@@ -87,6 +92,11 @@ export const MerklePayoutParams: DeployParams = {
 
 // TODO: Update this file any time a new dummy voting contract has been deployed
 export const DirectPayoutParams: DeployParams = {
+  dev: {
+    factory: "0xd07D54b0231088Ca9BF7DA6291c911B885cBC140",
+    implementation: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
+    contract: "",
+  },
   mainnet: {
     factory: "0xd07D54b0231088Ca9BF7DA6291c911B885cBC140",
     implementation: "0x3D77E65aEA55C0e07Cb018aB4Dc22D38cAD75921",
@@ -142,7 +152,7 @@ export const DirectPayoutParams: DeployParams = {
     implementation: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
     contract: "",
   },
-  "mumbai": {
+  mumbai: {
     factory: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
     implementation: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
     contract: "",
