@@ -89,9 +89,9 @@ export const QFVotingParams: DeployParams = {
     contract: "0x",
   },
   "scroll-sepolia": {
-    factory: "0x",
-    implementation: "0x",
-    contract: "0x",
+    factory: "0x545B282A50EaeA01A619914d44105437036CbB36",
+    implementation: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
+    contract: "0x1C12A9182d39dd79cB68A036a3eBc4a0986D722b",
   },
 };
 
@@ -155,6 +155,6 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
     contract: "0x",
   },
   "scroll-sepolia": {
-    contract: "0x",
+    contract: "0x53f93b998d845c55B90E806CD81d86a6c2aE20Cc",
   },
 };

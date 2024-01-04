@@ -89,8 +89,8 @@ export const programParams: DeployParams = {
     programContract: "",
   },
   "scroll-sepolia": {
-    programFactoryContract: "0x",
-    programImplementationContract: "0x",
-    programContract: "",
+    programFactoryContract: "0xd07D54b0231088Ca9BF7DA6291c911B885cBC140",
+    programImplementationContract: "0x2AFA4bE0f2468347A2F086c2167630fb1E58b725",
+    programContract: "0xC1569818C16048398F1d799Bfe9270dD3279f2d7",
   },
 };

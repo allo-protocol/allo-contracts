@@ -55,6 +55,6 @@ export const projectRegistryParams: DeployParams = {
     proxyContractAddress: "0x",
   },
   "scroll-sepolia": {
-    proxyContractAddress: "0x",
+    proxyContractAddress: "0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e",
   },
 };

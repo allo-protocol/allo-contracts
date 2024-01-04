@@ -89,9 +89,9 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   "scroll-sepolia": {
-    factory: "0x",
-    implementation: "0x",
-    contract: "",
+    factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
+    implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
+    contract: "0xE5fC63716272DF418b247d1Db72f260a2d4b3d90",
   },
 };
 
@@ -183,8 +183,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   "scroll-sepolia": {
-    factory: "0x",
-    implementation: "0x",
+    factory: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
+    implementation: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
     contract: "",
   },
 };

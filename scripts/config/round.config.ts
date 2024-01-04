@@ -91,8 +91,8 @@ export const roundParams: DeployParams = {
     roundContract: "0x",
   },
   "scroll-sepolia": {
-    roundFactoryContract: "0x",
-    roundImplementationContract: "0x",
+    roundFactoryContract: "0xF2a07728107B04266015E67b1468cA0a536956C8",
+    roundImplementationContract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
     roundContract: "0x",
   },
 };

@@ -6,7 +6,7 @@ import hre, { ethers } from "hardhat";
 import { confirmContinue } from "../../utils/script-utils";
 import { MerklePayoutParams } from "../config/payoutStrategy.config";
 import { programParams } from "../config/program.config";
-import { roundParams } from '../config/round.config';
+import { roundParams } from "../config/round.config";
 import { QFVotingParams } from "../config/votingStrategy.config";
 import * as utils from "../utils";
 import { encodeRoundParameters } from "../utils";
@@ -14,7 +14,6 @@ import { encodeRoundParameters } from "../utils";
 utils.assertEnvironment();
 
 export async function main() {
-
   const network = hre.network;
 
   const networkParams = roundParams[network.name];
@@ -49,31 +48,37 @@ export async function main() {
     throw new Error(`error: missing payoutContract`);
   }
 
-  const roundFactory = await ethers.getContractAt('RoundFactory', roundFactoryContract);
+  const roundFactory = await ethers.getContractAt(
+    "RoundFactory",
+    roundFactoryContract
+  );
 
   await confirmContinue({
-    "info"                         : "create a Round",
-    "roundFactoryContract"         : roundFactoryContract,
-    "roundImplementationContract"  : roundImplementationContract,
-    "programContractAddress"       : programContract,
-    "votingContractAddress"        : votingContract,
-    "payoutContractAddress"        : payoutContract,
-    "network"                      : network.name,
-    "chainId"                      : network.config.chainId
+    info: "create a Round",
+    roundFactoryContract: roundFactoryContract,
+    roundImplementationContract: roundImplementationContract,
+    programContractAddress: programContract,
+    votingContractAddress: votingContract,
+    payoutContractAddress: payoutContract,
+    network: network.name,
+    chainId: network.config.chainId,
   });
 
-  const encodedParameters = generateAndEncodeRoundParam(votingContract, payoutContract);
+  const encodedParameters = generateAndEncodeRoundParam(
+    votingContract,
+    payoutContract
+  );
 
   const roundTx = await roundFactory.create(
     await encodedParameters,
-    programContract, // _ownedBy (Program)
+    programContract // _ownedBy (Program)
   );
 
   const receipt = await roundTx.wait();
   let roundAddress;
 
   if (receipt.events) {
-    const event = receipt.events.find(e => e.event === 'RoundCreated');
+    const event = receipt.events.find((e) => e.event === "RoundCreated");
     if (event && event.args) {
       roundAddress = event.args.roundAddress;
     }
@@ -83,35 +88,37 @@ export async function main() {
   console.log("✅ Round created: ", roundAddress);
 }
 
-const generateAndEncodeRoundParam = async (votingContract: string, payoutContract: string) => {
-
-  const _currentTimestamp = (await ethers.provider.getBlock(
-    await ethers.provider.getBlockNumber())
+const generateAndEncodeRoundParam = async (
+  votingContract: string,
+  payoutContract: string
+) => {
+  const _currentTimestamp = (
+    await ethers.provider.getBlock(await ethers.provider.getBlockNumber())
   ).timestamp;
 
   const roundMetaPtr = {
     protocol: 1,
-    pointer: "bafybeia4khbew3r2mkflyn7nzlvfzcb3qpfeftz5ivpzfwn77ollj47gqi"
+    pointer: "bafybeia4khbew3r2mkflyn7nzlvfzcb3qpfeftz5ivpzfwn77ollj47gqi",
   };
 
   const applicationMetaPtr = {
     protocol: 1,
-    pointer: "bafkreih3mbwctlrnimkiizqvu3zu3blszn5uylqts22yvsrdh5y2kbxaia"
+    pointer: "bafkreih3mbwctlrnimkiizqvu3zu3blszn5uylqts22yvsrdh5y2kbxaia",
   };
 
   const roles = [
-    '0x5cdb35fADB8262A3f88863254c870c2e6A848CcA',
-    '0xB8cEF765721A6da910f14Be93e7684e9a3714123',
-    '0xA2A6460f20E43dcC5F8f55714A969500c342d7CE',
-    '0xf4c5c4deDde7A86b25E7430796441e209e23eBFB',
-    '0x4873178BeA2DCd7022f0eF6c70048b0e05Bf9017',
-    '0x6e8C1ADaEDb9A0A801dD50aFD95b5c07e9629C1E'
-  ]
+    "0x5cdb35fADB8262A3f88863254c870c2e6A848CcA",
+    "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
+    "0xA2A6460f20E43dcC5F8f55714A969500c342d7CE",
+    "0xf4c5c4deDde7A86b25E7430796441e209e23eBFB",
+    "0x4873178BeA2DCd7022f0eF6c70048b0e05Bf9017",
+    "0x6e8C1ADaEDb9A0A801dD50aFD95b5c07e9629C1E",
+  ];
 
   const matchAmount = 1;
   const token = AddressZero;
   const roundFeePercentage = 0;
-  const roundFeeAddress = '0x5cdb35fADB8262A3f88863254c870c2e6A848CcA';
+  const roundFeeAddress = "0x1fD06f088c720bA3b7a3634a8F021Fdd485DcA42";
 
   const initAddress = [
     votingContract, // votingStrategy
@@ -119,20 +126,17 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
   ];
 
   const initRoundTime = [
-    _currentTimestamp + 3600,     // 1 hour later   appStartTime
+    _currentTimestamp + 3600, // 1 hour later   appStartTime
     _currentTimestamp + 432000, // 5 days later   appEndTime
-    _currentTimestamp + 7200,   // 2 hours later  roundStartTime
+    _currentTimestamp + 7200, // 2 hours later  roundStartTime
     _currentTimestamp + 864000, // 10 days later  roundEndTime
   ];
 
-  const initMetaPtr = [
-    roundMetaPtr,
-    applicationMetaPtr,
-  ];
+  const initMetaPtr = [roundMetaPtr, applicationMetaPtr];
 
   const initRoles = [
-    roles,  // adminRoles
-    roles   // roundOperators
+    roles, // adminRoles
+    roles, // roundOperators
   ];
 
   let params = [
@@ -147,8 +151,7 @@ const generateAndEncodeRoundParam = async (votingContract: string, payoutContrac
   ];
 
   return encodeRoundParameters(params);
-
-}
+};
 
 main().catch((error) => {
   console.error(error);

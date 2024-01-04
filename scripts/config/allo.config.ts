@@ -89,8 +89,8 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolTreasury: "0x",
   },
   "scroll-sepolia": {
-    alloSettingsContract: "0x",
+    alloSettingsContract: "0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: "0x",
+    newProtocolTreasury: "0x1fD06f088c720bA3b7a3634a8F021Fdd485DcA42",
   },
 };
