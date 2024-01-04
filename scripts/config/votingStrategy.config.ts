@@ -78,10 +78,20 @@ export const QFVotingParams: DeployParams = {
     implementation: "",
     contract: "",
   },
-  "base": {
+  base: {
     factory: "0xC3A195EEa198e74D67671732E1B8F8A23781D735",
     implementation: "0x545B282A50EaeA01A619914d44105437036CbB36",
     contract: "",
+  },
+  scroll: {
+    factory: "0x",
+    implementation: "0x",
+    contract: "0x",
+  },
+  "scroll-sepolia": {
+    factory: "0x",
+    implementation: "0x",
+    contract: "0x",
   },
 };
 
@@ -138,8 +148,13 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
   "zksync-mainnet": {
     contract: "0x787D662D19C9528EB33FdaBb3cBEcBeAb2a7F15a",
   },
-  "base": {
-    contract: "0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27"
-  }
+  base: {
+    contract: "0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27",
+  },
+  scroll: {
+    contract: "0x",
+  },
+  "scroll-sepolia": {
+    contract: "0x",
+  },
 };
-

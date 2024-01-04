@@ -58,7 +58,7 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "0xCF50D794c639D57bA8D6BB8FaE34fBd1B89D7112",
     contract: "",
   },
-  "mumbai": {
+  mumbai: {
     factory: "0xc1a26b0789C3E93b07713e90596Cad8d0442C826",
     implementation: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
     contract: "",
@@ -78,9 +78,19 @@ export const MerklePayoutParams: DeployParams = {
     implementation: "",
     contract: "",
   },
-  "base": {
+  base: {
     factory: "0xF7c101A95Ea4cBD5DA0Ab9827D7B2C9857440143",
     implementation: "0x04b194b14532070F5cc8D3A760c9a0957D85ad5B",
+    contract: "",
+  },
+  scroll: {
+    factory: "0x",
+    implementation: "0x",
+    contract: "",
+  },
+  "scroll-sepolia": {
+    factory: "0x",
+    implementation: "0x",
     contract: "",
   },
 };
@@ -142,7 +152,7 @@ export const DirectPayoutParams: DeployParams = {
     implementation: "0x64ab6F2E11dF8B3Be5c8838eDe3951AC928daE9C",
     contract: "",
   },
-  "mumbai": {
+  mumbai: {
     factory: "0xD9B7Ce1F68A93dF783A8519ed52b74f5DcF5AFE1",
     implementation: "0xD0e19DBF9b896199F35Df255A1bf8dB3C787531c",
     contract: "",
@@ -162,9 +172,19 @@ export const DirectPayoutParams: DeployParams = {
     implementation: "",
     contract: "",
   },
-  "base": {
+  base: {
     factory: "0x74c3665540FC8B92Dd06a7e56a51eCa038C18180",
     implementation: "0x8AdFcF226dfb2fA73788Ad711C958Ba251369cb3",
+    contract: "",
+  },
+  scroll: {
+    factory: "0x",
+    implementation: "0x",
+    contract: "",
+  },
+  "scroll-sepolia": {
+    factory: "0x",
+    implementation: "0x",
     contract: "",
   },
 };

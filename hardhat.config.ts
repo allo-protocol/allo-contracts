@@ -18,6 +18,7 @@ dotenv.config();
 const chainIds = {
   // local
   localhost: 31337,
+
   // testnet
   goerli: 5,
   "optimism-goerli": 420,
@@ -25,8 +26,8 @@ const chainIds = {
   "pgn-sepolia": 58008,
   "arbitrum-goerli": 421613,
   "fuji-testnet": 43113,
-  polygon: 137,
-  base: 8453,
+  mumbai: 80001,
+  "scroll-sepolia": 534351,
 
   // mainnet
   mainnet: 1,
@@ -35,7 +36,9 @@ const chainIds = {
   "fantom-mainnet": 250,
   "arbitrumOne-mainnet": 42161,
   "avalanche-mainnet": 43114,
-  mumbai: 80001,
+  polygon: 137,
+  base: 8453,
+  scroll: 534352,
 };
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -160,6 +163,11 @@ const config: HardhatUserConfig = {
       chainId: chainIds["polygon"],
       gas: "auto",
     },
+    scroll: {
+      accounts: [deployPrivateKey],
+      url: "https://rpc.scroll.io/",
+      chainId: chainIds["scroll"],
+    },
 
     // Test Networks
     goerli: createTestnetConfig("goerli"),
@@ -199,7 +207,13 @@ const config: HardhatUserConfig = {
       ...createMainnetConfig("base"),
       url: `https://base-mainnet.g.alchemy.com/v2/${alchemyKey}`,
     },
+    "scroll-sepolia": {
+      accounts: [deployPrivateKey],
+      url: "https://sepolia-rpc.scroll.io/",
+      chainId: chainIds["scroll-sepolia"],
+    },
 
+    // Local Networks
     localhost: createTestnetConfig("localhost", "http://localhost:8545"),
     hardhat: {
       forking: {
@@ -245,7 +259,11 @@ const config: HardhatUserConfig = {
       // @ts-ignore
       mumbai: process.env.POLYGONSCAN_API_KEY,
       // @ts-ignore
-      base: process.env.BASESCAN_API_KEY
+      base: process.env.BASESCAN_API_KEY,
+      // @ts-ignore
+      scroll: process.env.SCROLLSCAN_API_KEY,
+      // @ts-ignore
+      "scroll-sepolia": process.env.SCROLLSCAN_API_KEY,
     },
     customChains: [
       {
@@ -303,7 +321,23 @@ const config: HardhatUserConfig = {
           apiURL: "https://api.basescan.org/api",
           browserURL: "https://basescan.org/",
         },
-      }
+      },
+      {
+        network: "scroll",
+        chainId: chainIds["scroll"],
+        urls: {
+          apiURL: "https://api.scrollscan.com/api",
+          browserURL: "https://scrollscan.com/",
+        },
+      },
+      {
+        network: "scroll-sepolia",
+        chainId: chainIds["scroll-sepolia"],
+        urls: {
+          apiURL: "https://api-sepolia.scrollscan.com/api",
+          browserURL: "https://sepolia.scrollscan.com/",
+        },
+      },
     ],
   },
   abiExporter: abiExporter,

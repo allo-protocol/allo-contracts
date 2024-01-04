@@ -56,14 +56,14 @@ export const AlloSettingsParams: DeployParams = {
   "fuji-testnet": {
     alloSettingsContract: "0xdf25423c9ec15347197Aa5D3a41c2ebE27587D59",
     newProtocolFeePercentage: 0,
-    newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123"
+    newProtocolTreasury: "0xB8cEF765721A6da910f14Be93e7684e9a3714123",
   },
-  "mumbai": {
+  mumbai: {
     alloSettingsContract: "0xF2a07728107B04266015E67b1468cA0a536956C8",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0x1fd06f088c720ba3b7a3634a8f021fdd485dca42",
   },
-  "polygon": {
+  polygon: {
     alloSettingsContract: "0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0xbF91bfa8c0Bcd130cDf0a7d9C01A4Db4842B1532",
@@ -78,10 +78,19 @@ export const AlloSettingsParams: DeployParams = {
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0x0000000000000000000000000000000000000000",
   },
-  "base": {
+  base: {
     alloSettingsContract: "0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4",
     newProtocolFeePercentage: 0,
     newProtocolTreasury: "0x1fD06f088c720bA3b7a3634a8F021Fdd485DcA42",
   },
+  scroll: {
+    alloSettingsContract: "0x",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0x",
+  },
+  "scroll-sepolia": {
+    alloSettingsContract: "0x",
+    newProtocolFeePercentage: 0,
+    newProtocolTreasury: "0x",
+  },
 };
-

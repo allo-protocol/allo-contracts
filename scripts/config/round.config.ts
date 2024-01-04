@@ -60,7 +60,7 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "0x292285C40E966520D5Fd8e4Ab91583C70bBa3dc0",
     roundContract: "",
   },
-  "mumbai": {
+  mumbai: {
     roundFactoryContract: "0xE1c5812e9831bc1d5BDcF50AAEc1a47C4508F3fA",
     roundImplementationContract: "0x359c9fD5ef57D4eDD6C8b42a351e12352DB0DaBC",
     roundContract: "",
@@ -80,9 +80,19 @@ export const roundParams: DeployParams = {
     roundImplementationContract: "",
     roundContract: "",
   },
-  "base": {
+  base: {
     roundFactoryContract: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
     roundImplementationContract: "0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912",
     roundContract: "",
+  },
+  scroll: {
+    roundFactoryContract: "0x",
+    roundImplementationContract: "0x",
+    roundContract: "0x",
+  },
+  "scroll-sepolia": {
+    roundFactoryContract: "0x",
+    roundImplementationContract: "0x",
+    roundContract: "0x",
   },
 };
