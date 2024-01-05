@@ -17,7 +17,9 @@ All the deploy scripts will expect network param to know which network the contr
 | `zksync-mainnet`   |
 | `zksync-testnet`   |
 | `base`             |
-
+| `scroll`           |
+| `scroll-sepolia`   |
+ 
 
 ### Project Registry
 
