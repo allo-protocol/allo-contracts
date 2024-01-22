@@ -86,8 +86,8 @@ export const roundParams: DeployParams = {
     roundContract: "",
   },
   scroll: {
-    roundFactoryContract: "0x",
-    roundImplementationContract: "0x",
+    roundFactoryContract: "0x29aAF7D4E83A778DAee08Fe04B0712c4C2989AD1",
+    roundImplementationContract: "0x53f93b998d845c55B90E806CD81d86a6c2aE20Cc",
     roundContract: "0x",
   },
   "scroll-sepolia": {

@@ -376,3 +376,21 @@ These are contracts that are created/deployed once for goerli
 | RoundImplementation                   | 0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab |
 | ProjectRegistry                       | 0xA78Daa89fE9C1eC66c5cB1c5833bC8C6Cb307918 |
 | DummyVotingStrategy                   | 0x53f93b998d845c55B90E806CD81d86a6c2aE20Cc |
+
+## Scroll Mainnet 
+
+| Contract                              | Address                                    |
+|---------------------------------------|--------------------------------------------|
+| ProgramFactory                        | 0x545B282A50EaeA01A619914d44105437036CbB36 |
+| ProgramImplementation                 | 0x2AFA4bE0f2468347A2F086c2167630fb1E58b725 |
+| QuadraticFundingVotingStrategyFactory | 0x5b55728e41154562ee80027C1247B13382692e5C |
+| QFVotingStrategyImplementation        | 0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb |
+| MerklePayoutStrategyFactory           | 0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4 |
+| MerklePayouStrategyImplementation     | 0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90 |
+| DirectPayoutStrategyFactory           | 0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab |
+| DirectPayoutStrategyImplementation    | 0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912 |
+| AlloSettings                          | 0x0c33c9dEF7A3d9961b802C6C6402d306b7D48135 |
+| RoundFactory                          | 0x29aAF7D4E83A778DAee08Fe04B0712c4C2989AD1 |
+| RoundImplementation                   | 0x53f93b998d845c55B90E806CD81d86a6c2aE20Cc |
+| ProjectRegistry                       | 0xDF9BF58Aa1A1B73F0e214d79C652a7dd37a6074e |
+| DummyVotingStrategy                   | 0x1525370A2B92FB5e8D0a44F3A9833f0E9F1a54b5 |

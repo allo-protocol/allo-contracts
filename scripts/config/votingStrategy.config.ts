@@ -84,9 +84,9 @@ export const QFVotingParams: DeployParams = {
     contract: "",
   },
   scroll: {
-    factory: "0x",
-    implementation: "0x",
-    contract: "0x",
+    factory: "0x5b55728e41154562ee80027C1247B13382692e5C",
+    implementation: "0x27efa1C90e097c980c669AB1a6e326AD4164f1Cb",
+    contract: "0x71FfD466a8A367112D5F9A752C466ebd2A30C9E9",
   },
   "scroll-sepolia": {
     factory: "0x545B282A50EaeA01A619914d44105437036CbB36",
@@ -152,7 +152,7 @@ export const DummyVotingParams: Record<string, { contract: string }> = {
     contract: "0x73AB205af1476Dc22104A6B8b3d4c273B58C6E27",
   },
   scroll: {
-    contract: "0x",
+    contract: "0x1525370A2B92FB5e8D0a44F3A9833f0E9F1a54b5",
   },
   "scroll-sepolia": {
     contract: "0x53f93b998d845c55B90E806CD81d86a6c2aE20Cc",
