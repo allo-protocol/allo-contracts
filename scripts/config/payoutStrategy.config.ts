@@ -84,8 +84,8 @@ export const MerklePayoutParams: DeployParams = {
     contract: "",
   },
   scroll: {
-    factory: "0x",
-    implementation: "0x",
+    factory: "0x7ac74Be34b1A27E48a2525259719F877a57B2Aa4",
+    implementation: "0xc6B90f42Ea395898B4C1B33e5C8Fa351829BCD90",
     contract: "",
   },
   "scroll-sepolia": {
@@ -178,8 +178,8 @@ export const DirectPayoutParams: DeployParams = {
     contract: "",
   },
   scroll: {
-    factory: "0x",
-    implementation: "0x",
+    factory: "0xc7722909fEBf7880E15e67d563E2736D9Bb9c1Ab",
+    implementation: "0x8eC471f30cA797FD52F9D37A47Be2517a7BD6912",
     contract: "",
   },
   "scroll-sepolia": {
